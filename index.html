@@ -1,15 +1,68 @@
+<!doctype html>
 <html>
-  <body>
-  	<h1>Test</h1>
-    <p id='server-time'></p>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-      var socket = io();
-      var el = document.getElementById('server-time');
+<head>
+<title>SyncEvent</title>
+<style>
+* {margin: 0; padding: 0;}
+body {
+  background: #333;
+}
+</style>
+</head>
+<body>
+  <video controls muted="true" name="media" src="1.mp3"></video>
+  <video controls muted="true" name="media" src="1.mp3"></video>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
 
-      socket.on('time', function(timeString) {
-        el.innerHTML = 'Server time: ' + timeString;
-      });
-    </script>
-  </body>
+var socket = io();
+var elements = document.getElementsByTagName("video");
+var nodes = Array.prototype.slice.call(elements); // костыль
+var recieved = false;
+
+socket.on('message', function (msg)
+{
+  evFire(msg.elem, msg.event, msg.time);
+  recieved = true;
+});
+
+function broadcast(event, elem) 
+{
+  if (!recieved)
+  {
+    socket.json.send(
+    {
+      "elem": elem,
+      "event": event,
+      "time": elements[elem].currentTime
+    });
+  }
+  else recieved = false;
+}
+
+function evFire(elem, event, time)
+{
+  elements[elem].currentTime = time;
+  switch (event)
+  {
+    case 'play':
+      elements[elem].play();
+      break;
+    case 'pause':
+      elements[elem].pause();
+      break;
+  }
+}
+
+function evFired(event)
+{
+  return nodes.indexOf(event.target);
+}
+
+document.addEventListener('play', function(event) { broadcast('play', evFired(event)) }, true);
+document.addEventListener('pause', function(event) { broadcast('pause', evFired(event)) }, true);
+document.addEventListener('seeked', function(event) { broadcast('seeked', evFired(event)) }, true);
+
+</script>
 </html>
