@@ -1,0 +1,19 @@
+{
+  "name": "websockets-socket.io",
+  "version": "1.0.0",
+  "engines": {
+    "node": "6.2.0"
+  },
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "4.13.4",
+    "socket.io": "1.4.6"
+  }
+}
