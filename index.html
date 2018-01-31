@@ -10,13 +10,14 @@ body {
 </style>
 </head>
 <body>
-  <video controls muted="true" name="media" src="https://psv4.userapi.com/c4849/u13113257/audios/f368b2b28192.mp3"></video>
+  <video controls muted="true" name="media" src="https://cs1-77v4.vk-cdn.net/p5/22a6bb5dd0d7c7.mp3"></video>
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script>
 
-//var socket = io();
-var socket = io.connect('https://syncevent.herokuapp.com');
+var socket = io();
+//var socket = io.connect('https://syncevent.herokuapp.com');
+//var socket = io.connect('localhost:5000');
 var elements = document.getElementsByTagName("video");
 var nodes = Array.prototype.slice.call(elements); // костыль
 var recieved = false;

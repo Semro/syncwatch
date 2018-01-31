@@ -21,6 +21,7 @@ io.on('connection', (socket) => {
 */
 
 var users = []; var i = 0;
+var elem, event, time;
 
 io.on('connection', function (socket) 
 {
