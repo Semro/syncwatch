@@ -15,7 +15,8 @@ body {
 <script src="/socket.io/socket.io.js"></script>
 <script>
 
-var socket = io();
+//var socket = io();
+var socket = io.connect('https://syncevent.herokuapp.com');
 var elements = document.getElementsByTagName("video");
 var nodes = Array.prototype.slice.call(elements); // костыль
 var recieved = false;
