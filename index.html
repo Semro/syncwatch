@@ -42,6 +42,7 @@ function broadcast(event, elem)
 
 function evFire(elem, event, time)
 {
+  elements[elem].currentTime = time;
   switch (event)
   {
     case 'play':
@@ -49,7 +50,6 @@ function evFire(elem, event, time)
       break;
     case 'pause':
       elements[elem].pause();
-      elements[elem].currentTime = time;
       break;
   }
 }
