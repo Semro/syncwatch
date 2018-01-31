@@ -30,13 +30,14 @@ socket.on('message', function (msg)
 
 function broadcast(event, elem) 
 {
+  var curTime = elements[elem].currentTime;
   if (!recieved)
   {
     socket.json.send(
     {
       "elem": elem,
       "event": event,
-      "time": elements[elem].currentTime
+      "time": curTime
     });
   }
   else recieved = false;
@@ -44,14 +45,18 @@ function broadcast(event, elem)
 
 function evFire(elem, event, time)
 {
-  elements[elem].currentTime = time;
   switch (event)
   {
     case 'play':
+      elements[elem].currentTime = time;
       elements[elem].play();
       break;
     case 'pause':
+      elements[elem].currentTime = time;
       elements[elem].pause();
+      break;
+    case 'seeked':
+      elements[elem].currentTime = time;
       break;
   }
 }
