@@ -1,4 +1,4 @@
-//'use strict';
+'use strict';
 
 const express = require('express');
 const socketIO = require('socket.io');
@@ -13,34 +13,30 @@ const server = express()
 
 const io = socketIO(server);
 
-/*
-io.on('connection', (socket) => {
-  console.log('Client connected');
-  socket.on('disconnect', () => console.log('Client disconnected'));
-});
-*/
-
-var users = []; var i = 0;
-var elem, event, time;
+var users = [], rooms = [];
 
 io.on('connection', function (socket) 
 {
-	users[socket.id] = i;
-	console.log('client '+i+' connected');
-	i++;
+	socket.on('join', function (data)
+	{
+		socket.join(data.room);
+		users[socket.id] = data.name;
+		rooms[socket.id] = data.room;
+		console.log(rooms[socket.id]+': '+users[socket.id]+' connected');
+	});
 	socket.on('message', function (msg)
 	{
-		socket.json.broadcast.send(
+		socket.json.broadcast.to(rooms[socket.id]).send(
 		{
 			"elem":	 msg.elem,
 			"event": msg.event,
 			"time":  msg.time
 		});
-		console.log(users[socket.id]+' '+msg.elem+' '+msg.event+' '+msg.time);
+		console.log(rooms[socket.id]+': '+users[socket.id]+' '+msg.event+' '+msg.time);
 	});
 
 	socket.on('disconnect', function () 
 	{
-		console.log('client '+users[socket.id]+' disconnected')
+		console.log(rooms[socket.id]+': '+users[socket.id]+' disconnected');
 	});
 });
