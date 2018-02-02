@@ -6,14 +6,33 @@
 * {margin: 0; padding: 0;}
 body {
   background: #333;
+  color: #fff;
 }
 </style>
 </head>
 <body>
-  <video controls muted="true" name="media" src="https://cs1-77v4.vk-cdn.net/p5/22a6bb5dd0d7c7.mp3"></video>
+  <form name = "connect">
+    <table>
+      <tr>
+        <td>Name:</td>
+        <td>Room:</td>
+      </tr>
+      <tr>
+        <td><input type = "text" name = "name"></input></td>
+        <td><input type = "text" name = "room"></input></td>
+      </tr>
+      <tr>
+        <td><input type = "button" name = "connect" value = "connect!"></input>
+      </tr>
+    </table>
+  </form>
+  <video controls muted="true" name="media" src="https://cs1-46v4.vk-cdn.net/p1/4958c900cfe379.mp3"></video>
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script>
+
+var form = document.forms.connect;
+var con = form.elements.connect;
 
 var socket = io();
 //var socket = io.connect('https://syncevent.herokuapp.com');
@@ -21,6 +40,15 @@ var socket = io();
 var elements = document.getElementsByTagName("video");
 var nodes = Array.prototype.slice.call(elements); // костыль
 var recieved = false;
+
+con.onclick = function()
+{
+  socket.emit('join', 
+  { 
+    name: form.elements.name.value,
+    room: form.elements.room.value
+  });
+}
 
 socket.on('message', function (msg)
 {
