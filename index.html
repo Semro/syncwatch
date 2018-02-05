@@ -26,7 +26,7 @@ body {
       </tr>
     </table>
   </form>
-  <video controls muted="true" name="media" src="https://cs1-46v4.vk-cdn.net/p1/4958c900cfe379.mp3"></video>
+  <video controls muted="true" src="https://syncevent.herokuapp.com/1.mp3"></video>
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -52,8 +52,8 @@ con.onclick = function()
 
 socket.on('message', function (msg)
 {
-  evFire(msg.elem, msg.event, msg.time);
   recieved = true;
+  evFire(msg.elem, msg.event, msg.time);
 });
 
 /*
@@ -80,18 +80,14 @@ function broadcast(event, elem)
 
 function evFire(elem, event, time)
 {
+  elements[elem].currentTime = time;
   switch (event)
   {
     case 'play':
-      elements[elem].currentTime = time;
       elements[elem].play();
       break;
     case 'pause':
-      elements[elem].currentTime = time;
       elements[elem].pause();
-      break;
-    case 'seeked':
-      elements[elem].currentTime = time;
       break;
   }
 }
