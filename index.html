@@ -40,6 +40,7 @@ var socket = io();
 var elements = document.getElementsByTagName("video");
 var nodes = Array.prototype.slice.call(elements); // i think it's not good
 var recieved = false;
+var pp = true;
 
 con.onclick = function()
 {
@@ -52,8 +53,9 @@ con.onclick = function()
 
 socket.on('message', function (msg)
 {
-  evFire(msg.elem, msg.event, msg.time);
   recieved = true;
+  console.log("socket.on: "+msg.event+' rec: '+recieved);
+  evFire(msg.elem, msg.event, msg.time);
 });
 
 /*
@@ -68,6 +70,7 @@ function broadcast(event, elem)
   var curTime = elements[elem].currentTime;
   if (!recieved)
   {
+    console.log("broadcast: "+event);
     socket.json.send(
     {
       "elem": elem,
@@ -80,13 +83,16 @@ function broadcast(event, elem)
 
 function evFire(elem, event, time)
 {
+  console.log("evFire: "+event);
   switch (event)
   {
     case 'play':
+      pp = true;
       elements[elem].currentTime = time;
       elements[elem].play();
       break;
     case 'pause':
+      pp = true;
       elements[elem].currentTime = time;
       elements[elem].pause();
       break;
@@ -101,9 +107,16 @@ function evFired(event)
   return nodes.indexOf(event.target);
 }
 
-document.addEventListener('play', function(event) { broadcast('play', evFired(event)) }, true);
-document.addEventListener('pause', function(event) { broadcast('pause', evFired(event)) }, true);
-document.addEventListener('seeked', function(event) { broadcast('seeked', evFired(event)) }, true);
+document.addEventListener('play', function(event) { broadcast('play', evFired(event)); }, true);
+document.addEventListener('pause', function(event) { broadcast('pause', evFired(event)); }, true);
+document.addEventListener('seeked', function(event) 
+{ 
+  if (!pp) 
+  {
+    broadcast('seeked', evFired(event));
+  }
+  pp = false;
+}, true);
 
 </script>
 </html>
