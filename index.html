@@ -56,7 +56,7 @@ socket.on('message', function (msg)
 {
   recieved = true;
   console.log("socket.on: "+msg.event+' rec: '+recieved);
-  evFire(msg.elem, msg.event, msg.time);
+  evFire(msg.event, msg.elem, msg.time);
 });
 
 function broadcast(event, elem) 
@@ -67,15 +67,15 @@ function broadcast(event, elem)
     console.log("broadcast: "+event);
     socket.json.send(
     {
-      "elem": elem,
       "event": event,
+      "elem": elem,
       "time": curTime
     });
   }
   else recieved = false;
 }
 
-function evFire(elem, event, time)
+function evFire(event, elem, time)
 {
   console.log("evFire: "+event);
   switch (event)
