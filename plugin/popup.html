@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+<title>SyncEvent</title>
+<style>
+* {margin: 0; padding: 0;}
+body {
+  background: #333;
+  color: #fff;
+}
+</style>
+</head>
+<body>
+  <form name = "connect">
+    <table>
+      <tr>
+        <td>Name:</td>
+        <td>Room:</td>
+      </tr>
+      <tr>
+        <td><input type = "text" name = "name"></input></td>
+        <td><input type = "text" name = "room"></input></td>
+      </tr>
+      <tr>
+        <td><input type = "button" name = "connect" value = "connect!"></input>
+      </tr>
+    </table>
+  </form>
+  <video controls muted="true" name="media" src="https://cs1-46v4.vk-cdn.net/p1/4958c900cfe379.mp3"></video>
+</body>
+<script src="http://localhost:5000/socket.io/socket.io.js"></script>
+<script src="popup.js"></script>
+</html>
