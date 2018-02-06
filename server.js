@@ -22,15 +22,14 @@ io.on('connection', function (socket)
 		socket.join(data.room);
 		users[socket.id] = data.name;
 		rooms[socket.id] = data.room;
-//		socket.to(rooms[socket.id]).emit('list', {list: users});
 		console.log(rooms[socket.id]+': '+users[socket.id]+' connected');
 	});
 	socket.on('message', function (msg)
 	{
 		socket.json.broadcast.to(rooms[socket.id]).send(
 		{
-			"elem":	 msg.elem,
 			"event": msg.event,
+			"elem":	 msg.elem,
 			"time":  msg.time
 		});
 		console.log(rooms[socket.id]+': '+users[socket.id]+' '+msg.event+' '+msg.time);

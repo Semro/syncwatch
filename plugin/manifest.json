@@ -1,14 +1,21 @@
 {
 	"name": "SyncEvent",
-	"version": "1.3",
+	"version": "1.0",
 	"description": "Syncing events in browsers",
 	"background":
 	{
     "scripts": 
         [
-            "background.js"
-        ]
+            "js/background.js"
+        ],
+        "presistant": true
 	},
+    "content_scripts":
+    [{
+            "matches": ["<all_urls>"],
+            "js": ["js/content.js"],
+            "run_at": "document_end"
+    }],
 	"icons":
 	{
 		"16": "icons/icon16.png",
@@ -18,8 +25,8 @@
 	"browser_action":
 	{
 		"default_icon": "icons/icon16.png",
-		"default_title": "Sync Event"
-	//	"default_popup": "popup.html"
+		"default_title": "Sync Event",
+		"default_popup": "popup.html"
 	},
 	"permissions": 
 	[
