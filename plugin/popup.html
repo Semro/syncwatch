@@ -4,9 +4,10 @@
 <title>SyncEvent</title>
 <style>
 * {margin: 0; padding: 0;}
-body {
-  background: #333;
-  color: #fff;
+body
+{
+  background: #fff;
+  color: #000;
 }
 </style>
 </head>
@@ -15,10 +16,14 @@ body {
     <table>
       <tr>
         <td>Name:</td>
-        <td>Room:</td>
       </tr>
       <tr>
         <td><input type = "text" name = "name"></input></td>
+      </tr>
+      <tr>
+        <td>Room:</td>
+      </tr>
+      <tr>
         <td><input type = "text" name = "room"></input></td>
       </tr>
       <tr>
@@ -26,8 +31,6 @@ body {
       </tr>
     </table>
   </form>
-  <video controls muted="true" name="media" src="https://cs1-46v4.vk-cdn.net/p1/4958c900cfe379.mp3"></video>
 </body>
-<script src="http://localhost:5000/socket.io/socket.io.js"></script>
-<script src="popup.js"></script>
+<script src="js/popup.js"></script>
 </html>

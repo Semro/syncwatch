@@ -4,7 +4,8 @@
 <title>SyncEvent</title>
 <style>
 * {margin: 0; padding: 0;}
-body {
+body
+{
   background: #333;
   color: #fff;
 }
@@ -57,13 +58,6 @@ socket.on('message', function (msg)
   console.log("socket.on: "+msg.event+' rec: '+recieved);
   evFire(msg.elem, msg.event, msg.time);
 });
-
-/*
-socket.on('list', function (data)
-{
-  console.log(data.list);
-})
-*/
 
 function broadcast(event, elem) 
 {
