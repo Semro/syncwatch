@@ -26,7 +26,7 @@ socket.on('message', function (msg)
 	});
 });
 
-function broadcast(event, elem, time) 
+function broadcast(event, elem, time)
 {
   if (!recieved)
   {
