@@ -5,6 +5,7 @@ console.log("background.js");
 var socket = io.connect('https://syncevent.herokuapp.com');
 var recieved = false;
 var pp = false;
+var contentTabId;
 
 socket.emit('join', 
 { 
@@ -16,7 +17,7 @@ socket.on('message', function (msg)
 {
   recieved = true;
   console.log("socket.on: "+msg.event+' rec: '+recieved);
-  chrome.runtime.sendMessage(
+  chrome.tabs.sendMessage(contentTabId,
 	{
 		from: "background",
 		event: msg.event,
@@ -44,6 +45,7 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 {
 	if (msg.from == "content")
 	{
+		contentTabId = sender.tab.id;
 		broadcast(msg.event, msg.elem, msg.time);
 	}
 });

@@ -54,7 +54,7 @@ document.addEventListener('seeked', function(event)
   pp = false;
 }, true);
 
-chrome.runtime.onMessage.addListener( function(msg, sender)
+chrome.runtime.onMessage.addListener( function(msg)
 {
 	if (msg.from == "background")
 	{
