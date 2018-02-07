@@ -6,6 +6,7 @@
 	{
     "scripts": 
         [
+            "js/socket.io.js",
             "js/background.js"
         ],
         "presistant": true
@@ -30,7 +31,8 @@
 	},
 	"permissions": 
 	[
-		"activeTab"
+		"activeTab",
+        "storage"
 	],
 	"manifest_version": 2
 }
