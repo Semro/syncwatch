@@ -1,25 +1,35 @@
-console.log("content.js");
-//var socket = io.connect('https://syncevent.herokuapp.com');
-//var socket = io.connect('http://localhost:5000');
-var elements = document.getElementsByTagName("video");
+console.log('content.js');
+var elements = document.getElementsByTagName('video');
 var nodes = Array.prototype.slice.call(elements); // i think it's not good
 var pp = false;
 
-function broadcast(event, elem)
+console.log(elements);
+console.log(nodes);
+
+chrome.runtime.sendMessage( {from: 'tabid'} );
+
+function rele()
 {
-  var curTime = elements[elem].currentTime;
+	elements = document.getElementsByTagName('video');
+	nodes = Array.prototype.slice.call(elements);
+}
+
+function broadcast(event)
+{
+	rele();
   chrome.runtime.sendMessage(
   {
-  	from: "content",
-  	event: event,
-  	elem: elem,
-  	time: curTime
+  	from: 'content',
+  	event: event.type,
+  	elem: nodes.indexOf(event.target), // i think it's not good
+  	time: event.target.currentTime
 	});
 }
 
 function evFire(event, elem, time)
 {
-  console.log("evFire: "+event);
+	rele();
+  console.log(event+' '+elem+' ');
   switch (event)
   {
     case 'play':
@@ -38,25 +48,20 @@ function evFire(event, elem, time)
   }
 }
 
-function evFired(event)
-{
-  return nodes.indexOf(event.target);
-}
-
-document.addEventListener('play', function(event) { broadcast('play', evFired(event)); }, true);
-document.addEventListener('pause', function(event) { broadcast('pause', evFired(event)); }, true);
+document.addEventListener('play', function(event) { broadcast(event); }, true);
+document.addEventListener('pause', function(event) { broadcast(event); }, true);
 document.addEventListener('seeked', function(event) 
 { 
   if (!pp) 
   {
-    broadcast('seeked', evFired(event));
+    broadcast(event);
   }
   pp = false;
 }, true);
 
 chrome.runtime.onMessage.addListener( function(msg)
 {
-	if (msg.from == "background")
+	if (msg.from == 'background')
 	{
 		evFire(msg.event, msg.elem, msg.time);
 	}

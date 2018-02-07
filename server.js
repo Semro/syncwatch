@@ -28,9 +28,9 @@ io.on('connection', function (socket)
 	{
 		socket.json.broadcast.to(rooms[socket.id]).send(
 		{
-			"event": msg.event,
-			"elem":	 msg.elem,
-			"time":  msg.time
+			'event': msg.event,
+			'elem':	 msg.elem,
+			'time':  msg.time
 		});
 		console.log(rooms[socket.id]+': '+users[socket.id]+' '+msg.event+' '+msg.time);
 	});

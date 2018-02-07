@@ -35,6 +35,10 @@ function broadcast(event, elem, time)
 
 chrome.runtime.onMessage.addListener( function(msg, sender)
 {
+	if (msg.from == 'tabid')
+	{
+		contentTabId = sender.tab.id;
+	}
 	if (msg.from == 'content')
 	{
 		contentTabId = sender.tab.id;
