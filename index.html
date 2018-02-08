@@ -27,17 +27,16 @@ body
       </tr>
     </table>
   </form>
-  <video controls muted="true" name="media" src="http://ol4.mp3party.net/online/4177/4177678.mp3"></video>
+  <video controls muted="true" src="http://ol4.mp3party.net/online/4177/4177678.mp3"></video>
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-
+// OLD CODE
+console.warn("OLD CODE!!!");
 var form = document.forms.connect;
 var con = form.elements.connect;
 
 var socket = io();
-//var socket = io.connect('https://syncevent.herokuapp.com');
-//var socket = io.connect('localhost:5000');
 var elements = document.getElementsByTagName("video");
 var nodes = Array.prototype.slice.call(elements); // i think it's not good
 var recieved = false;

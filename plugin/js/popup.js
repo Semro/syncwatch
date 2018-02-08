@@ -1,3 +1,5 @@
+'use strict';
+
 var form = document.forms.connect;
 var con = form.elements.connect;
 

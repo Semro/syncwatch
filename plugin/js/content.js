@@ -1,12 +1,8 @@
-console.log('content.js');
-var elements = document.getElementsByTagName('video');
-var nodes = Array.prototype.slice.call(elements); // i think it's not good
+'use strict';
+
 var pp = false;
-
-console.log(elements);
-console.log(nodes);
-
-chrome.runtime.sendMessage( {from: 'tabid'} );
+var elements = [];
+var nodes = [];
 
 function rele()
 {
@@ -21,7 +17,7 @@ function broadcast(event)
   {
   	from: 'content',
   	event: event.type,
-  	elem: nodes.indexOf(event.target), // i think it's not good
+  	elem: nodes.indexOf(event.target),
   	time: event.target.currentTime
 	});
 }
@@ -29,7 +25,6 @@ function broadcast(event)
 function evFire(event, elem, time)
 {
 	rele();
-  console.log(event+' '+elem+' ');
   switch (event)
   {
     case 'play':
@@ -46,18 +41,21 @@ function evFire(event, elem, time)
       elements[elem].currentTime = time;
       break;
   }
+  console.log(event+' '+elem+' ');
 }
 
 document.addEventListener('play', function(event) { broadcast(event); }, true);
 document.addEventListener('pause', function(event) { broadcast(event); }, true);
-document.addEventListener('seeked', function(event) 
+document.addEventListener('seeked', function(event)
 { 
-  if (!pp) 
+  if (!pp)
   {
     broadcast(event);
   }
   pp = false;
 }, true);
+
+chrome.runtime.sendMessage( {from: 'tabid'} );
 
 chrome.runtime.onMessage.addListener( function(msg)
 {
@@ -66,3 +64,5 @@ chrome.runtime.onMessage.addListener( function(msg)
 		evFire(msg.event, msg.elem, msg.time);
 	}
 });
+
+console.log('content.js');
