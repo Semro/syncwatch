@@ -35,6 +35,11 @@ io.on('connection', function (socket)
 		console.log(rooms[socket.id]+': '+users[socket.id]+' '+msg.event+' '+msg.time);
 	});
 
+	socket.on('ping', function()
+	{
+		socket.emit('pong');
+	})
+
 	socket.on('disconnect', function () 
 	{
 		console.log(rooms[socket.id]+': '+users[socket.id]+' disconnected');
