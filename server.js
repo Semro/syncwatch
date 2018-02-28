@@ -40,6 +40,11 @@ io.on('connection', function (socket)
 		socket.emit('pong');
 	})
 
+	socket.on('alive', function(data)
+	{
+		console.log('alive: '+data.name);
+	})
+
 	socket.on('disconnect', function () 
 	{
 		console.log(rooms[socket.id]+': '+users[socket.id]+' disconnected');

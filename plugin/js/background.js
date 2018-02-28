@@ -4,6 +4,17 @@ var socket = io.connect('https://syncevent.herokuapp.com');
 var recieved = false;
 var contentTabId;
 
+function keepAlive(interval, name) // interval in minutes
+{
+	setInterval(function()
+	{
+	socket.emit('alive',
+		{
+			name: name
+		});
+	}, 60000 * interval);
+}
+
 function broadcast(event, elem, time)
 {
   if (!recieved)
@@ -50,6 +61,7 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 		  name: msg.name,
 		  room: msg.room
 		});
+		keepAlive(5, msg.name);
 	}
 	if (msg.from == 'console')
 	{
