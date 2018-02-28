@@ -3,17 +3,7 @@
 var socket = io.connect('https://syncevent.herokuapp.com');
 var recieved = false;
 var contentTabId;
-
-function keepAlive(interval, name) // interval in minutes
-{
-	setInterval(function()
-	{
-	socket.emit('alive',
-		{
-			name: name
-		});
-	}, 60000 * interval);
-}
+var userName;
 
 function broadcast(event, elem, time)
 {
@@ -30,7 +20,7 @@ function broadcast(event, elem, time)
   else recieved = false;
 }
 
-socket.on('message', function (msg)
+socket.on('message', function(msg)
 {
   recieved = true;
   chrome.tabs.sendMessage(contentTabId,
@@ -42,6 +32,14 @@ socket.on('message', function (msg)
 	});
   console.log('socket.on: '+msg.event);
 });
+
+socket.on('ping', function()
+{
+	socket.emit('pong',
+	{
+		name: userName
+	}
+}
 
 chrome.runtime.onMessage.addListener( function(msg, sender)
 {
@@ -56,12 +54,12 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 	}
 	if (msg.from == 'join')
 	{
+		userName = msg.name;
 		socket.emit('join',
 		{ 
 		  name: msg.name,
 		  room: msg.room
 		});
-		keepAlive(5, msg.name);
 	}
 	if (msg.from == 'console')
 	{
