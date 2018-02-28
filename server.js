@@ -42,7 +42,7 @@ io.on('connection', function (socket)
 		socket.emit('ping', function()
 		{
 			var sendTime = Date.now();
-		})
+		});
 	}, 10000);  // 270000
 
 	socket.on('pong', function(data)
@@ -50,7 +50,7 @@ io.on('connection', function (socket)
 		var receiveTime = Date.now();
 		var pingTime = recieveTime - sendTime;
 		console.log(data.name+' ping: '+pingTime+' ms');
-	})
+	});
 
 	socket.on('disconnect', function () 
 	{

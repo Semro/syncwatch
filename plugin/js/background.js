@@ -38,8 +38,8 @@ socket.on('ping', function()
 	socket.emit('pong',
 	{
 		name: userName
-	}
-}
+	});
+});
 
 chrome.runtime.onMessage.addListener( function(msg, sender)
 {
