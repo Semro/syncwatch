@@ -3,7 +3,7 @@
 const express = require('express');
 const socketIO = require('socket.io');
 const path = require('path');
-var http = require('http');
+//var http = require('http');
 
 const PORT = process.env.PORT || 3000;
 const INDEX = path.join(__dirname, 'index.html');
@@ -55,11 +55,11 @@ io.on('connection', function(socket)
 	socket.on('disconnect', function()
 	{
 		console.log(rooms[socket.id]+': '+users[socket.id]+' disconnected');
-		users.splice(socket.id, 1);
+		/*users.splice(socket.id, 1);
 		if (!users.length)
 		{
 			clearInterval(intervalId);
 			console.log("All disconnected!");
-		}
+		}*/
 	});
 });
