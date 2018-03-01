@@ -47,7 +47,7 @@ io.on('connection', function(socket)
 	socket.on('pong', function(data)
 	{
 		var receiveTime = Date.now();
-		var pingTime = recieveTime - sendTime;
+		var pingTime = receiveTime - sendTime;
 		console.log(data.name+' ping: '+pingTime+' ms');
 	});
 
