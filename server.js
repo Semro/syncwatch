@@ -36,13 +36,12 @@ io.on('connection', function (socket)
 		console.log(rooms[socket.id]+': '+users[socket.id]+' '+msg.event+' '+msg.time);
 	});
 
+	var sendTime;
 	var intervalId = setInterval(function() 
 	{
 		http.get("http://syncevent.herokuapp.com");
-		socket.emit('ping', function()
-		{
-			var sendTime = Date.now();
-		});
+		sendTime = Date.now();
+		socket.emit('ping');
 	}, 10000);  // 270000
 
 	socket.on('pong', function(data)
@@ -52,7 +51,7 @@ io.on('connection', function (socket)
 		console.log(data.name+' ping: '+pingTime+' ms');
 	});
 
-	socket.on('disconnect', function () 
+	socket.on('disconnect', function ()
 	{
 		console.log(rooms[socket.id]+': '+users[socket.id]+' disconnected');
 		users.splice(socket.id, 1);
