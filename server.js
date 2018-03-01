@@ -41,7 +41,7 @@ io.on('connection', function (socket)
 	{
 		http.get("http://syncevent.herokuapp.com");
 		sendTime = Date.now();
-		socket.emit('ping');
+		socket.emit('ping', { hello: 'world' });
 	}, 10000);  // 270000
 
 	socket.on('pong', function(data)
