@@ -16,16 +16,16 @@ const io = socketIO(server);
 
 var users = [], rooms = [];
 
-io.on('connection', function (socket) 
+io.on('connection', function(socket) 
 {
-	socket.on('join', function (data)
+	socket.on('join', function(data)
 	{
 		socket.join(data.room);
 		users[socket.id] = data.name;
 		rooms[socket.id] = data.room;
 		console.log(rooms[socket.id]+': '+users[socket.id]+' connected');
 	});
-	socket.on('message', function (msg)
+	socket.on('message', function(msg)
 	{
 		socket.json.broadcast.to(rooms[socket.id]).send(
 		{
@@ -35,15 +35,15 @@ io.on('connection', function (socket)
 		});
 		console.log(rooms[socket.id]+': '+users[socket.id]+' '+msg.event+' '+msg.time);
 	});
-/*
+
 	var sendTime;
 	var intervalId = setInterval(function() 
 	{
-		http.get("http://syncevent.herokuapp.com");
+		//http.get("http://syncevent.herokuapp.com");
 		sendTime = Date.now();
 		socket.emit('ping', { hello: 'world' });
 	}, 10000);  // 270000
-*/ // to complete
+
 	socket.on('pong', function(data)
 	{
 		var receiveTime = Date.now();
@@ -51,7 +51,7 @@ io.on('connection', function (socket)
 		console.log(data.name+' ping: '+pingTime+' ms');
 	});
 
-	socket.on('disconnect', function ()
+	socket.on('disconnect', function()
 	{
 		console.log(rooms[socket.id]+': '+users[socket.id]+' disconnected');
 		users.splice(socket.id, 1);
