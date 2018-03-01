@@ -33,8 +33,9 @@ socket.on('message', function(msg)
   console.log('socket.on: '+msg.event);
 });
 
-socket.on('ping', function()
+socket.on('ping', function(data)
 {
+	console.log(data.hello);
 	socket.emit('pong',
 	{
 		name: userName
