@@ -35,7 +35,7 @@ io.on('connection', function(socket)
 		});
 		console.log(rooms[socket.id]+': '+users[socket.id]+' '+msg.event+' '+msg.time);
 	});
-
+/*
 	var sendTime;
 	var intervalId = setInterval(function() 
 	{
@@ -46,10 +46,11 @@ io.on('connection', function(socket)
 
 	socket.on('pong', function(data)
 	{
-		var receiveTime = Date.now();
-		var pingTime = receiveTime - sendTime;
+		var rTime = Date.now();
+		var pingTime = rTime - sendTime;
 		console.log(data.name+' ping: '+pingTime+' ms');
 	});
+*/
 
 	socket.on('disconnect', function()
 	{
