@@ -16,16 +16,6 @@ const io = socketIO(server);
 
 var users = [], rooms = [];
 
-function send(event, elem, time)
-{
-	socket.json.broadcast.to(rooms[socket.id]).send(
-	{
-		'event': event,
-		'elem':	 elem,
-		'time':  time
-	});
-}
-
 io.on('connection', function(socket) 
 {
 	socket.on('join', function(data)
@@ -38,7 +28,12 @@ io.on('connection', function(socket)
 
 	socket.on('message', function(msg)
 	{
-		send(msg.event, msg.elem, msg.time)
+		socket.json.broadcast.to(rooms[socket.id]).send(
+		{
+			'event': msg.event,
+			'elem':	 msg.elem,
+			'time':  msg.time
+		});
 		console.log(rooms[socket.id]+': '+users[socket.id]+' '+msg.event+' '+msg.time);
 	});
 
