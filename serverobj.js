@@ -14,7 +14,19 @@ const server = express()
 
 const io = socketIO(server);
 
-var users = [], rooms = [];
+var users = [], rooms = [], times = [];
+
+class room
+{
+	constructor(name, event, elem, time)
+	{
+		this.name = name;
+		this.event = event;
+		this.elem = elem;
+		this.time = time;
+		this.users = [];
+	}
+}
 
 function send(event, elem, time)
 {
@@ -33,19 +45,26 @@ io.on('connection', function(socket)
 		socket.join(data.room);
 		users[socket.id] = data.name;
 		rooms[socket.id] = data.room;
+
+		if (times[rooms[socket.id]] != null)
+		{
+			send();
+		}
+
 		console.log(rooms[socket.id]+': '+users[socket.id]+' connected');
 	});
 
 	socket.on('message', function(msg)
 	{
-		send(msg.event, msg.elem, msg.time)
+		times[rooms[socket.id]] = msg.time;
+		send(msg.event, msg.elem, msg.time);
 		console.log(rooms[socket.id]+': '+users[socket.id]+' '+msg.event+' '+msg.time);
 	});
 
 	var sendTime;
 	var intervalId = setInterval(function() 
 	{
-		http.get("http://syncevent.herokuapp.com");
+		//http.get("http://syncevent.herokuapp.com");
 		sendTime = Date.now();
 		socket.emit('pingt', { hello: 'world' });
 	}, 1800000);  // 30 minutes
