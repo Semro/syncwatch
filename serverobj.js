@@ -14,28 +14,46 @@ const server = express()
 
 const io = socketIO(server);
 
-var users = [], rooms = [], times = [];
+console.log("serverOBJ.js started!");
 
-class room
+var rooms = [], roomid = [];
+
+class Room
 {
-	constructor(name, event, elem, time)
+	constructor(name)
 	{
 		this.name = name;
-		this.event = event;
-		this.elem = elem;
-		this.time = time;
+		this.event = null;
+		this.elem = null;
+		this.time = null;
 		this.users = [];
 	}
-}
 
-function send(event, elem, time)
-{
-	socket.json.broadcast.to(rooms[socket.id]).send(
+	addUser(sockid, name)
 	{
-		'event': event,
-		'elem':	 elem,
-		'time':  time
-	});
+		this.users[sockid] = name;
+	}
+
+	disconUser(sockid) // подумать
+	{
+		this.users.splice(sockid, 1);
+	}
+
+	getUser(sockid)
+	{
+		return this.users[sockid];
+	}
+
+	nullUsers()
+	{
+		if (!this.users.length) return true;
+		else return false;
+	}
+
+	setTime(time)
+	{
+		this.time = time;
+	}
 }
 
 io.on('connection', function(socket) 
@@ -43,22 +61,40 @@ io.on('connection', function(socket)
 	socket.on('join', function(data)
 	{
 		socket.join(data.room);
-		users[socket.id] = data.name;
-		rooms[socket.id] = data.room;
-
-		if (times[rooms[socket.id]] != null)
+		roomid[socket.id] = data.room;
+		if (rooms[data.room] == null)
 		{
-			send();
+			let room = new Room(data.room);
+			room.addUser(socket.id, data.name);
+			rooms[data.room] = room;
+		}
+		else
+		{
+			rooms[data.room].addUser(socket.id, data.name);
+			socket.json.broadcast.to(data.room).send(
+			{
+				'event': rooms[data.room].event,
+				'elem':	 rooms[data.room].elem,
+				'time':  rooms[data.room].time
+			});
 		}
 
-		console.log(rooms[socket.id]+': '+users[socket.id]+' connected');
+		console.log(rooms[data.room].name+': '+rooms[data.room].getUser(socket.id)+' connected');
 	});
 
 	socket.on('message', function(msg)
 	{
-		times[rooms[socket.id]] = msg.time;
-		send(msg.event, msg.elem, msg.time);
-		console.log(rooms[socket.id]+': '+users[socket.id]+' '+msg.event+' '+msg.time);
+		if (rooms[roomid[socket.id]] != undefined)
+		{
+			rooms[roomid[socket.id]].setTime(msg.time);
+			socket.json.broadcast.to(roomid[socket.id]).send(
+			{
+				'event': msg.event,
+				'elem':	 msg.elem,
+				'time':  msg.time
+			});
+			console.log(roomid[socket.id]+': '+rooms[roomid[socket.id]].getUser(socket.id)+' '+msg.event+' '+msg.time);
+		}
 	});
 
 	var sendTime;
@@ -66,7 +102,7 @@ io.on('connection', function(socket)
 	{
 		//http.get("http://syncevent.herokuapp.com");
 		sendTime = Date.now();
-		socket.emit('pingt', { hello: 'world' });
+		socket.emit('pingt');
 	}, 1800000);  // 30 minutes
 
 	socket.on('pongt', function(data)
@@ -78,9 +114,16 @@ io.on('connection', function(socket)
 
 	socket.on('disconnect', function()
 	{
-		console.log(rooms[socket.id]+': '+users[socket.id]+' disconnected');
-		users.splice(socket.id, 1);
-		if (!users.length)
+		console.log(roomid[socket.id]+': '+rooms[roomid[socket.id]].getUser(socket.id)+' disconnected');
+		rooms[roomid[socket.id]].disconUser(socket.id);
+
+		if (rooms[roomid[socket.id]].nullUsers())
+		{
+			rooms.splice(roomid[socket.id], 1);
+			console.log("nullUsers");
+		}
+
+		if (!rooms.length)
 		{
 			clearInterval(intervalId);
 			console.log("All disconnected!");
