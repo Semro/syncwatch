@@ -1,6 +1,7 @@
 'use strict';
 
-var socket = io.connect('https://syncevent.herokuapp.com');
+//var socket = io.connect('https://syncevent.herokuapp.com');
+var socket = io.connect('http://localhost:5000');
 var recieved = false;
 var contentTabId;
 var userName;
@@ -33,10 +34,9 @@ socket.on('message', function(msg)
   console.log('socket.on: '+msg.event);
 });
 
-socket.on('ping', function(data)
+socket.on('pongt', function()
 {
-	console.log(data.hello);
-	socket.emit('pong',
+	socket.emit('pingt',
 	{
 		name: userName
 	});
