@@ -1,11 +1,26 @@
 'use strict';
 
 var pp = false;
-var elements = [];
-var nodes = [];
+var elements = [], nodes = [], frames = [];
 
 function rele()
 {
+	
+	frames = document.getElementsByTagName('iframe');
+	for (let i = 0; i < frames.length; i++)
+	{
+		frames[i].contentWindow.document.addEventListener('play', function(event) { broadcast(event); }, true);
+		frames[i].contentWindow.document.addEventListener('pause', function(event) { broadcast(event); }, true);
+		frames[i].contentWindow.document.addEventListener('seeked', function(event)
+		{
+			if (!pp)
+			{
+				broadcast(event);
+			}
+			pp = false;
+		}, true);
+	}
+/*
 	elements = document.getElementsByTagName('video');
 	for (let i = 0; i < elements.length; i++)
 	{
@@ -20,6 +35,7 @@ function rele()
 			pp = false;
 		}, true);
 	}
+*/
 	nodes = Array.prototype.slice.call(elements);
 }
 
@@ -56,7 +72,7 @@ function evFire(event, elem, time)
 }
 
 rele();
-/*
+
 document.addEventListener('play', function(event) { broadcast(event); }, true);
 document.addEventListener('pause', function(event) { broadcast(event); }, true);
 document.addEventListener('seeked', function(event)
@@ -66,7 +82,7 @@ document.addEventListener('seeked', function(event)
 		broadcast(event);
 	}
 	pp = false;
-}, true);*/
+}, true);
 
 chrome.runtime.sendMessage( {from: 'tabid'} );
 
