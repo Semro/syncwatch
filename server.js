@@ -14,7 +14,7 @@ const server = express()
 
 const io = socketIO(server);
 
-console.log('serverOBJ.js started!');
+console.log('server.js started!');
 
 var roomsLength = 0;
 var rooms = [], roomid = [];
