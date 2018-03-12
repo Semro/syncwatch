@@ -8,30 +8,30 @@ var userName;
 
 function broadcast(event, elem, time)
 {
-  if (!recieved)
-  {
-    socket.json.send(
-    {
-      'event': event,
-      'elem': elem,
-      'time': time
-    });
-    console.log('broadcast: '+event);
-  }
-  else recieved = false;
+	if (!recieved)
+	{
+		socket.json.send(
+		{
+			'event': event,
+			'elem': elem,
+			'time': time
+		});
+		console.log('broadcast: '+event);
+	}
+	else recieved = false;
 }
 
 socket.on('message', function(msg)
 {
-  recieved = true;
-  chrome.tabs.sendMessage(contentTabId,
+	recieved = true;
+	chrome.tabs.sendMessage(contentTabId,
 	{
 		from: 'background',
 		event: msg.event,
 		elem: msg.elem,
 		time: msg.time
 	});
-  console.log('socket.on: '+msg.event);
+	console.log('socket.on: '+msg.event);
 });
 
 socket.on('pingt', function()
@@ -58,8 +58,8 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 		userName = msg.name;
 		socket.emit('join',
 		{ 
-		  name: msg.name,
-		  room: msg.room
+			name: msg.name,
+			room: msg.room
 		});
 	}
 	if (msg.from == 'console')
