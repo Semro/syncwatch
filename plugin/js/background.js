@@ -1,10 +1,18 @@
 'use strict';
 
-var socket = io.connect('https://syncevent.herokuapp.com');
-//var socket = io.connect('http://localhost:5000');
+//var socket = io.connect('https://syncevent.herokuapp.com');
+var socket = io.connect('http://localhost:3000');
 var recieved = false;
 var contentTabId;
 var userName;
+
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+	chrome.tabs.executeScript({
+		"file": "js/frame.js",
+		"allFrames" : true
+	});
+}); 
+
 
 function broadcast(event, elem, time)
 {
@@ -67,5 +75,4 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 		console.log(msg.res);
 	}
 });
-
 console.log('background.js');
