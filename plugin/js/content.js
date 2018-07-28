@@ -3,6 +3,7 @@
 var pp = false;
 var nodes = [];
 
+
 function addListeners(arr)
 {
 	for (let i = 0; i < arr.length; i++)
@@ -25,18 +26,17 @@ function rele()
 	let elements = document.getElementsByTagName('video');
 	addListeners(elements);
 	nodes = Array.prototype.slice.call(elements);
-	let frames = document.getElementsByTagName('iframe');
-	console.warn(frames);
+/*	
 	for (let i = 0; i < frames.length; i++)
 	{
 		let bufmas = [];
-		let buf = frames[i].contentWindow.document.getElementsByTagName('video'); // cross-origin :(
+//		let buf = frames[i].contentWindow.document.getElementsByTagName('video'); // cross-origin :(
 		addListeners(buf);
 		console.warn(buf);
 
 		bufmas = Array.prototype.slice.call(buf);
 		nodes = nodes.concat(bufmas);
-	}
+	}*/
 	console.log('rele');
 }
 

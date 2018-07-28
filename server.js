@@ -90,10 +90,10 @@ class Room
 
 io.on('connection', function(socket)
 {
-	var wakeServer = setInterval(function()
+	let wakeServer = setInterval(function()
 	{
 		http.get('http://syncevent.herokuapp.com');
-	}, 1800000);  // 30 minutes // calls on each connection, it's ping server a lot of time
+	}, 30 * 60000);  // 30 minutes // calls on each connection, it's ping server a lot of time
 
 	socket.on('join', function(data)
 	{
@@ -166,7 +166,7 @@ io.on('connection', function(socket)
 		{
 			clearInterval(wakeServer);
 			clearInterval(pingUser);
-			console.log("All disconnected!");
+			console.log('All disconnected!');
 		}
 	});
 });
