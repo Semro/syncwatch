@@ -3,7 +3,6 @@
 var pp = false;
 var nodes = [];
 
-
 function addListeners(arr)
 {
 	for (let i = 0; i < arr.length; i++)
@@ -21,23 +20,17 @@ function addListeners(arr)
 	}
 }
 
-function rele()
+function init()
 {
 	let elements = document.getElementsByTagName('video');
 	addListeners(elements);
 	nodes = Array.prototype.slice.call(elements);
-/*	
-	for (let i = 0; i < frames.length; i++)
+	chrome.runtime.sendMessage(
 	{
-		let bufmas = [];
-//		let buf = frames[i].contentWindow.document.getElementsByTagName('video'); // cross-origin :(
-		addListeners(buf);
-		console.warn(buf);
-
-		bufmas = Array.prototype.slice.call(buf);
-		nodes = nodes.concat(bufmas);
-	}*/
-	console.log('rele');
+		from: 'console',
+		res: nodes.join(' ')
+	});
+	console.log('init');
 }
 
 function broadcast(event)
@@ -74,8 +67,9 @@ function evFire(event, elem, time)
 
 window.onload = function() // may be find smth better
 {
-   rele();
+   init();
 };
+init();
 
 chrome.runtime.sendMessage( {from: 'tabid'} );
 
