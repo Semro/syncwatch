@@ -1,18 +1,30 @@
 'use strict';
 
-//var socket = io.connect('https://syncevent.herokuapp.com');
-var socket = io.connect('http://localhost:3000');
+//var socket = io.connect('https://syncevent.herokuapp.com', {
+var socket = io.connect('http://localhost:3000', {
+	reconnection: true,
+	reconnectionDelayMax: 5000,
+	reconnectionDelay: 1000,
+});
 var recieved = false;
 var contentTabId;
 var userName;
 
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-	chrome.tabs.executeScript({
-		"file": "js/frame.js",
-		"allFrames" : true
-	});
-}); 
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
+	// tabs.forEach(tab => {
+		// chrome.tabs.executeScript(tab.id, { file: js/content.js }, result => {
+			// const lastErr = chrome.runtime.lastError;
+			// if (lastErr) console.log('tab: ' + tab.id + ' lastError: ' + JSON.stringify(lastErr));
+		// });
+	// });
+	// chrome.tabs.executeScript({
+	// 	'file': 'js/content.js',
+	// 	'allFrames' : true
+	// });
+//	console.log(tabId); console.log(changeInfo); console.log(tab);
 
+	chrome.tabs.executeScript({ file: 'js/content.js', allFrames: true });
+});
 
 function broadcast(event, elem, time)
 {
@@ -65,7 +77,7 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 	{
 		userName = msg.name;
 		socket.emit('join',
-		{ 
+		{
 			name: msg.name,
 			room: msg.room
 		});
