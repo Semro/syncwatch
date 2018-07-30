@@ -1,7 +1,7 @@
 'use strict';
 
 //var socket = io.connect('https://syncevent.herokuapp.com', {
-var socket = io.connect('http://localhost:3000', {
+var socket = io.connect('http://localhost:8080', {
 	reconnection: true,
 	reconnectionDelayMax: 5000,
 	reconnectionDelay: 1000,
@@ -9,22 +9,6 @@ var socket = io.connect('http://localhost:3000', {
 var recieved = false;
 var contentTabId;
 var userName;
-
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
-	// tabs.forEach(tab => {
-		// chrome.tabs.executeScript(tab.id, { file: js/content.js }, result => {
-			// const lastErr = chrome.runtime.lastError;
-			// if (lastErr) console.log('tab: ' + tab.id + ' lastError: ' + JSON.stringify(lastErr));
-		// });
-	// });
-	// chrome.tabs.executeScript({
-	// 	'file': 'js/content.js',
-	// 	'allFrames' : true
-	// });
-//	console.log(tabId); console.log(changeInfo); console.log(tab);
-
-	chrome.tabs.executeScript({ file: 'js/content.js', allFrames: true });
-});
 
 function broadcast(event, elem, time)
 {
@@ -39,6 +23,11 @@ function broadcast(event, elem, time)
 		console.log('broadcast: '+event);
 	}
 	else recieved = false;
+}
+
+function testbroadcast(to, event, elem, time)
+{
+	console.log(to+' '+event+' '+elem+' '+time);
 }
 
 socket.on('message', function(msg)
@@ -71,7 +60,8 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 	if (msg.from == 'content')
 	{
 		contentTabId = sender.tab.id;
-		broadcast(msg.event, msg.elem, msg.time);
+		testbroadcast(msg.to, msg.event, msg.elem, msg.time);
+//		broadcast(msg.event, msg.elem, msg.time);
 	}
 	if (msg.from == 'join')
 	{
@@ -87,4 +77,17 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 		console.log(msg.res);
 	}
 });
+
 console.log('background.js');
+
+function testsend(location, event, elem, time)
+{
+	chrome.tabs.sendMessage(contentTabId,
+	{
+		from: 'background',
+		to: location,
+		event: event,
+		elem: elem,
+		time: time
+	});
+}
