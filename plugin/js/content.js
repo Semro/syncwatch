@@ -73,6 +73,7 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 {
 	if (msg.from == 'background' && msg.to == scriptLocation)
 	{
+		console.log('recieved: '+msg.to+' '+msg.event+' '+msg.elem+' '+msg.time);
 		fireEvent(msg.event, msg.elem, msg.time);
 	}
 });
