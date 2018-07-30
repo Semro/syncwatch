@@ -49,6 +49,7 @@ class Room
 	constructor(name)
 	{
 		this.name = name;
+		this.to = null;
 		this.event = null;
 		this.elem = null;
 		this.time = null;
@@ -105,6 +106,7 @@ io.on('connection', function(socket)
 			rooms[data.room].addUser(socket.id, data.name);
 			socket.json.to(data.room).send(
 			{
+				'to': rooms[data.room].to,
 				'event': rooms[data.room].event,
 				'elem':	 rooms[data.room].elem,
 				'time':  rooms[data.room].time
@@ -125,16 +127,18 @@ io.on('connection', function(socket)
 	{
 		if (rooms[roomid[socket.id]] != undefined)
 		{
+			rooms[roomid[socket.id]].to = msg.to;
 			rooms[roomid[socket.id]].event = msg.event;
 			rooms[roomid[socket.id]].elem = msg.elem;
 			rooms[roomid[socket.id]].time = msg.time;
 			socket.json.broadcast.to(roomid[socket.id]).send(
 			{
+				'to': msg.to,
 				'event': msg.event,
 				'elem':	 msg.elem,
 				'time':  msg.time
 			});
-			console.log(roomid[socket.id]+': '+rooms[roomid[socket.id]].getUser(socket.id)+' '+msg.event+' '+msg.time);
+			console.log(roomid[socket.id]+': '+rooms[roomid[socket.id]].getUser(socket.id)+' '+msg.to+' '+msg.event+' '+msg.time);
 		}
 	});
 

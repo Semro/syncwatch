@@ -1,7 +1,7 @@
 'use strict';
 
-//var socket = io.connect('https://syncevent.herokuapp.com', {
-var socket = io.connect('http://localhost:8080', {
+var socket = io.connect('https://syncevent.herokuapp.com', {
+//var socket = io.connect('http://localhost:8080', {
 	reconnection: true,
 	reconnectionDelayMax: 5000,
 	reconnectionDelay: 1000,
@@ -10,24 +10,20 @@ var recieved = false;
 var contentTabId;
 var userName;
 
-function broadcast(event, elem, time)
+function broadcast(to, event, elem, time)
 {
 	if (!recieved)
 	{
 		socket.json.send(
 		{
+			'to': to,
 			'event': event,
 			'elem': elem,
 			'time': time
 		});
-		console.log('broadcast: '+event);
+		console.log('broadcast: '+to+' '+event+' '+elem+' '+time);
 	}
 	else recieved = false;
-}
-
-function testbroadcast(to, event, elem, time)
-{
-	console.log(to+' '+event+' '+elem+' '+time);
 }
 
 socket.on('message', function(msg)
@@ -36,6 +32,7 @@ socket.on('message', function(msg)
 	chrome.tabs.sendMessage(contentTabId,
 	{
 		from: 'background',
+		to: msg.to,
 		event: msg.event,
 		elem: msg.elem,
 		time: msg.time
@@ -60,8 +57,7 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 	if (msg.from == 'content')
 	{
 		contentTabId = sender.tab.id;
-		testbroadcast(msg.to, msg.event, msg.elem, msg.time);
-//		broadcast(msg.event, msg.elem, msg.time);
+		broadcast(msg.to, msg.event, msg.elem, msg.time);
 	}
 	if (msg.from == 'join')
 	{
@@ -79,15 +75,3 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 });
 
 console.log('background.js');
-
-function testsend(location, event, elem, time)
-{
-	chrome.tabs.sendMessage(contentTabId,
-	{
-		from: 'background',
-		to: location,
-		event: event,
-		elem: elem,
-		time: time
-	});
-}
