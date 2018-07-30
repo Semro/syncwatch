@@ -2,6 +2,7 @@
 
 var pp = false;
 var nodes = [];
+var scriptLocation = window.location.href;
 
 function addListeners(arr)
 {
@@ -22,15 +23,10 @@ function addListeners(arr)
 
 function init()
 {
-	let elements = document.getElementsByTagName('video');
-	addListeners(elements);
-	nodes = Array.prototype.slice.call(elements);
-	chrome.runtime.sendMessage(
-	{
-		from: 'console',
-		res: nodes.join(' ')
-	});
-	console.log('init');
+	let nodesCollection = document.getElementsByTagName('video');
+	addListeners(nodesCollection);
+	nodes = Array.prototype.slice.call(nodesCollection);
+	console.log('init in: '+scriptLocation);
 }
 
 function broadcast(event)
@@ -38,13 +34,14 @@ function broadcast(event)
 	chrome.runtime.sendMessage(
 	{
 		from: 'content',
+		to: scriptLocation,
 		event: event.type,
 		elem: nodes.indexOf(event.target),
 		time: event.target.currentTime
 	});
 }
 
-function evFire(event, elem, time)
+function fireEvent(event, elem, time)
 {
 	switch (event)
 	{
@@ -69,16 +66,13 @@ window.onload = function() // may be find smth better
 {
    init();
 };
-init();
 
 chrome.runtime.sendMessage( {from: 'tabid'} );
 
-chrome.runtime.onMessage.addListener( function(msg)
+chrome.runtime.onMessage.addListener( function(msg, sender)
 {
-	if (msg.from == 'background')
+	if (msg.from == 'background' && msg.to == scriptLocation)
 	{
-		evFire(msg.event, msg.elem, msg.time);
+		fireEvent(msg.event, msg.elem, msg.time);
 	}
 });
-
-console.log('content.js');

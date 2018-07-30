@@ -14,7 +14,8 @@
 	},
     "content_scripts":
     [{
-            "matches": ["<all_urls>"],
+			"matches": ["<all_urls>"],
+			"all_frames": true,
             "js": ["js/content.js"],
             "run_at": "document_end"
     }],
@@ -33,6 +34,7 @@
 	"permissions": 
 	[
 		"storage",
-		"*://*/*"
+		"*://*/*",
+		"<all_urls>"
 	]
 }
