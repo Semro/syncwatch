@@ -69,6 +69,7 @@ class Room
 
 	disconUser(sockid)
 	{
+		console.log(roomid[sockid]+': '+rooms[roomid[sockid]].getUser(sockid)+' disconnected'); // here bug.
 		delete this.users[sockid];
 		this.usersLength--;
 	}
@@ -158,20 +159,23 @@ io.on('connection', function(socket)
 
 	socket.on('disconnect', function()
 	{
-		console.log(roomid[socket.id]+': '+rooms[roomid[socket.id]].getUser(socket.id)+' disconnected'); // here bug.
-		rooms[roomid[socket.id]].disconUser(socket.id);
-
-		if (rooms[roomid[socket.id]].nullUsers())
+		if (rooms[roomid[socket.id]] != undefined) 
 		{
-			delete rooms[roomid[socket.id]];
-			roomsLength--;
-		}
+			rooms[roomid[socket.id]].disconUser(socket.id);
 
-		if (!roomsLength)
-		{
-			clearInterval(wakeServer);
-			clearInterval(pingUser);
-			console.log('All disconnected!');
+			if (rooms[roomid[socket.id]].nullUsers())
+			{
+				delete rooms[roomid[socket.id]];
+				roomsLength--;
+			}
+
+			if (!roomsLength)
+			{
+				clearInterval(wakeServer);
+				clearInterval(pingUser);
+				console.log('All disconnected!');
+			}
 		}
+		else console.log('try disconnect undefined user');
 	});
 });
