@@ -48,7 +48,7 @@ function fireEvent(event, elem, time)
 		case 'play':
 			pp = true;
 			nodes[elem].currentTime = time;
-			nodes[elem].play();
+			nodes[elem].play(); // BUG: Uncaught (in promise) DOMException: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
 			break;
 		case 'pause':
 			pp = true;

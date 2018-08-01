@@ -1,14 +1,9 @@
 'use strict';
 
-var socket = io.connect('https://syncevent.herokuapp.com', {
-//var socket = io.connect('http://localhost:8080', {
-	reconnection: true,
-	reconnectionDelayMax: 5000,
-	reconnectionDelay: 1000,
-});
 var recieved = false;
 var contentTabId;
 var userName;
+var socket = null;
 
 function broadcast(to, event, elem, time)
 {
@@ -26,27 +21,46 @@ function broadcast(to, event, elem, time)
 	else recieved = false;
 }
 
-socket.on('message', function(msg)
+function initSockets()
 {
-	recieved = true;
-	chrome.tabs.sendMessage(contentTabId,
+	if (socket == null)
 	{
-		from: 'background',
-		to: msg.to,
-		event: msg.event,
-		elem: msg.elem,
-		time: msg.time
-	});
-	console.log('socket.on: '+msg.event);
-});
+//		var connectionUrl = 'http://localhost:8080';
+		var connectionUrl = 'https://syncevent.herokuapp.com';
+		socket = io.connect(connectionUrl, {
+			reconnection: true,
+			reconnectionDelayMax: 5000,
+			reconnectionDelay: 1000,
+		});
 
-socket.on('pingt', function()
-{
-	socket.emit('pongt',
+		socket.on('message', function(msg)
+		{
+			recieved = true;
+			chrome.tabs.sendMessage(contentTabId,
+			{
+				from: 'background',
+				to: msg.to,
+				event: msg.event,
+				elem: msg.elem,
+				time: msg.time
+			});
+			console.log('socket.on: '+msg.event);
+		});
+
+		socket.on('pingt', function()
+		{
+			socket.emit('pongt',
+			{
+				name: userName
+			});
+		});
+	}
+	else
 	{
-		name: userName
-	});
-});
+		if (socket.disconnected) socket.open();
+		else console.log('socket is open already');
+	}
+}
 
 chrome.runtime.onMessage.addListener( function(msg, sender)
 {
@@ -62,11 +76,16 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 	if (msg.from == 'join')
 	{
 		userName = msg.name;
+		initSockets();
 		socket.emit('join',
 		{
 			name: msg.name,
 			room: msg.room
 		});
+	}
+	if (msg.from == 'disconnect')
+	{
+		socket.close();
 	}
 	if (msg.from == 'console')
 	{
