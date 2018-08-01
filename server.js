@@ -19,30 +19,29 @@ console.log('server.js started!');
 
 var roomsLength = 0;
 var rooms = [], roomid = [];
+var wake = false;
+var countConnections = 0;
 
-/*
 function wakeServer(status)
 {
-	var interval;
-	var waked = false;
 	if (status)
 	{
-		if (!waked)
+		if (!wake)
 		{
-			wakeServer = setInterval(function()
+			wake = setInterval(function()
 			{
+//				http.get('http://localhost:8080');
 				http.get('http://syncevent.herokuapp.com');
-				console.log('wake');
-			}, 2000);  //1800000//  30 minutes
+				console.log('Server waked!');
+			}, 30 * 60000); // 30 minutes
 		}
-		waked = true;
 	}
 	else
 	{
-		clearInterval(interval);
+		clearInterval(wake);
+		wake = false;
 	}
 }
-*/
 
 class Room
 {
@@ -67,9 +66,9 @@ class Room
 		}
 	}
 
-	disconUser(sockid)
+	disconnectUser(sockid)
 	{
-		console.log(roomid[sockid]+': '+rooms[roomid[sockid]].getUser(sockid)+' disconnected'); // here bug.
+		console.log(roomid[sockid]+': '+rooms[roomid[sockid]].getUser(sockid)+' disconnected');
 		delete this.users[sockid];
 		this.usersLength--;
 	}
@@ -84,20 +83,13 @@ class Room
 		if (!this.usersLength) return true;
 		else return false;
 	}
-
-	timeSet(time)
-	{
-		this.time = time;
-	}
 }
 
 io.on('connection', function(socket)
 {
-	/*
-	let wakeServer = setInterval(function()
-	{
-		http.get('http://syncevent.herokuapp.com');
-	}, 30 * 60000);  // 30 minutes // calls on each connection, it's ping server a lot of time*/
+	countConnections++;
+	console.log('connected: '+countConnections);
+	wakeServer(true);
 
 	socket.on('join', function(data)
 	{
@@ -162,7 +154,7 @@ io.on('connection', function(socket)
 	{
 		if (rooms[roomid[socket.id]] != undefined) 
 		{
-			rooms[roomid[socket.id]].disconUser(socket.id);
+			rooms[roomid[socket.id]].disconnectUser(socket.id);
 
 			if (rooms[roomid[socket.id]].nullUsers())
 			{
@@ -172,11 +164,17 @@ io.on('connection', function(socket)
 
 			if (!roomsLength)
 			{
-//				clearInterval(wakeServer);
 //				clearInterval(pingUser);
-				console.log('All disconnected!');
+				console.log('All authorized users disconnected!');
 			}
 		}
-		else console.log('try disconnect undefined user');
+//		else console.log('try disconnect undefined user');
+
+		countConnections--;
+		if (countConnections === 0)
+		{
+			console.log('All connections aborted, server will shutdown in 30 minutes');
+			wakeServer(false);
+		}
 	});
 });

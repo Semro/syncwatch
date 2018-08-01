@@ -1,7 +1,8 @@
 'use strict';
 
 var form = document.forms.connect;
-var con = form.elements.connect;
+var connect = form.elements.connect;
+var disconnect = form.elements.disconnect;
 
 chrome.storage.sync.get('name', function (result)
 {
@@ -13,7 +14,7 @@ chrome.storage.sync.get('room', function (result)
 	form.elements.room.value = result.room;
 });
 
-con.onclick = function()
+connect.onclick = function()
 {
 	var name = form.elements.name.value;
 	var room = form.elements.room.value;
@@ -30,4 +31,8 @@ con.onclick = function()
 		name: name,
 		room: room
 	});
+}
+disconnect.onclick = function()
+{
+	chrome.runtime.sendMessage({from: 'disconnect'});
 }
