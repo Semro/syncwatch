@@ -32,7 +32,18 @@ connect.onclick = function()
 		room: room
 	});
 }
+
 disconnect.onclick = function()
 {
 	chrome.runtime.sendMessage({from: 'disconnect'});
 }
+
+chrome.runtime.onMessage.addListener( function(msg, sender)
+{
+	if (msg.from == 'status')
+	{
+		document.getElementById('status').innerHTML = 'status: '+msg.status;
+	}
+});
+
+//chrome.runtime.sendMessage({from: 'console', res: 'res'});

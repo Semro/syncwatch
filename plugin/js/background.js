@@ -1,9 +1,18 @@
 'use strict';
 
 var recieved = false;
-var contentTabId;
+var contentTabId, popupId;
 var userName;
 var socket = null;
+
+function sendStatus(status)
+{	
+	chrome.runtime.sendMessage(
+	{
+		from: 'status',
+		status: status
+	});
+}
 
 function broadcast(to, event, elem, time)
 {
@@ -25,13 +34,15 @@ function initSockets()
 {
 	if (socket == null)
 	{
-//		var connectionUrl = 'http://localhost:8080';
-		var connectionUrl = 'https://syncevent.herokuapp.com';
+		var connectionUrl = 'http://localhost:8080';
+//		var connectionUrl = 'https://syncevent.herokuapp.com';
 		socket = io.connect(connectionUrl, {
 			reconnection: true,
 			reconnectionDelayMax: 5000,
 			reconnectionDelay: 1000,
 		});
+
+		initSocketEvents();
 
 		socket.on('message', function(msg)
 		{
@@ -59,6 +70,16 @@ function initSockets()
 	{
 		if (socket.disconnected) socket.open();
 		else console.log('socket is open already');
+	}
+}
+
+function initSocketEvents()
+{
+	let socket_events = ['connect', 'connect_error', 'connect_timeout', 'error', 'disconnect', 'reconnect', 'reconnecting', 'reconnect_error', 'reconnect_failed']
+	for (let i = 0; i < socket_events.length; i++)
+	{
+		let event = socket_events[i];
+		socket.on(event, ()=>{sendStatus(event)});
 	}
 }
 

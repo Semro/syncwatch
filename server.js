@@ -30,8 +30,8 @@ function wakeServer(status)
 		{
 			wake = setInterval(function()
 			{
-//				http.get('http://localhost:8080');
-				http.get('http://syncevent.herokuapp.com');
+				http.get('http://localhost:8080');
+//				http.get('http://syncevent.herokuapp.com');
 				console.log('Server waked!');
 			}, 30 * 60000); // 30 minutes
 		}
@@ -173,8 +173,8 @@ io.on('connection', function(socket)
 		countConnections--;
 		if (countConnections === 0)
 		{
-			console.log('All connections aborted, server will shutdown in 30 minutes');
 			wakeServer(false);
+			console.log('All connections aborted, server will shutdown in 30 minutes');
 		}
 	});
 });
