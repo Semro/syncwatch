@@ -2,7 +2,7 @@
 
 var recieved = false;
 var contentTabId, popupId;
-var userName;
+var user = {name: undefined, room: undefined};
 var socket = null;
 
 function sendStatus(status)
@@ -55,7 +55,7 @@ function initSockets()
 				elem: msg.elem,
 				time: msg.time
 			});
-			console.log('socket.on: '+msg.event);
+			console.log('socket.on: '+msg.event); //BUG: When other user connects to server, console outputs: 'socket.on: null'
 		});
 
 		socket.on('pingt', function()
@@ -79,8 +79,18 @@ function initSocketEvents()
 	for (let i = 0; i < socket_events.length; i++)
 	{
 		let event = socket_events[i];
-		socket.on(event, ()=>{sendStatus(event)});
+		socket.on(event, ()=>{ sendStatus(event); });
 	}
+	socket.on('connect', ()=>{ AuthUser(user); });
+}
+
+function AuthUser(user)
+{
+	socket.emit('join',
+	{
+		name: user.name,
+		room: user.room
+	});
 }
 
 chrome.runtime.onMessage.addListener( function(msg, sender)
@@ -96,13 +106,10 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 	}
 	if (msg.from == 'join')
 	{
-		userName = msg.name;
+		user.name = msg.name;
+		user.room = msg.room;
 		initSockets();
-		socket.emit('join',
-		{
-			name: msg.name,
-			room: msg.room
-		});
+		AuthUser(user);
 	}
 	if (msg.from == 'disconnect')
 	{
