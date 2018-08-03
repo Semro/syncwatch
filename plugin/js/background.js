@@ -1,7 +1,7 @@
 'use strict';
 
 var recieved = false;
-var contentTabId, popupId;
+var contentTabId;
 var user = {name: undefined, room: undefined};
 var socket = null;
 
@@ -79,9 +79,9 @@ function initSocketEvents()
 	for (let i = 0; i < socket_events.length; i++)
 	{
 		let event = socket_events[i];
-		socket.on(event, ()=>{ sendStatus(event); });
+		socket.on(event, () => { sendStatus(event); });
 	}
-	socket.on('connect', ()=>{ AuthUser(user); });
+	socket.on('connect', () => { AuthUser(user); });
 }
 
 function AuthUser(user)
@@ -120,5 +120,3 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 		console.log(msg.res);
 	}
 });
-
-console.log('background.js');
