@@ -3,113 +3,12 @@
 <head>
 <title>SyncEvent</title>
 <style>
-* {margin: 0; padding: 0;}
-body
-{
-  background: #333;
-  color: #fff;
-}
 </style>
 </head>
 <body>
-  <form name = "connect">
-    <table>
-      <tr>
-        <td>Name:</td>
-        <td>Room:</td>
-      </tr>
-      <tr>
-        <td><input type = "text" name = "name"></input></td>
-        <td><input type = "text" name = "room"></input></td>
-      </tr>
-      <tr>
-        <td><input type = "button" name = "connect" value = "connect!"></input>
-      </tr>
-    </table>
-  </form>
-  <video controls muted="true" src="http://ol4.mp3party.net/online/4177/4177678.mp3"></video>
+
+<a href = 'https://github.com/Semro'>GitHub</a>
+<!--Add some information later-->
+
 </body>
-<script src="/socket.io/socket.io.js"></script>
-<script>
-// OLD CODE
-console.warn("OLD CODE!!!");
-var form = document.forms.connect;
-var con = form.elements.connect;
-
-var socket = io();
-var elements = document.getElementsByTagName("video");
-var nodes = Array.prototype.slice.call(elements); // i think it's not good
-var recieved = false;
-var pp = false;
-
-con.onclick = function()
-{
-  socket.emit('join', 
-  { 
-    name: form.elements.name.value,
-    room: form.elements.room.value
-  });
-}
-
-socket.on('message', function (msg)
-{
-  recieved = true;
-  console.log("socket.on: "+msg.event+' rec: '+recieved);
-  evFire(msg.event, msg.elem, msg.time);
-});
-
-function broadcast(event, elem) 
-{
-  var curTime = elements[elem].currentTime;
-  if (!recieved)
-  {
-    console.log("broadcast: "+event);
-    socket.json.send(
-    {
-      "event": event,
-      "elem": elem,
-      "time": curTime
-    });
-  }
-  else recieved = false;
-}
-
-function evFire(event, elem, time)
-{
-  console.log("evFire: "+event);
-  switch (event)
-  {
-    case 'play':
-      pp = true;
-      elements[elem].currentTime = time;
-      elements[elem].play();
-      break;
-    case 'pause':
-      pp = true;
-      elements[elem].currentTime = time;
-      elements[elem].pause();
-      break;
-    case 'seeked':
-      elements[elem].currentTime = time;
-      break;
-  }
-}
-
-function evFired(event)
-{
-  return nodes.indexOf(event.target);
-}
-
-document.addEventListener('play', function(event) { broadcast('play', evFired(event)); }, true);
-document.addEventListener('pause', function(event) { broadcast('pause', evFired(event)); }, true);
-document.addEventListener('seeked', function(event) 
-{ 
-  if (!pp) 
-  {
-    broadcast('seeked', evFired(event));
-  }
-  pp = false;
-}, true);
-
-</script>
 </html>

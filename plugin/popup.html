@@ -9,29 +9,31 @@ body
 	background: #fff;
 	color: #000;
 }
+input
+{
+	width: 150px;
+}
 </style>
 </head>
 <body>
 	<form name = 'connect'>
 		<table>
 			<tr>
-				<td>Name:</td>
+				<td><input type = 'text' name = 'name' placeholder='name'></input></td>
 			</tr>
 			<tr>
-				<td><input type = 'text' name = 'name'></input></td>
+				<td><input type = 'text' name = 'room' placeholder='room'></input></td>
 			</tr>
 			<tr>
-				<td>Room:</td>
-			</tr>
-			<tr>
-				<td><input type = 'text' name = 'room'></input></td>
-			</tr>
-			<tr>
-				<td id = 'status'></td>
+				<td id = 'status'>status: </td>
 			</tr>
 			<tr>
 				<td>
 					<input type = 'button' name = 'connect' value = 'connect'></input>
+				</td>
+			</tr>
+			<tr>
+				<td>
 					<input type = 'button' name = 'disconnect' value = 'disconnect'></input>
 				</td>
 			</tr>
