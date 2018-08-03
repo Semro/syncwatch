@@ -15,8 +15,6 @@ const server = express()
 
 const io = socketIO(server);
 
-console.log('server.js started!');
-
 var roomsLength = 0;
 var rooms = [], roomid = [];
 var wake = false;
@@ -30,8 +28,8 @@ function wakeServer(status)
 		{
 			wake = setInterval(function()
 			{
-//				http.get('http://localhost:8080');
-				http.get('http://syncevent.herokuapp.com');
+				if (process.env.PORT != undefined) http.get('http://syncevent.herokuapp.com');
+				else http.get('http://localhost:8080');		
 				console.log('Server waked!');
 			}, 30 * 60000); // 30 minutes
 		}
