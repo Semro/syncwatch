@@ -59,7 +59,6 @@ class Room
 		if (this.users[sockid] == undefined)
 		{
 			this.users[sockid] = name;
-			this.users.sort();
 			this.usersLength++;
 		}
 	}
@@ -74,6 +73,13 @@ class Room
 	getUser(sockid)
 	{
 		return this.users[sockid];
+	}
+
+	getUsersNames()
+	{
+		let list = [];
+		for (let key in this.users) list.push(this.users[key]);
+		return list.sort();
 	}
 
 	nullUsers()
@@ -96,6 +102,8 @@ io.on('connection', function(socket)
 		if (rooms[data.room] != undefined)
 		{
 			rooms[data.room].addUser(socket.id, data.name);
+			socket.json.broadcast.to(roomid[socket.id]).emit('userList', {'list': rooms[data.room].getUsersNames()});
+			io.json.to(socket.id).emit('userList', {'list': rooms[data.room].getUsersNames()});
 			if (rooms[data.room].usersLength > 1)
 			{
 				io.json.to(socket.id).send(
@@ -156,13 +164,12 @@ io.on('connection', function(socket)
 		if (rooms[roomid[socket.id]] != undefined) 
 		{
 			rooms[roomid[socket.id]].disconnectUser(socket.id);
-
+			socket.json.broadcast.to(roomid[socket.id]).emit('userList', {'list': rooms[roomid[socket.id]].getUsersNames()});
 			if (rooms[roomid[socket.id]].nullUsers())
 			{
 				delete rooms[roomid[socket.id]];
 				roomsLength--;
 			}
-
 			if (!roomsLength)
 			{
 //				clearInterval(pingUser);

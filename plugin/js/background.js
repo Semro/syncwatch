@@ -4,15 +4,25 @@ var recieved = false;
 var contentTabId;
 var user = {name: undefined, room: undefined};
 var socket = null;
-var status;
+var status = 'disconnect';
+var list = [];
 
 function sendStatus(newStatus)
 {	
-	status = newStatus
+	if (newStatus != undefined) status = newStatus;
 	chrome.runtime.sendMessage(
 	{
 		from: 'status',
 		status: status
+	});
+}
+
+function sendUsersList()
+{
+	chrome.runtime.sendMessage(
+	{
+		from: 'sendUsersList',
+		list: list
 	});
 }
 
@@ -45,6 +55,12 @@ function initSockets()
 		});
 
 		initSocketEvents();
+
+		socket.on('userList', function(msg)
+		{
+			list = msg.list;
+			sendUsersList();
+		});
 
 		socket.on('message', function(msg)
 		{
@@ -83,7 +99,15 @@ function initSocketEvents()
 		let event = socket_events[i];
 		socket.on(event, () => { sendStatus(event); });
 	}
-	socket.on('connect', () => { AuthUser(user); });
+	socket.on('connect', () =>
+	{
+		AuthUser(user);
+	});
+	socket.on('disconnect', () =>
+	{
+		list = [];
+		sendUsersList();
+	});
 }
 
 function AuthUser(user)
@@ -112,6 +136,14 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 		user.room = msg.room;
 		initSockets();
 		AuthUser(user);
+	}
+	if (msg.from == 'getStatus')
+	{
+		sendStatus();
+	}
+	if (msg.from == 'getUsersList')
+	{	
+		sendUsersList();
 	}
 	if (msg.from == 'disconnect')
 	{
