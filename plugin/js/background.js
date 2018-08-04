@@ -4,9 +4,11 @@ var recieved = false;
 var contentTabId;
 var user = {name: undefined, room: undefined};
 var socket = null;
+var status;
 
-function sendStatus(status)
+function sendStatus(newStatus)
 {	
+	status = newStatus
 	chrome.runtime.sendMessage(
 	{
 		from: 'status',
@@ -16,7 +18,7 @@ function sendStatus(status)
 
 function broadcast(to, event, elem, time)
 {
-	if (!recieved)
+	if (!recieved && status == 'connect')
 	{
 		socket.json.send(
 		{

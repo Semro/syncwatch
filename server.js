@@ -96,13 +96,16 @@ io.on('connection', function(socket)
 		if (rooms[data.room] != undefined)
 		{
 			rooms[data.room].addUser(socket.id, data.name);
-			socket.json.to(data.room).send(
+			if (rooms[data.room].usersLength > 1)
 			{
-				'to': rooms[data.room].to,
-				'event': rooms[data.room].event,
-				'elem':	 rooms[data.room].elem,
-				'time':  rooms[data.room].time
-			});
+				io.json.to(socket.id).send(
+				{
+					'to': rooms[data.room].to,
+					'event': rooms[data.room].event,
+					'elem':	 rooms[data.room].elem,
+					'time':  rooms[data.room].time
+				});
+			}
 		}
 		else
 		{
