@@ -13,21 +13,18 @@ var console =
 
 function updateStatus(newStatus)
 {
-	if (newStatus != undefined)
+	chrome.runtime.sendMessage(
 	{
-		chrome.storage.local.set(
-		{
-			'status': newStatus
-		});
-		document.getElementById('status').innerHTML = newStatus;
-	}
-	else
+		from: 'getStatus'
+	});
+}
+
+function updateUsersList()
+{
+	chrome.runtime.sendMessage(
 	{
-		chrome.storage.local.get('status', function (result)
-		{
-			document.getElementById('status').innerHTML = result.status;
-		});
-	}
+		from: 'getUsersList'
+	});
 }
 
 chrome.storage.sync.get('name', function (result)
@@ -68,12 +65,19 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 {
 	if (msg.from == 'status')
 	{
-		updateStatus(msg.status);
+		document.getElementById('status').innerHTML = 'status: '+msg.status;
+	}
+	if (msg.from == 'sendUsersList')
+	{
+		let inhtml = '';
+		for (let key in msg.list) inhtml += '<li>'+msg.list[key]+'</li>';
+		document.getElementById('usersList').innerHTML = inhtml;
 	}
 });
 
 window.onload = function()
 {
 	updateStatus();
+	updateUsersList();
 }
 //chrome.runtime.sendMessage({from: 'console', res: 'res'});
