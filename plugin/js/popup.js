@@ -3,12 +3,9 @@
 var form = document.forms.connect;
 var connect = form.elements.connect;
 var disconnect = form.elements.disconnect;
-var console =
+console.log = function(res)
 {
-	log: function(res)
-	{
-		chrome.runtime.sendMessage({from: 'console', res: 'popup.js: '+res});
-	}
+	chrome.runtime.sendMessage({from: 'console', res: 'popup.js: '+res});
 }
 
 function updateStatus(newStatus)
@@ -80,4 +77,3 @@ window.onload = function()
 	updateStatus();
 	updateUsersList();
 }
-//chrome.runtime.sendMessage({from: 'console', res: 'res'});

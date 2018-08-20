@@ -10,7 +10,7 @@
             "js/socket.io.js",
             "js/background.js"
         ],
-        "presistant": true
+        "presistant": false
 	},
     "content_scripts":
     [{

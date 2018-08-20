@@ -1,24 +1,55 @@
 'use strict';
-
-var pp = false;
 var nodes = [];
 var scriptLocation = window.location.href;
+var recieved = false, recievedEvent;
 
-function addListeners(arr)
+function onEvent(event)
 {
-	for (let i = 0; i < arr.length; i++)
+	if (recieved)
 	{
-		arr[i].addEventListener('play', function(event) { broadcast(event); }, true);
-		arr[i].addEventListener('pause', function(event) { broadcast(event); }, true);
-		arr[i].addEventListener('seeked', function(event)
+		if (recievedEvent == 'play')
 		{
-			if (!pp)
+			if (event.type == 'waiting')
 			{
-				broadcast(event);
+				setTimeout(function()
+				{
+					if (event.target.readyState < 3) broadcast(event);
+					recieved = false;
+				}, 300);
 			}
-			pp = false;
-		}, true);
+			else if (event.type == 'playing') recieved = false;
+		}
+		else
+		{
+			if (recievedEvent == 'pause')
+			{
+				if (event.type == 'seeked') recieved = false;
+			}
+			else if (recievedEvent == event.type) recieved = false;
+		}
 	}
+	else
+	{
+		if (event.type == 'seeked')
+		{
+			if (event.target.paused) broadcast(event);
+		}
+		else broadcast(event);
+	}
+}
+
+function addListeners(nodesCollection)
+{
+	setTimeout(function()
+	{
+		for (let i = 0; i < nodesCollection.length; i++)
+		{
+			nodesCollection[i].addEventListener('playing', onEvent, true);
+			nodesCollection[i].addEventListener('pause', onEvent, true);
+			nodesCollection[i].addEventListener('waiting', onEvent, true);
+			nodesCollection[i].addEventListener('seeked', onEvent, true);
+		}
+	}, 200);
 }
 
 function init()
@@ -27,15 +58,20 @@ function init()
 	addListeners(nodesCollection);
 	nodes = Array.prototype.slice.call(nodesCollection);
 	console.log('init in: '+scriptLocation);
+	console.log(nodesCollection, nodes);
 }
 
 function broadcast(event)
 {
+	let eventType = event.type;
+	if (event.type == 'waiting') eventType = 'pause';
+	else if (event.type == 'playing') eventType = 'play';
+	console.log('broadcast: '+eventType);
 	chrome.runtime.sendMessage(
 	{
 		from: 'content',
 		to: scriptLocation,
-		event: event.type,
+		event: eventType,
 		elem: nodes.indexOf(event.target),
 		time: event.target.currentTime
 	});
@@ -43,15 +79,15 @@ function broadcast(event)
 
 function fireEvent(event, elem, time)
 {
+	recieved = true;
+	recievedEvent = event;
 	switch (event)
 	{
 		case 'play':
-			pp = true;
 			nodes[elem].currentTime = time;
-			nodes[elem].play(); // BUG: Uncaught (in promise) DOMException: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+			nodes[elem].play();
 			break;
 		case 'pause':
-			pp = true;
 			nodes[elem].currentTime = time;
 			nodes[elem].pause();
 			break;
@@ -59,7 +95,6 @@ function fireEvent(event, elem, time)
 			nodes[elem].currentTime = time;
 			break;
 	}
-	console.log(event+' '+elem+' ');
 }
 
 window.onload = function() // may be find smth better
@@ -73,7 +108,7 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 {
 	if (msg.from == 'background' && msg.to == scriptLocation)
 	{
-		console.log('recieved: '+msg.to+' '+msg.event+' '+msg.elem+' '+msg.time);
+		console.log('recieved: '+msg.event);
 		fireEvent(msg.event, msg.elem, msg.time);
 	}
 });
