@@ -1,6 +1,5 @@
 'use strict';
 
-var recieved = false;
 var contentTabId;
 var user = {name: undefined, room: undefined};
 var socket = null;
@@ -28,7 +27,7 @@ function sendUsersList()
 
 function broadcast(to, event, elem, time)
 {
-	if (!recieved && status == 'connect')
+	if (status == 'connect')
 	{
 		socket.json.send(
 		{
@@ -39,7 +38,6 @@ function broadcast(to, event, elem, time)
 		});
 		console.log('broadcast: '+to+' '+event+' '+elem+' '+time);
 	}
-	else recieved = false;
 }
 
 function initSockets()
@@ -64,7 +62,6 @@ function initSockets()
 
 		socket.on('message', function(msg)
 		{
-			recieved = true;
 			chrome.tabs.sendMessage(contentTabId,
 			{
 				from: 'background',
@@ -121,36 +118,46 @@ function AuthUser(user)
 
 chrome.runtime.onMessage.addListener( function(msg, sender)
 {
-	if (msg.from == 'tabid')
+	switch(msg.from)
 	{
-		contentTabId = sender.tab.id;
-	}
-	if (msg.from == 'content')
-	{
-		contentTabId = sender.tab.id;
-		broadcast(msg.to, msg.event, msg.elem, msg.time);
-	}
-	if (msg.from == 'join')
-	{
-		user.name = msg.name;
-		user.room = msg.room;
-		initSockets();
-		AuthUser(user);
-	}
-	if (msg.from == 'getStatus')
-	{
-		sendStatus();
-	}
-	if (msg.from == 'getUsersList')
-	{	
-		sendUsersList();
-	}
-	if (msg.from == 'disconnect')
-	{
-		socket.close();
-	}
-	if (msg.from == 'console')
-	{
-		console.log(msg.res);
+		case 'tabid':
+		{
+			contentTabId = sender.tab.id;
+			break;
+		}
+		case 'content':
+		{
+			contentTabId = sender.tab.id;
+			broadcast(msg.to, msg.event, msg.elem, msg.time);
+			break;
+		}
+		case 'join':
+		{
+			user.name = msg.name;
+			user.room = msg.room;
+			initSockets();
+			AuthUser(user);
+			break;
+		}
+		case 'getStatus':
+		{
+			sendStatus();
+			break;
+		}
+		case 'getUsersList':
+		{	
+			sendUsersList();
+			break;
+		}
+		case 'disconnect':
+		{
+			socket.close();
+			break;
+		}
+		case 'console':
+		{
+			console.log(msg.res);
+			break;
+		}
 	}
 });
