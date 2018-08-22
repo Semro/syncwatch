@@ -58,7 +58,7 @@ disconnect.onclick = function()
 	chrome.runtime.sendMessage({from: 'disconnect'});
 }
 
-chrome.runtime.onMessage.addListener( function(msg, sender)
+chrome.runtime.onMessage.addListener( function(msg)
 {
 	if (msg.from == 'status')
 	{

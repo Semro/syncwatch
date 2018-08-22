@@ -36,7 +36,6 @@ function broadcast(to, event, elem, time)
 			'elem': elem,
 			'time': time
 		});
-		console.log('broadcast: '+to+' '+event+' '+elem+' '+time);
 	}
 }
 
@@ -84,7 +83,6 @@ function initSockets()
 	else
 	{
 		if (socket.disconnected) socket.open();
-		else console.log('socket is open already');
 	}
 }
 
