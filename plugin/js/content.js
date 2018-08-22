@@ -1,4 +1,5 @@
 'use strict';
+
 var nodes = [];
 var scriptLocation = window.location.href;
 var recieved = false, recievedEvent;
@@ -40,14 +41,15 @@ function onEvent(event)
 
 function addListeners(nodesCollection)
 {
+	let eventTypes = ['playing', 'pause', 'waiting', 'seeked'];
 	setTimeout(function()
 	{
 		for (let i = 0; i < nodesCollection.length; i++)
 		{
-			nodesCollection[i].addEventListener('playing', onEvent, true);
-			nodesCollection[i].addEventListener('pause', onEvent, true);
-			nodesCollection[i].addEventListener('waiting', onEvent, true);
-			nodesCollection[i].addEventListener('seeked', onEvent, true);
+			for (let j = 0; j < eventTypes.length; j++)
+			{
+				nodesCollection[i].addEventListener(eventTypes[j], onEvent, true);
+			}
 		}
 	}, 200);
 }
@@ -56,9 +58,7 @@ function init()
 {
 	let nodesCollection = document.getElementsByTagName('video');
 	addListeners(nodesCollection);
-	nodes = Array.prototype.slice.call(nodesCollection);
-	console.log('init in: '+scriptLocation);
-	console.log(nodesCollection, nodes);
+	nodes = Array.from(nodesCollection);
 }
 
 function broadcast(event)
@@ -66,7 +66,6 @@ function broadcast(event)
 	let eventType = event.type;
 	if (event.type == 'waiting') eventType = 'pause';
 	else if (event.type == 'playing') eventType = 'play';
-	console.log('broadcast: '+eventType);
 	chrome.runtime.sendMessage(
 	{
 		from: 'content',
@@ -75,26 +74,16 @@ function broadcast(event)
 		elem: nodes.indexOf(event.target),
 		time: event.target.currentTime
 	});
+	console.log('broadcast: '+eventType);
 }
 
 function fireEvent(event, elem, time)
 {
 	recieved = true;
 	recievedEvent = event;
-	switch (event)
-	{
-		case 'play':
-			nodes[elem].currentTime = time;
-			nodes[elem].play();
-			break;
-		case 'pause':
-			nodes[elem].currentTime = time;
-			nodes[elem].pause();
-			break;
-		case 'seeked':
-			nodes[elem].currentTime = time;
-			break;
-	}
+	nodes[elem].currentTime = time;
+	if (event == 'play') nodes[elem].play();
+	else if (event == 'pause') nodes[elem].pause();
 }
 
 window.onload = function() // may be find smth better
@@ -104,11 +93,11 @@ window.onload = function() // may be find smth better
 
 chrome.runtime.sendMessage( {from: 'tabid'} );
 
-chrome.runtime.onMessage.addListener( function(msg, sender)
+chrome.runtime.onMessage.addListener( function(msg)
 {
 	if (msg.from == 'background' && msg.to == scriptLocation)
 	{
-		console.log('recieved: '+msg.event);
 		fireEvent(msg.event, msg.elem, msg.time);
+		console.log('recieved: '+msg.event);
 	}
 });
