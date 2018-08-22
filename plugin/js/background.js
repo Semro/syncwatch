@@ -25,7 +25,7 @@ function sendUsersList()
 	});
 }
 
-function broadcast(to, event, elem, time)
+function broadcast(to, event, elem, time, playbackRate)
 {
 	if (status == 'connect')
 	{
@@ -34,7 +34,8 @@ function broadcast(to, event, elem, time)
 			'to': to,
 			'event': event,
 			'elem': elem,
-			'time': time
+			'time': time,
+			'playbackRate': playbackRate
 		});
 	}
 }
@@ -67,7 +68,8 @@ function initSockets()
 				to: msg.to,
 				event: msg.event,
 				elem: msg.elem,
-				time: msg.time
+				time: msg.time,
+				playbackRate: msg.playbackRate
 			});
 			console.log('socket.on: '+msg.event); //BUG: When other user connects to server, console outputs: 'socket.on: null'
 		});
@@ -126,7 +128,7 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 		case 'content':
 		{
 			contentTabId = sender.tab.id;
-			broadcast(msg.to, msg.event, msg.elem, msg.time);
+			broadcast(msg.to, msg.event, msg.elem, msg.time, msg.playbackRate);
 			break;
 		}
 		case 'join':

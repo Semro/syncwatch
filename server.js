@@ -50,6 +50,7 @@ class Room
 		this.event = null;
 		this.elem = null;
 		this.time = null;
+		this.playbackRate = null;
 		this.timeUpdated = null;
 		this.users = [];
 		this.usersLength = 0;
@@ -112,7 +113,8 @@ io.on('connection', function(socket)
 					'to': rooms[data.room].to,
 					'event': rooms[data.room].event,
 					'elem':	 rooms[data.room].elem,
-					'time':  rooms[data.room].event == 'play' ? rooms[data.room].time + (Date.now() - rooms[data.room].timeUpdated) / 1000 : rooms[data.room].time
+					'time':  rooms[data.room].event == 'play' ? rooms[data.room].time + (Date.now() - rooms[data.room].timeUpdated) / 1000 : rooms[data.room].time,
+					'playbackRate': rooms[data.room].playbackRate
 				});
 			}
 		}
@@ -135,13 +137,15 @@ io.on('connection', function(socket)
 			rooms[roomid[socket.id]].event = msg.event;
 			rooms[roomid[socket.id]].elem = msg.elem;
 			rooms[roomid[socket.id]].time = msg.time;
+			rooms[roomid[socket.id]].playbackRate = msg.playbackRate;
 			rooms[roomid[socket.id]].timeUpdated = Date.now();
 			socket.json.broadcast.to(roomid[socket.id]).send(
 			{
 				'to': msg.to,
 				'event': msg.event,
 				'elem':	 msg.elem,
-				'time':  msg.time
+				'time':  msg.time,
+				'playbackRate': msg.playbackRate
 			});
 			console.log(roomid[socket.id]+': '+rooms[roomid[socket.id]].getUser(socket.id)+' '+msg.to+' '+msg.event+' '+msg.time);
 		}
