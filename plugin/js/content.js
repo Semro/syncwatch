@@ -41,17 +41,14 @@ function onEvent(event)
 
 function addListeners(nodesCollection)
 {
-	let eventTypes = ['playing', 'pause', 'waiting', 'seeked'];
-	setTimeout(function()
+	let eventTypes = ['playing', 'pause', 'waiting', 'seeked', 'ratechange'];
+	for (let i = 0; i < nodesCollection.length; i++)
 	{
-		for (let i = 0; i < nodesCollection.length; i++)
+		for (let j = 0; j < eventTypes.length; j++)
 		{
-			for (let j = 0; j < eventTypes.length; j++)
-			{
-				nodesCollection[i].addEventListener(eventTypes[j], onEvent, true);
-			}
+			nodesCollection[i].addEventListener(eventTypes[j], onEvent, true);
 		}
-	}, 200);
+	}
 }
 
 function init()
@@ -72,18 +69,23 @@ function broadcast(event)
 		to: scriptLocation,
 		event: eventType,
 		elem: nodes.indexOf(event.target),
-		time: event.target.currentTime
+		time: event.target.currentTime,
+		playbackRate: event.target.playbackRate
 	});
 	console.log('broadcast: '+eventType);
 }
 
-function fireEvent(event, elem, time)
+function fireEvent(event, elem, time, playbackRate)
 {
 	recieved = true;
 	recievedEvent = event;
-	nodes[elem].currentTime = time;
-	if (event == 'play') nodes[elem].play();
-	else if (event == 'pause') nodes[elem].pause();
+	if (event == 'ratechange') nodes[elem].playbackRate = playbackRate;
+	else
+	{
+		nodes[elem].currentTime = time;
+		if (event == 'play') nodes[elem].play();
+		else if (event == 'pause') nodes[elem].pause();
+	}
 }
 
 window.onload = function() // may be find smth better
@@ -97,7 +99,7 @@ chrome.runtime.onMessage.addListener( function(msg)
 {
 	if (msg.from == 'background' && msg.to == scriptLocation)
 	{
-		fireEvent(msg.event, msg.elem, msg.time);
+		fireEvent(msg.event, msg.elem, msg.time, msg.playbackRate);
 		console.log('recieved: '+msg.event);
 	}
 });
