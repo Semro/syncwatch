@@ -60,31 +60,31 @@ function init()
 
 function broadcast(event)
 {
-	let eventType = event.type;
-	if (event.type == 'waiting') eventType = 'pause';
-	else if (event.type == 'playing') eventType = 'play';
-	chrome.runtime.sendMessage(
+	let event_send = 
 	{
 		from: 'content',
-		to: scriptLocation,
-		event: eventType,
-		elem: nodes.indexOf(event.target),
-		time: event.target.currentTime,
+		location: scriptLocation,
+		type: event.type,
+		element: nodes.indexOf(event.target),
+		currentTime: event.target.currentTime,
 		playbackRate: event.target.playbackRate
-	});
-	console.log('broadcast: '+eventType);
+	};
+	if (event_send.type == 'waiting') event_send.type = 'pause';
+	else if (event_send.type == 'playing') event_send.type = 'play';
+	chrome.runtime.sendMessage(event_send);
+	console.log('broadcast: '+event_send.type);
 }
 
-function fireEvent(event, elem, time, playbackRate)
+function fireEvent(event)
 {
 	recieved = true;
-	recievedEvent = event;
-	if (event == 'ratechange') nodes[elem].playbackRate = playbackRate;
+	recievedEvent = event.type;
+	if (event.type == 'ratechange') nodes[event.element].playbackRate = event.playbackRate;
 	else
 	{
-		nodes[elem].currentTime = time;
-		if (event == 'play') nodes[elem].play();
-		else if (event == 'pause') nodes[elem].pause();
+		nodes[event.element].currentTime = event.currentTime;
+		if (event.type == 'play') nodes[event.element].play();
+		else if (event.type == 'pause') nodes[event.element].pause();
 	}
 }
 
@@ -97,9 +97,9 @@ chrome.runtime.sendMessage( {from: 'tabid'} );
 
 chrome.runtime.onMessage.addListener( function(msg)
 {
-	if (msg.from == 'background' && msg.to == scriptLocation)
+	if (msg.from == 'background' && msg.location == scriptLocation)
 	{
-		fireEvent(msg.event, msg.elem, msg.time, msg.playbackRate);
-		console.log('recieved: '+msg.event);
+		fireEvent(msg);
+		console.log('recieved: '+msg.type);
 	}
 });
