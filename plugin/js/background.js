@@ -1,7 +1,7 @@
 'use strict';
 
 var contentTabId;
-var user = {name: undefined, room: undefined};
+var user = {name: '', room: ''};
 var socket = null;
 var status = 'disconnect';
 var list = [];
