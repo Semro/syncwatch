@@ -2,7 +2,6 @@
 
 var form = document.forms.connect;
 var connect = form.elements.connect;
-var disconnect = form.elements.disconnect;
 
 function getUser()
 {
@@ -28,24 +27,30 @@ function getUsersList()
 	});
 }
 
-connect.onclick = function()
-{
-	let user = {};
-	user.name = form.elements.name.value;
-	user.room = form.elements.room.value;
-	user.from = 'join';
-	chrome.runtime.sendMessage(user);
-}
-
-disconnect.onclick = function()
-{
-	chrome.runtime.sendMessage({from: 'disconnect'});
-}
-
 chrome.runtime.onMessage.addListener( function(msg)
 {
 	if (msg.from == 'status')
 	{
+		if (msg.status == 'connect')
+		{
+			connect.value = 'disconnect';
+			connect.onclick = function()
+			{
+				chrome.runtime.sendMessage({from: 'disconnect'});
+			}
+		}
+		else
+		{
+			connect.value = 'connect';
+			connect.onclick = function()
+			{
+				let user = {};
+				user.name = form.elements.name.value;
+				user.room = form.elements.room.value;
+				user.from = 'join';
+				chrome.runtime.sendMessage(user);
+			}
+		}
 		document.getElementById('status').innerHTML = 'status: '+msg.status;
 	}
 	if (msg.from == 'sendUsersList')

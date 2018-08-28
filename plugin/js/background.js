@@ -52,8 +52,8 @@ function initSockets()
 {
 	if (socket == null)
 	{
-		var connectionUrl = 'http://localhost:8080';
-//		var connectionUrl = 'https://syncevent.herokuapp.com';
+//		var connectionUrl = 'http://localhost:8080';
+		var connectionUrl = 'https://syncevent.herokuapp.com';
 		socket = io.connect(connectionUrl, {
 			reconnection: true,
 			reconnectionDelayMax: 5000,
