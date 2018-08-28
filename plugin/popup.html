@@ -13,16 +13,20 @@ input
 {
 	width: 150px;
 }
+#version
+{
+	text-align: center;
+}
 </style>
 </head>
 <body>
 	<form name = 'connect'>
 		<table>
 			<tr>
-				<td><input type = 'text' name = 'name' placeholder='name'></input></td>
+				<td><input type = 'text' name = 'name' placeholder='name'></td>
 			</tr>
 			<tr>
-				<td><input type = 'text' name = 'room' placeholder='room'></input></td>
+				<td><input type = 'text' name = 'room' placeholder='room'></td>
 			</tr>
 			<tr>
 				<td>
@@ -35,12 +39,17 @@ input
 			</tr>
 			<tr>
 				<td>
-					<input type = 'button' name = 'connect' value = 'connect'></input>
+					<input type = 'button' name = 'connect' value = 'connect'>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<input type = 'button' name = 'disconnect' value = 'disconnect'></input>
+					<input type = 'button' name = 'disconnect' value = 'disconnect'>
+				</td>
+			</tr>
+			<tr>
+				<td id = 'version'>
+					v. 0.11
 				</td>
 			</tr>
 		</table>

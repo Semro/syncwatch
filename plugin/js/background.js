@@ -10,6 +10,20 @@ var socket = null;
 var status = 'disconnect';
 var list = [];
 
+function sendUser()
+{	
+	new Promise(function(resolve)
+	{
+		chrome.storage.sync.get(user, (result) => resolve(result));
+	}).then((result) =>
+	{
+		user = result;
+		user.from = 'sendUser';
+		chrome.runtime.sendMessage(user);
+		delete user.from;
+	});
+}
+
 function sendStatus(newStatus)
 {	
 	if (newStatus != undefined) status = newStatus;
@@ -65,7 +79,7 @@ function initSockets()
 		{
 			socket.emit('pongt',
 			{
-				name: userName
+				name: user.name
 			});
 		});
 	}
@@ -85,7 +99,7 @@ function initSocketEvents()
 	}
 	socket.on('connect', () =>
 	{
-		AuthUser(user);
+		authUser(user);
 	});
 	socket.on('disconnect', () =>
 	{
@@ -94,8 +108,9 @@ function initSocketEvents()
 	});
 }
 
-function AuthUser(user)
+function authUser(user)
 {
+	chrome.storage.sync.set(user);
 	socket.emit('join',
 	{
 		name: user.name,
@@ -121,10 +136,15 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 		}
 		case 'join':
 		{
-			user.name = msg.name;
-			user.room = msg.room;
+			delete msg.from;
+			user = msg;
 			initSockets();
-			AuthUser(user);
+			authUser(user);
+			break;
+		}
+		case 'getUser':
+		{
+			sendUser();
 			break;
 		}
 		case 'getStatus':
