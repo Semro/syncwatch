@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "SyncEvent",
-	"version": "0.1",
+	"version": "0.11",
 	"description": "Syncing events in browsers",
 	"background":
 	{
