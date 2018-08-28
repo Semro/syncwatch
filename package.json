@@ -1,8 +1,8 @@
 {
-  "name": "SyncEvent",
+  "name": "syncevent",
   "version": "1.0.0",
   "engines": {
-    "node": "6.2.0"
+    "node": "8.11.4"
   },
   "description": "Syncing media events in browsers",
   "main": "index.js",
@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "4.13.4",
-    "socket.io": "1.4.6"
+    "express": "4.16.3",
+    "socket.io": "2.1.1"
   }
 }
