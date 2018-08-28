@@ -1,7 +1,11 @@
 'use strict';
 
 var contentTabId;
-var user = {name: '', room: ''};
+var user =
+{
+	name: null,
+	room: null
+};
 var socket = null;
 var status = 'disconnect';
 var list = [];
@@ -34,8 +38,8 @@ function initSockets()
 {
 	if (socket == null)
 	{
-//		var connectionUrl = 'http://localhost:8080';
-		var connectionUrl = 'https://syncevent.herokuapp.com';
+		var connectionUrl = 'http://localhost:8080';
+//		var connectionUrl = 'https://syncevent.herokuapp.com';
 		socket = io.connect(connectionUrl, {
 			reconnection: true,
 			reconnectionDelayMax: 5000,
