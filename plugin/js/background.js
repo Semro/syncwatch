@@ -1,9 +1,11 @@
 'use strict';
 
+var manifest = chrome.runtime.getManifest();
 var contentTabId;
 var user =
 {
 	name: null,
+	version: null,
 	room: null
 };
 var socket = null;
@@ -72,7 +74,7 @@ function initSockets()
 		{
 			msg.from = 'background';
 			chrome.tabs.sendMessage(contentTabId, msg);
-			console.log('socket.on: '+msg.type); //BUG: When other user connects to server, console outputs: 'socket.on: null'
+			console.log('socket.on: '+msg.type);
 		});
 
 		socket.on('pingt', function()
@@ -111,11 +113,7 @@ function initSocketEvents()
 function authUser(user)
 {
 	chrome.storage.sync.set(user);
-	socket.emit('join',
-	{
-		name: user.name,
-		room: user.room
-	});
+	socket.emit('join', user);
 }
 
 chrome.runtime.onMessage.addListener( function(msg, sender)
@@ -138,6 +136,7 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 		{
 			delete msg.from;
 			user = msg;
+			user.version = manifest.version;
 			initSockets();
 			authUser(user);
 			break;

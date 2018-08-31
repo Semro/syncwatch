@@ -41,48 +41,36 @@ function wakeServer(status)
 	}
 }
 
-class Event
-{
-	constructor()
-	{
-		this.location = null;
-		this.type = null;
-		this.element = null;
-		this.currentTime = null;
-		this.playbackRate = null;
-	}
-}
-
 class Room
 {
 	constructor(name)
 	{
 		this.name = name;
-		this.event = new Event();
+		this.event = null;
 		this.timeUpdated = null;
 		this.users = [];
 		this.usersLength = 0;
 	}
 
-	addUser(sockid, name)
+	addUser(socket_id, name)
 	{
-		if (this.users[sockid] == undefined)
+		if (this.users[socket_id] == undefined)
 		{
-			this.users[sockid] = name;
+			this.users[socket_id] = name;
 			this.usersLength++;
 		}
 	}
 
-	disconnectUser(sockid)
+	disconnectUser(socket_id)
 	{
-		console.log(roomid[sockid]+': '+rooms[roomid[sockid]].getUser(sockid)+' disconnected');
-		delete this.users[sockid];
+		console.log(roomid[socket_id]+': '+rooms[roomid[socket_id]].getUser(socket_id)+' disconnected');
+		delete this.users[socket_id];
 		this.usersLength--;
 	}
 
-	getUser(sockid)
+	getUser(socket_id)
 	{
-		return this.users[sockid];
+		return this.users[socket_id];
 	}
 
 	getUsersNames()
@@ -102,7 +90,6 @@ class Room
 io.on('connection', function(socket)
 {
 	countConnections++;
-	console.log('connected: '+countConnections);
 	wakeServer(true);
 
 	socket.on('join', function(data)
@@ -112,13 +99,12 @@ io.on('connection', function(socket)
 		if (rooms[data.room] != undefined)
 		{
 			rooms[data.room].addUser(socket.id, data.name);
-			socket.json.broadcast.to(roomid[socket.id]).emit('userList', {'list': rooms[data.room].getUsersNames()});
-			io.json.to(socket.id).emit('userList', {'list': rooms[data.room].getUsersNames()});
+			io.sockets.in(roomid[socket.id]).emit('userList', {'list': rooms[data.room].getUsersNames()});
 			if (rooms[data.room].usersLength > 1 && rooms[data.room].timeUpdated != null)
 			{
 				rooms[data.room].event.currentTime = rooms[data.room].event.type == 'play' ? rooms[data.room].event.currentTime + (Date.now() - rooms[data.room].timeUpdated) / 1000 : rooms[data.room].event.currentTime;
 				// Time is about second earlier then needed
-				io.json.to(socket.id).send(rooms[data.room].event);
+				socket.send(rooms[data.room].event);
 			}
 		}
 		else
@@ -129,7 +115,7 @@ io.on('connection', function(socket)
 			rooms[data.room] = room;
 		}
 
-		console.log(rooms[data.room].name+': '+rooms[data.room].getUser(socket.id)+' connected');
+		console.log('connected: '+JSON.stringify(data));
 	});
 
 	socket.on('message', function(msg)
@@ -138,8 +124,8 @@ io.on('connection', function(socket)
 		{
 			rooms[roomid[socket.id]].event = msg;
 			rooms[roomid[socket.id]].timeUpdated = Date.now();
-			socket.json.broadcast.to(roomid[socket.id]).send(rooms[roomid[socket.id]].event);
-			console.log(roomid[socket.id]+': '+rooms[roomid[socket.id]].getUser(socket.id)+' '+msg.location+' '+msg.type+' '+msg.currentTime);
+			socket.broadcast.to(roomid[socket.id]).send(rooms[roomid[socket.id]].event);
+			console.log(roomid[socket.id]+': '+rooms[roomid[socket.id]].getUser(socket.id)+' '+JSON.stringify(msg));
 		}
 	});
 
@@ -159,10 +145,10 @@ io.on('connection', function(socket)
 
 	socket.on('disconnect', function()
 	{
-		if (rooms[roomid[socket.id]] != undefined) 
+		if (rooms[roomid[socket.id]] != undefined)
 		{
 			rooms[roomid[socket.id]].disconnectUser(socket.id);
-			socket.json.broadcast.to(roomid[socket.id]).emit('userList', {'list': rooms[roomid[socket.id]].getUsersNames()});
+			io.sockets.in(roomid[socket.id]).emit('userList', {'list': rooms[roomid[socket.id]].getUsersNames()});
 			if (rooms[roomid[socket.id]].nullUsers())
 			{
 				delete rooms[roomid[socket.id]];
