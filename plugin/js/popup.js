@@ -44,10 +44,12 @@ chrome.runtime.onMessage.addListener( function(msg)
 			connect.value = 'connect';
 			connect.onclick = function()
 			{
-				let user = {};
-				user.name = form.elements.name.value;
-				user.room = form.elements.room.value;
-				user.from = 'join';
+				let user =
+				{
+					name: form.elements.name.value,
+					room: form.elements.room.value,
+					from: 'join'
+				};
 				chrome.runtime.sendMessage(user);
 			}
 		}
