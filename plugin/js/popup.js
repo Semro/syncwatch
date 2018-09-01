@@ -65,6 +65,7 @@ chrome.runtime.onMessage.addListener( function(msg)
 	{
 		form.elements.name.value = msg.name;
 		form.elements.room.value = msg.room;
+		document.getElementById('version').innerHTML = 'v. '+msg.version;
 	}
 });
 
