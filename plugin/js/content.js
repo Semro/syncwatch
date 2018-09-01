@@ -93,7 +93,11 @@ window.onload = function() // may be find smth better
    init();
 };
 
-chrome.runtime.sendMessage( {from: 'tabid'} );
+chrome.runtime.sendMessage(
+{
+	from: 'tabid',
+	location: scriptLocation
+});
 
 chrome.runtime.onMessage.addListener( function(msg)
 {
