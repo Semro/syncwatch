@@ -11,6 +11,7 @@ var user =
 var socket = null;
 var status = 'disconnect';
 var list = [];
+var locations = [];
 
 function sendUser()
 {	
@@ -73,7 +74,7 @@ function initSockets()
 		socket.on('message', function(msg)
 		{
 			msg.from = 'background';
-			chrome.tabs.sendMessage(contentTabId, msg);
+			chrome.tabs.sendMessage(locations[msg.location], msg);
 			console.log('socket.on: '+msg.type);
 		});
 
@@ -122,7 +123,7 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 	{
 		case 'tabid':
 		{
-			contentTabId = sender.tab.id;
+			locations[msg.location] = sender.tab.id;
 			break;
 		}
 		case 'content':
