@@ -1,7 +1,11 @@
 'use strict';
 
+var localURL = 'http://localhost:8080';
+var serverURL = 'https://syncevent.herokuapp.com';
+var connectionUrl = serverURL;
+var debug = connectionUrl == localURL ? true : false;
+
 var manifest = chrome.runtime.getManifest();
-var contentTabId;
 var user =
 {
 	name: null,
@@ -11,7 +15,12 @@ var user =
 var socket = null;
 var status = 'disconnect';
 var list = [];
-var locations = [];
+var tabid_location = [];
+
+function sendDebug()
+{
+	chrome.runtime.sendMessage({from: 'sendDebug', debug: debug});
+}
 
 function sendUser()
 {	
@@ -21,9 +30,8 @@ function sendUser()
 	}).then((result) =>
 	{
 		user = result;
-		user.from = 'sendUser';
-		chrome.runtime.sendMessage(user);
-		delete user.from;
+		user.version = manifest.version;
+		chrome.runtime.sendMessage({from: 'sendUser', data: user});
 	});
 }
 
@@ -55,8 +63,6 @@ function initSockets()
 {
 	if (socket == null)
 	{
-//		var connectionUrl = 'http://localhost:8080';
-		var connectionUrl = 'https://syncevent.herokuapp.com';
 		socket = io.connect(connectionUrl, {
 			reconnection: true,
 			reconnectionDelayMax: 5000,
@@ -73,8 +79,7 @@ function initSockets()
 
 		socket.on('message', function(msg)
 		{
-			msg.from = 'background';
-			chrome.tabs.sendMessage(locations[msg.location], msg);
+			chrome.tabs.sendMessage(tabid_location[msg.location], {from: 'background', data: msg});
 			console.log('socket.on: '+msg.type);
 		});
 
@@ -123,23 +128,24 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 	{
 		case 'tabid':
 		{
-			locations[msg.location] = sender.tab.id;
+			tabid_location[msg.location] = sender.tab.id;
 			break;
 		}
 		case 'content':
 		{
-			contentTabId = sender.tab.id;
-			delete msg.from;
-			broadcast(msg);
+			broadcast(msg.data);
 			break;
 		}
 		case 'join':
 		{
-			delete msg.from;
-			user = msg;
-			user.version = manifest.version;
+			user = msg.data;
 			initSockets();
 			authUser(user);
+			break;
+		}
+		case 'getDebug':
+		{
+			sendDebug();
 			break;
 		}
 		case 'getUser':
