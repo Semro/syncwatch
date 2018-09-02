@@ -1,34 +1,40 @@
 'use strict';
 
+// Google Analytics
+var _AnalyticsCode = 'UA-124816635-1';
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', _AnalyticsCode]);
+_gaq.push(['_trackPageview']);
+// Google Analytics end
+
 var form = document.forms.connect;
 var connect = form.elements.connect;
 
-function getUser()
+function getData(type)
 {
 	chrome.runtime.sendMessage(
 	{
-		from: 'getUser'
-	});
-}
-
-function getStatus()
-{
-	chrome.runtime.sendMessage(
-	{
-		from: 'getStatus'
-	});
-}
-
-function getUsersList()
-{
-	chrome.runtime.sendMessage(
-	{
-		from: 'getUsersList'
+		from: 'get'+type
 	});
 }
 
 chrome.runtime.onMessage.addListener( function(msg)
 {
+	if (msg.from == 'sendDebug')
+	{
+		if (msg.debug == false)
+		{
+			(function()
+			{
+				let ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = 'js/ga.js';
+				let s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+		}
+	}
 	if (msg.from == 'status')
 	{
 		if (msg.status == 'connect')
@@ -48,9 +54,8 @@ chrome.runtime.onMessage.addListener( function(msg)
 				{
 					name: form.elements.name.value,
 					room: form.elements.room.value,
-					from: 'join'
 				};
-				chrome.runtime.sendMessage(user);
+				chrome.runtime.sendMessage({from: 'join', data: user});
 			}
 		}
 		document.getElementById('status').innerHTML = 'status: '+msg.status;
@@ -63,6 +68,7 @@ chrome.runtime.onMessage.addListener( function(msg)
 	}
 	if (msg.from == 'sendUser')
 	{
+		msg = msg.data;
 		form.elements.name.value = msg.name;
 		form.elements.room.value = msg.room;
 		document.getElementById('version').innerHTML = 'v. '+msg.version;
@@ -71,7 +77,6 @@ chrome.runtime.onMessage.addListener( function(msg)
 
 window.onload = function()
 {
-	getUser();
-	getStatus();
-	getUsersList();
+	let typesOfData = ['Debug', 'User', 'Status', 'UsersList'];
+	for (let val of typesOfData) getData(val);
 }

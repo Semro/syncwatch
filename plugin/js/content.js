@@ -62,7 +62,6 @@ function broadcast(event)
 {
 	let event_send = 
 	{
-		from: 'content',
 		location: scriptLocation,
 		type: event.type,
 		element: nodes.indexOf(event.target),
@@ -71,7 +70,7 @@ function broadcast(event)
 	};
 	if (event_send.type == 'waiting') event_send.type = 'pause';
 	else if (event_send.type == 'playing') event_send.type = 'play';
-	chrome.runtime.sendMessage(event_send);
+	chrome.runtime.sendMessage({from: 'content', data: event_send});
 	console.log('broadcast: '+event_send.type);
 }
 
@@ -101,8 +100,9 @@ chrome.runtime.sendMessage(
 
 chrome.runtime.onMessage.addListener( function(msg)
 {
-	if (msg.from == 'background' && msg.location == scriptLocation)
+	if (msg.from == 'background' && msg.data.location == scriptLocation)
 	{
+		msg = msg.data;
 		fireEvent(msg);
 		console.log('recieved: '+msg.type);
 	}
