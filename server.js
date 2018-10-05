@@ -2,15 +2,12 @@
 
 const express = require('express');
 const socketIO = require('socket.io');
-const path = require('path');
 const http = require('http');
 
 const PORT = process.env.PORT || 8080;
-const INDEX = path.join(__dirname, 'index.html');
 
 const server = express()
-	.get('/', (req, res) => res.sendFile(INDEX))
-	.use('/testFrames/', (req, res) => res.sendFile(path.join(__dirname, 'testFrames', req.url)))
+	.use(express.static(__dirname + '/public'))
 	.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
 const io = socketIO(server);
@@ -54,7 +51,7 @@ class Room
 
 	addUser(socket_id, name)
 	{
-		if (this.users[socket_id] == undefined)
+		if (this.users[socket_id] === undefined)
 		{
 			this.users[socket_id] = name;
 			this.usersLength++;
@@ -102,7 +99,7 @@ io.on('connection', function(socket)
 			io.sockets.in(roomid[socket.id]).emit('userList', {'list': rooms[data.room].getUsersNames()});
 			if (rooms[data.room].usersLength > 1 && rooms[data.room].timeUpdated != null)
 			{
-				rooms[data.room].event.currentTime = rooms[data.room].event.type == 'play' ? rooms[data.room].event.currentTime + (Date.now() - rooms[data.room].timeUpdated) / 1000 : rooms[data.room].event.currentTime;
+				rooms[data.room].event.currentTime = rooms[data.room].event.type === 'play' ? rooms[data.room].event.currentTime + (Date.now() - rooms[data.room].timeUpdated) / 1000 : rooms[data.room].event.currentTime;
 				// Time is about second earlier then needed
 				socket.send(rooms[data.room].event);
 			}

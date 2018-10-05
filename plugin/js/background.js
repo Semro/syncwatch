@@ -2,8 +2,8 @@
 
 var localURL = 'http://localhost:8080';
 var serverURL = 'https://syncevent.herokuapp.com';
-var connectionUrl = serverURL;
-var debug = connectionUrl == localURL ? true : false;
+var debug = false;
+var connectionURL = debug === true ? localURL : serverURL;
 
 var manifest = chrome.runtime.getManifest();
 var user =
@@ -56,17 +56,18 @@ function sendUsersList()
 
 function broadcast(event)
 {
-	if (status == 'connect') socket.json.send(event);
+	if (status === 'connect') socket.json.send(event);
 }
 
 function initSockets()
 {
-	if (socket == null)
+	if (socket === null)
 	{
-		socket = io.connect(connectionUrl, {
+		socket = io.connect(connectionURL,
+		{
 			reconnection: true,
 			reconnectionDelayMax: 5000,
-			reconnectionDelay: 1000,
+			reconnectionDelay: 1000
 		});
 
 		initSocketEvents();
@@ -79,7 +80,7 @@ function initSockets()
 
 		socket.on('message', function(msg)
 		{
-			chrome.tabs.sendMessage(tabid_location[msg.location], {from: 'background', data: msg});
+			chrome.tabs.sendMessage(tabid_location[msg.location], {from: 'background', data: msg}); // Invocation of form tabs.sendMessage(undefined, object) doesn't match definition tabs.sendMessage(integer tabId, any message, optional object options, optional function responseCallback)
 			console.log('socket.on: '+msg.type);
 		});
 

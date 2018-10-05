@@ -1,8 +1,9 @@
 {
   "name": "syncevent",
   "version": "1.0.0",
-  "engines": {
-    "node": "8.11.4"
+  "engines":
+  {
+    "node": "8.12"
   },
   "description": "Syncing media events in browsers",
   "main": "index.js",

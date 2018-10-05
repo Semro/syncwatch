@@ -1,13 +1,13 @@
 {
 	"manifest_version": 2,
 	"name": "SyncEvent",
-	"version": "0.130",
+	"version": "0.131",
 	"description": "Syncing events in browsers",
 	"background":
 	{
     "scripts": 
         [
-            "js/socket.io.js",
+            "js/socket.io.slim.js",
             "js/background.js"
         ],
         "presistant": false

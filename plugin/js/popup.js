@@ -20,7 +20,7 @@ function getData(type)
 
 chrome.runtime.onMessage.addListener( function(msg)
 {
-	if (msg.from == 'sendDebug')
+	if (msg.from === 'sendDebug')
 	{
 		if (msg.debug == false)
 		{
@@ -35,9 +35,9 @@ chrome.runtime.onMessage.addListener( function(msg)
 			})();
 		}
 	}
-	if (msg.from == 'status')
+	if (msg.from === 'status')
 	{
-		if (msg.status == 'connect')
+		if (msg.status === 'connect')
 		{
 			connect.value = 'disconnect';
 			connect.onclick = function()
@@ -58,20 +58,25 @@ chrome.runtime.onMessage.addListener( function(msg)
 				chrome.runtime.sendMessage({from: 'join', data: user});
 			}
 		}
-		document.getElementById('status').innerHTML = 'status: '+msg.status;
+		document.getElementById('status').innerText = 'status: '+msg.status;
 	}
-	if (msg.from == 'sendUsersList')
+	if (msg.from === 'sendUsersList')
 	{
-		let inhtml = '';
-		for (let key in msg.list) inhtml += '<li>'+msg.list[key]+'</li>';
-		document.getElementById('usersList').innerHTML = inhtml;
+		document.getElementById('usersList').innerText = '';
+		let usersList = document.getElementById('usersList');
+		for (let key in msg.list)
+		{
+			let li = document.createElement('li');
+			li.innerText = msg.list[key];
+			usersList.appendChild(li);
+		}
 	}
-	if (msg.from == 'sendUser')
+	if (msg.from === 'sendUser')
 	{
 		msg = msg.data;
 		form.elements.name.value = msg.name;
 		form.elements.room.value = msg.room;
-		document.getElementById('version').innerHTML = 'v. '+msg.version;
+		document.getElementById('version').innerText = 'v. '+msg.version;
 	}
 });
 
