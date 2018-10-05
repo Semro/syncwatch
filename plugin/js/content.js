@@ -8,9 +8,9 @@ function onEvent(event)
 {
 	if (recieved)
 	{
-		if (recievedEvent == 'play')
+		if (recievedEvent === 'play')
 		{
-			if (event.type == 'waiting')
+			if (event.type === 'waiting')
 			{
 				setTimeout(function()
 				{
@@ -18,20 +18,20 @@ function onEvent(event)
 					recieved = false;
 				}, 300);
 			}
-			else if (event.type == 'playing') recieved = false;
+			else if (event.type === 'playing') recieved = false;
 		}
 		else
 		{
-			if (recievedEvent == 'pause')
+			if (recievedEvent === 'pause')
 			{
-				if (event.type == 'seeked') recieved = false;
+				if (event.type === 'seeked') recieved = false;
 			}
-			else if (recievedEvent == event.type) recieved = false;
+			else if (recievedEvent === event.type) recieved = false;
 		}
 	}
 	else
 	{
-		if (event.type == 'seeked')
+		if (event.type === 'seeked')
 		{
 			if (event.target.paused) broadcast(event);
 		}
@@ -68,8 +68,8 @@ function broadcast(event)
 		currentTime: event.target.currentTime,
 		playbackRate: event.target.playbackRate
 	};
-	if (event_send.type == 'waiting') event_send.type = 'pause';
-	else if (event_send.type == 'playing') event_send.type = 'play';
+	if (event_send.type === 'waiting') event_send.type = 'pause';
+	else if (event_send.type === 'playing') event_send.type = 'play';
 	chrome.runtime.sendMessage({from: 'content', data: event_send});
 	console.log('broadcast: '+event_send.type);
 }
@@ -78,12 +78,12 @@ function fireEvent(event)
 {
 	recieved = true;
 	recievedEvent = event.type;
-	if (event.type == 'ratechange') nodes[event.element].playbackRate = event.playbackRate;
+	if (event.type === 'ratechange') nodes[event.element].playbackRate = event.playbackRate;
 	else
 	{
 		nodes[event.element].currentTime = event.currentTime;
-		if (event.type == 'play') nodes[event.element].play();
-		else if (event.type == 'pause') nodes[event.element].pause();
+		if (event.type === 'play') nodes[event.element].play();
+		else if (event.type === 'pause') nodes[event.element].pause();
 	}
 }
 
@@ -100,7 +100,7 @@ chrome.runtime.sendMessage(
 
 chrome.runtime.onMessage.addListener( function(msg)
 {
-	if (msg.from == 'background' && msg.data.location == scriptLocation)
+	if (msg.from === 'background' && msg.data.location === scriptLocation)
 	{
 		msg = msg.data;
 		fireEvent(msg);
