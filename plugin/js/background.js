@@ -80,7 +80,7 @@ function initSockets()
 
 		socket.on('message', function(msg)
 		{
-			chrome.tabs.sendMessage(tabid_location[msg.location], {from: 'background', data: msg}); // Invocation of form tabs.sendMessage(undefined, object) doesn't match definition tabs.sendMessage(integer tabId, any message, optional object options, optional function responseCallback)
+			chrome.tabs.sendMessage(tabid_location[msg.location], {from: 'background', data: msg});
 			console.log('socket.on: '+msg.type);
 		});
 

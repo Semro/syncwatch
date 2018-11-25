@@ -16,7 +16,7 @@ function onEvent(event)
 				{
 					if (event.target.readyState < 3) broadcast(event);
 					recieved = false;
-				}, 300);
+				}, 500);
 			}
 			else if (event.type === 'playing') recieved = false;
 		}
@@ -87,7 +87,7 @@ function fireEvent(event)
 	}
 }
 
-window.onload = function() // may be find smth better
+window.onload = function()
 {
    init();
 };
