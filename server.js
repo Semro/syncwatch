@@ -126,20 +126,6 @@ io.on('connection', function(socket)
 		}
 	});
 
-//	let sendTime;
-//	let pingUser = setInterval(function()
-//	{
-//		sendTime = Date.now();
-//		socket.emit('pingt');
-//	}, 150000); // 2.5 minutes
-
-	socket.on('pongt', function(data)
-	{
-		let rTime = Date.now();
-		let pingTime = rTime - sendTime;
-		console.log(data.name+' ping: '+pingTime+' ms');
-	});
-
 	socket.on('disconnect', function()
 	{
 		if (rooms[roomid[socket.id]] != undefined)
@@ -153,7 +139,6 @@ io.on('connection', function(socket)
 			}
 			if (!roomsLength)
 			{
-//				clearInterval(pingUser);
 				console.log('All authorized users disconnected!');
 			}
 		}

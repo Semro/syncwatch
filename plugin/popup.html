@@ -6,54 +6,69 @@
 * {margin: 0; padding: 0;}
 body
 {
-	background: #fff;
-	color: #000;
+	background: white;
+	color: black;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-size: 12pt;
+	font-weight: 400;
+	user-select: none;
+}
+#main
+{
+	width: 180px;
+	padding: 2px;
+}
+.block, li
+{
+	width: 170px;
+	height: 25px;
+	margin: 0 auto 3px auto;
+	display: block;
+}
+#usersListTitle
+{
+	display: none;
+	height: 20px;
+}
+li
+{
+	height: 20px;
+	margin: 0 auto 1px auto;
+	margin-left: 20px;
+}
+#logo
+{
+	height: 30px;
+	text-align: center;
+	font-size: 16pt;
+	font-weight: 500;
 }
 input
 {
-	width: 150px;
+	font-size: 12pt;
+	border-style: solid;
+	border-width: 0 0 1px 0;
+	outline: none;
 }
-#version
+#connect
 {
-	text-align: center;
-}
-#update
-{
-	background: linear-gradient(rgb(142, 255, 142), rgb(0, 216, 0));
-}
-#updateMessage
-{
-	border: rgb(0, 216, 0);
+	border-radius: 3px;
+	background: coral;
+	color: white;
+	box-shadow: 1px 1px 1px 0 #ccc;
 }
 </style>
 </head>
 <body>
-	<form name = 'connect'>
-		<table>
-			<tr>
-				<td><input type = 'text' name = 'name' placeholder='name'></td>
-			</tr>
-			<tr>
-				<td><input type = 'text' name = 'room' placeholder='room'></td>
-			</tr>
-			<tr>
-				<td>
-					<ul id = 'usersList'></ul>
-				</td>
-			</tr>
-			<tr>
-				<td id = 'status'>status: </td>
-			</tr>
-			<tr>
-				<td>
-					<input type = 'button' name = 'connect' value = 'connect'>
-				</td>
-			</tr>
-			<tr>
-				<td id = 'version'></td>
-			</tr>
-		</table>
-	</form>
+	<div id = 'main'>
+		<div class = 'block' id = 'logo'>SyncEvent</div>
+		<input class = 'block' id = 'name' type = 'text' name = 'name' placeholder='Type your name'>
+		<input class = 'block' id = 'room' type = 'text' name = 'room' placeholder='Type room name'>
+		<div class = 'block' id = 'usersListTitle'>Users in room:</div>
+		<ul id = 'usersList'></ul>
+		<div class = 'block' id = 'status'>status: </div>
+		<input class = 'block' id = 'connect' type = 'button' name = 'connect' value = 'connect'>
+	</div>
 </body>
 <script src="js/popup.js"></script>
 </html>

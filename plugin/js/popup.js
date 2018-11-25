@@ -1,14 +1,9 @@
 'use strict';
 
-// Google Analytics
-var _AnalyticsCode = 'UA-124816635-1';
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', _AnalyticsCode]);
-_gaq.push(['_trackPageview']);
-// Google Analytics end
-
-var form = document.forms.connect;
-var connect = form.elements.connect;
+var roomElement = document.getElementById('room');
+var nameElement = document.getElementById('name');
+var connectElement = document.getElementById('connect');
+var usersListTitle = document.getElementById('usersListTitle');
 
 function getData(type)
 {
@@ -20,43 +15,31 @@ function getData(type)
 
 chrome.runtime.onMessage.addListener( function(msg)
 {
-	if (msg.from === 'sendDebug')
-	{
-		if (msg.debug == false)
-		{
-			(function()
-			{
-				let ga = document.createElement('script');
-				ga.type = 'text/javascript';
-				ga.async = true;
-				ga.src = 'js/ga.js';
-				let s = document.getElementsByTagName('script')[0];
-				s.parentNode.insertBefore(ga, s);
-			})();
-		}
-	}
 	if (msg.from === 'status')
 	{
 		if (msg.status === 'connect')
 		{
-			connect.value = 'disconnect';
-			connect.onclick = function()
+			connectElement.value = 'disconnect';
+			connectElement.onclick = function()
 			{
 				chrome.runtime.sendMessage({from: 'disconnect'});
 			}
+			usersListTitle.style.display = 'block';
 		}
 		else
 		{
-			connect.value = 'connect';
-			connect.onclick = function()
+			connectElement.value = 'connect';
+			connectElement.onclick = function()
 			{
 				let user =
 				{
-					name: form.elements.name.value,
-					room: form.elements.room.value,
+					name: nameElement.value,
+					room: roomElement.value,
 				};
 				chrome.runtime.sendMessage({from: 'join', data: user});
+				connectElement.value = 'connecting...';
 			}
+			usersListTitle.style.display = 'none';
 		}
 		document.getElementById('status').innerText = 'status: '+msg.status;
 	}
@@ -74,9 +57,8 @@ chrome.runtime.onMessage.addListener( function(msg)
 	if (msg.from === 'sendUser')
 	{
 		msg = msg.data;
-		form.elements.name.value = msg.name;
-		form.elements.room.value = msg.room;
-		document.getElementById('version').innerText = 'v. '+msg.version;
+		nameElement.value = msg.name;
+		roomElement.value = msg.room;
 	}
 });
 

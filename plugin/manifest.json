@@ -1,8 +1,8 @@
 {
 	"manifest_version": 2,
 	"name": "SyncEvent",
-	"version": "0.131",
-	"description": "Syncing events in browsers",
+	"version": "0.200",
+	"description": "Watch videos synchronously",
 	"background":
 	{
     "scripts": 
@@ -28,7 +28,7 @@
 	"browser_action":
 	{
 		"default_icon": "icons/icon16.png",
-		"default_title": "Sync Event",
+		"default_title": "SyncEvent",
 		"default_popup": "popup.html"
 	},
 	"permissions": 
