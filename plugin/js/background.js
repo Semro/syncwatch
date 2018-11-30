@@ -80,16 +80,11 @@ function initSockets()
 
 		socket.on('message', function(msg)
 		{
-			chrome.tabs.sendMessage(tabid_location[msg.location], {from: 'background', data: msg});
-			console.log('socket.on: '+msg.type);
-		});
-
-		socket.on('pingt', function()
-		{
-			socket.emit('pongt',
+			if (tabid_location[msg.location] != undefined)
 			{
-				name: user.name
-			});
+				chrome.tabs.sendMessage(tabid_location[msg.location], {from: 'background', data: msg});
+				console.log('socket.on: '+msg.type);
+			}
 		});
 	}
 	else
@@ -134,6 +129,7 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 		}
 		case 'content':
 		{
+			tabid_location[msg.data.location] = sender.tab.id;
 			broadcast(msg.data);
 			break;
 		}
