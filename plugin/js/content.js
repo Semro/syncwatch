@@ -1,7 +1,6 @@
 'use strict';
 
 var nodes = [];
-var scriptLocation = window.location.href;
 var recieved = false, recievedEvent;
 
 function onEvent(event)
@@ -62,7 +61,7 @@ function broadcast(event)
 {
 	let event_send = 
 	{
-		location: scriptLocation,
+		location: window.location.href,
 		type: event.type,
 		element: nodes.indexOf(event.target),
 		currentTime: event.target.currentTime,
@@ -70,7 +69,11 @@ function broadcast(event)
 	};
 	if (event_send.type === 'waiting') event_send.type = 'pause';
 	else if (event_send.type === 'playing') event_send.type = 'play';
-	chrome.runtime.sendMessage({from: 'content', data: event_send});
+	chrome.runtime.sendMessage(
+	{
+		from: 'content',
+		data: event_send
+	});
 	console.log('broadcast: '+event_send.type);
 }
 
@@ -95,12 +98,12 @@ window.onload = function()
 chrome.runtime.sendMessage(
 {
 	from: 'tabid',
-	location: scriptLocation
+	location: window.location.href
 });
 
 chrome.runtime.onMessage.addListener( function(msg)
 {
-	if (msg.from === 'background' && msg.data.location === scriptLocation)
+	if (msg.from === 'background' && msg.data.location === window.location.href)
 	{
 		msg = msg.data;
 		fireEvent(msg);

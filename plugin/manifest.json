@@ -1,23 +1,23 @@
 {
 	"manifest_version": 2,
 	"name": "SyncEvent",
-	"version": "0.200",
-	"description": "Watch videos synchronously",
+	"version": "0.201",
+	"description": "Watch videos with friends synchronously!",
 	"background":
 	{
-    "scripts": 
-        [
-            "js/socket.io.slim.js",
-            "js/background.js"
-        ],
-        "presistant": false
+		"persistent": true,
+    	"scripts": 
+    	[
+    	    "js/socket.io.slim.js",
+    	    "js/background.js"
+    	]
 	},
     "content_scripts":
     [{
-			"matches": ["<all_urls>"],
-			"all_frames": true,
-            "js": ["js/content.js"],
-            "run_at": "document_end"
+		"matches": ["<all_urls>"],
+		"all_frames": true,
+        "js": ["js/content.js"],
+        "run_at": "document_end"
     }],
 	"icons":
 	{
