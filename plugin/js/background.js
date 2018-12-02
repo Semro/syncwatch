@@ -2,7 +2,7 @@
 
 var localURL = 'http://localhost:8080';
 var serverURL = 'https://syncevent.herokuapp.com';
-var debug = false;
+var debug = true;
 var connectionURL = debug === true ? localURL : serverURL;
 
 var manifest = chrome.runtime.getManifest();
@@ -24,10 +24,10 @@ function sendDebug()
 
 function sendUser()
 {	
-	new Promise(function(resolve)
+	new Promise((resolve)=>
 	{
 		chrome.storage.sync.get(user, (result) => resolve(result));
-	}).then((result) =>
+	}).then((result)=>
 	{
 		user = result;
 		user.version = manifest.version;
@@ -45,6 +45,11 @@ function sendStatus(newStatus)
 	});
 }
 
+function sendShare(data)
+{
+	chrome.runtime.sendMessage({from: 'share', data});
+}
+
 function sendUsersList()
 {
 	chrome.runtime.sendMessage(
@@ -54,9 +59,28 @@ function sendUsersList()
 	});
 }
 
+function sendError(err)
+{
+	chrome.runtime.sendMessage(
+	{
+		from: 'sendError',
+		error: err
+	});
+}
+
 function broadcast(event)
 {
 	if (status === 'connect') socket.json.send(event);
+}
+
+function shareTabLink()
+{
+	chrome.tabs.getSelected(null, (tab)=>
+	{
+		let msg = {title: tab.title, url: tab.url};
+		sendShare(msg);
+		socket.emit('share', msg);
+	});
 }
 
 function initSockets()
@@ -72,13 +96,13 @@ function initSockets()
 
 		initSocketEvents();
 
-		socket.on('userList', function(msg)
+		socket.on('userList', (msg)=>
 		{
 			list = msg.list;
 			sendUsersList();
 		});
 
-		socket.on('message', function(msg)
+		socket.on('message', (msg)=>
 		{
 			if (tabid_location[msg.location] != undefined)
 			{
@@ -86,6 +110,11 @@ function initSockets()
 				console.log('socket.on: '+msg.type);
 			}
 		});
+		socket.on('share', (msg)=>
+		{	
+			sendShare(msg);
+		})
+		socket.on('error', (msg)=> { sendError(msg) });
 	}
 	else
 	{
@@ -99,13 +128,13 @@ function initSocketEvents()
 	for (let i = 0; i < socket_events.length; i++)
 	{
 		let event = socket_events[i];
-		socket.on(event, () => { sendStatus(event); });
+		socket.on(event, ()=> { sendStatus(event); });
 	}
-	socket.on('connect', () =>
+	socket.on('connect', ()=>
 	{
 		authUser(user);
 	});
-	socket.on('disconnect', () =>
+	socket.on('disconnect', ()=>
 	{
 		list = [];
 		sendUsersList();
@@ -118,7 +147,7 @@ function authUser(user)
 	socket.emit('join', user);
 }
 
-chrome.runtime.onMessage.addListener( function(msg, sender)
+chrome.runtime.onMessage.addListener((msg, sender)=>
 {
 	switch(msg.from)
 	{
@@ -138,6 +167,11 @@ chrome.runtime.onMessage.addListener( function(msg, sender)
 			user = msg.data;
 			initSockets();
 			authUser(user);
+			break;
+		}
+		case 'popupShare':
+		{
+			shareTabLink();
 			break;
 		}
 		case 'getDebug':

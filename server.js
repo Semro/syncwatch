@@ -38,6 +38,19 @@ function wakeServer(status)
 	}
 }
 
+function checkUserNameAndRoom(data)
+{
+	if (data.name === '')
+		return 'Write your name';
+	else if (data.name.length < 2 || data.name.length > 24)
+		return 'Name length must be between 2 and 24';
+	else if (data.room === '')
+		return 'Write room name';
+	else if (data.room.length < 2 || data.room.length > 24)
+		return 'Room length must be between 2 and 24';
+	else return ''
+}
+
 class Room
 {
 	constructor(name)
@@ -47,6 +60,11 @@ class Room
 		this.timeUpdated = null;
 		this.users = [];
 		this.usersLength = 0;
+		this.share = 
+		{
+			title: '',
+			url: ''
+		};
 	}
 
 	addUser(socket_id, name)
@@ -91,28 +109,37 @@ io.on('connection', function(socket)
 
 	socket.on('join', function(data)
 	{
-		socket.join(data.room);
-		roomid[socket.id] = data.room;
-		if (rooms[data.room] != undefined)
+		if (checkUserNameAndRoom(data).length > 0)
 		{
-			rooms[data.room].addUser(socket.id, data.name);
-			io.sockets.in(roomid[socket.id]).emit('userList', {'list': rooms[data.room].getUsersNames()});
-			if (rooms[data.room].usersLength > 1 && rooms[data.room].timeUpdated != null)
-			{
-				rooms[data.room].event.currentTime = rooms[data.room].event.type === 'play' ? rooms[data.room].event.currentTime + (Date.now() - rooms[data.room].timeUpdated) / 1000 : rooms[data.room].event.currentTime;
-				// Time is about second earlier then needed
-				socket.send(rooms[data.room].event);
-			}
+			socket.error(checkUserNameAndRoom(data));
+			socket.disconnect();
 		}
 		else
 		{
-			let room = new Room(data.room);
-			roomsLength++;
-			room.addUser(socket.id, data.name);
-			rooms[data.room] = room;
+			socket.join(data.room);
+			roomid[socket.id] = data.room;
+			if (rooms[data.room] != undefined)
+			{
+				rooms[data.room].addUser(socket.id, data.name);
+				io.sockets.in(roomid[socket.id]).emit('userList', {'list': rooms[data.room].getUsersNames()});
+				if (rooms[data.room].usersLength > 1 && rooms[data.room].timeUpdated != null)
+				{
+					rooms[data.room].event.currentTime = rooms[data.room].event.type === 'play' ? rooms[data.room].event.currentTime + 
+					(Date.now() - rooms[data.room].timeUpdated) / 1000 : rooms[data.room].event.currentTime;
+					// Time is about second earlier then needed
+					socket.send(rooms[data.room].event);
+				}
+			}
+			else
+			{
+				let room = new Room(data.room);
+				roomsLength++;
+				room.addUser(socket.id, data.name);
+				rooms[data.room] = room;
+			}
+	
+			console.log('connected: '+JSON.stringify(data));
 		}
-
-		console.log('connected: '+JSON.stringify(data));
 	});
 
 	socket.on('message', function(msg)
@@ -124,6 +151,13 @@ io.on('connection', function(socket)
 			socket.broadcast.to(roomid[socket.id]).send(rooms[roomid[socket.id]].event);
 			console.log(roomid[socket.id]+': '+rooms[roomid[socket.id]].getUser(socket.id)+' '+JSON.stringify(msg));
 		}
+	});
+
+	socket.on('share', function(msg)
+	{
+		rooms[roomid[socket.id]].share = msg;
+		console.log(rooms[roomid[socket.id]].name+' shared '+JSON.stringify(msg));
+		socket.broadcast.to(roomid[socket.id]).emit('share', rooms[roomid[socket.id]].share);
 	});
 
 	socket.on('disconnect', function()

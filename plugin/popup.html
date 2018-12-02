@@ -15,12 +15,12 @@ body
 }
 #main
 {
-	width: 180px;
+	width: 240px;
 	padding: 2px;
 }
 .block, li
 {
-	width: 170px;
+	width: 230px;
 	height: 25px;
 	margin: 0 auto 3px auto;
 	display: block;
@@ -51,24 +51,48 @@ input
 	border-width: 0 0 1px 0;
 	outline: none;
 }
-#connect
+.button
 {
 	border-radius: 3px;
 	background: coral;
 	color: white;
 	box-shadow: 1px 1px 1px 0 #ccc;
 }
+.button:active
+{
+	box-shadow: 1px 1px 1px 0 #fff;
+}
+#shared
+{
+	min-height: 25px;
+	max-height: 50px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+    overflow: hidden;
+}
+#error
+{
+	height: fit-content;
+	color: red;
+	display: none;
+}
 </style>
 </head>
 <body>
-	<div id = 'main'>
-		<div class = 'block' id = 'logo'>SyncEvent</div>
-		<input class = 'block' id = 'name' type = 'text' name = 'name' placeholder='Type your name'>
-		<input class = 'block' id = 'room' type = 'text' name = 'room' placeholder='Type room name'>
-		<div class = 'block' id = 'usersListTitle'>Users in room:</div>
-		<ul id = 'usersList'></ul>
-		<div class = 'block' id = 'status'>status: </div>
-		<input class = 'block' id = 'connect' type = 'button' name = 'connect' value = 'connect'>
+	<div id='main'>
+		<div class='block' id='logo'>SyncEvent</div>
+		<input class='block' id='name' type='text' name='name' placeholder='Type your name'>
+		<input class='block' id='room' type='text' name='room' placeholder='Type room name'>
+		<div class='block' id='error'></div>
+		<input class='block button' id='share' type='button' name='share' value='share'>
+		<a class='block' id='shared' href='https://www.youtube.com/watch?v=kJQP7kiw5Fk' target='_blank'>
+			<img src='https://www.youtube.com/favicon.ico' width='16px' height='16px'>
+			<span>Luis Fonsi - Despacito ft. Daddy Yankee (Official Music Video)</span>
+		</a>
+		<div class='block' id='usersListTitle'>Users in room:</div>
+		<ul id='usersList'></ul>
+		<div class='block' id='status'>status: </div>
+		<input class='block button' id='connect' type='button' name='connect' value='connect'>
 	</div>
 </body>
 <script src="js/popup.js"></script>
