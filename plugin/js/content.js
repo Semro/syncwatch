@@ -11,7 +11,7 @@ function onEvent(event)
 		{
 			if (event.type === 'waiting')
 			{
-				setTimeout(function()
+				setTimeout(()=>
 				{
 					if (event.target.readyState < 3) broadcast(event);
 					recieved = false;
@@ -90,7 +90,7 @@ function fireEvent(event)
 	}
 }
 
-window.onload = function()
+window.onload = ()=>
 {
    init();
 };
@@ -101,7 +101,7 @@ chrome.runtime.sendMessage(
 	location: window.location.href
 });
 
-chrome.runtime.onMessage.addListener( function(msg)
+chrome.runtime.onMessage.addListener((msg)=>
 {
 	if (msg.from === 'background' && msg.data.location === window.location.href)
 	{
