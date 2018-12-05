@@ -19,7 +19,6 @@ function displayElements(display)
 {
 	usersListTitle.style.display = display;
 	share.style.display = display;
-	shared.style.display = display;
 }
 
 shareElement.onclick = ()=>
@@ -55,14 +54,19 @@ chrome.runtime.onMessage.addListener((msg)=>
 				connectElement.value = 'connecting...';
 			}
 			displayElements('none');
+			shared.style.display = 'none';
 		}
 		document.getElementById('status').innerText = 'status: '+msg.status;
 	}
 	if (msg.from === 'share')
 	{
-		sharedElement.href = msg.data.url;
-		sharedElement.children[0].src = sharedElement.hostname + '/favicon.ico';
-		sharedElement.children[1].innerText = msg.data.title;
+		if (Object.keys(msg.data).length !== 0)
+		{
+			shared.style.display = 'block';
+			sharedElement.href = msg.data.url;
+			sharedElement.children[0].src = sharedElement.hostname + '/favicon.ico';
+			sharedElement.children[1].innerText = msg.data.title;
+		}
 	}
 	if (msg.from === 'sendUsersList')
 	{
@@ -91,6 +95,6 @@ chrome.runtime.onMessage.addListener((msg)=>
 
 window.onload = ()=>
 {
-	let typesOfData = ['Debug', 'User', 'Status', 'UsersList'];
+	let typesOfData = ['Debug', 'User', 'Status', 'UsersList', 'Share'];
 	for (let val of typesOfData) getData(val);
 }

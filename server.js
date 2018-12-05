@@ -60,11 +60,7 @@ class Room
 		this.timeUpdated = null;
 		this.users = [];
 		this.usersLength = 0;
-		this.share = 
-		{
-			title: '',
-			url: ''
-		};
+		this.share = null;
 	}
 
 	addUser(socket_id, name)
@@ -121,7 +117,8 @@ io.on('connection', function(socket)
 			if (rooms[data.room] != undefined)
 			{
 				rooms[data.room].addUser(socket.id, data.name);
-				io.sockets.in(roomid[socket.id]).emit('userList', {'list': rooms[data.room].getUsersNames()});
+				io.sockets.in(roomid[socket.id]).emit('userList', {'list': rooms[data.room].getUsersNames()});	
+				if (rooms[data.room].share != null) socket.emit('share', rooms[data.room].share);
 				if (rooms[data.room].usersLength > 1 && rooms[data.room].timeUpdated != null)
 				{
 					rooms[data.room].event.currentTime = rooms[data.room].event.type === 'play' ? rooms[data.room].event.currentTime + 
@@ -156,8 +153,8 @@ io.on('connection', function(socket)
 	socket.on('share', function(msg)
 	{
 		rooms[roomid[socket.id]].share = msg;
-		console.log(rooms[roomid[socket.id]].name+' shared '+JSON.stringify(msg));
 		socket.broadcast.to(roomid[socket.id]).emit('share', rooms[roomid[socket.id]].share);
+		console.log(rooms[roomid[socket.id]].name+' shared '+JSON.stringify(msg));
 	});
 
 	socket.on('disconnect', function()
