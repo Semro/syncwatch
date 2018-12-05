@@ -16,6 +16,7 @@ var socket = null;
 var status = 'disconnect';
 var list = [];
 var tabid_location = [];
+var share = {};
 
 function sendDebug()
 {
@@ -47,7 +48,8 @@ function sendStatus(newStatus)
 
 function sendShare(data)
 {
-	chrome.runtime.sendMessage({from: 'share', data});
+	if (data != undefined) share = data;
+	chrome.runtime.sendMessage({from: 'share', data: share});
 }
 
 function sendUsersList()
@@ -111,7 +113,7 @@ function initSockets()
 			}
 		});
 		socket.on('share', (msg)=>
-		{	
+		{
 			sendShare(msg);
 		})
 		socket.on('error', (msg)=> { sendError(msg) });
@@ -192,6 +194,11 @@ chrome.runtime.onMessage.addListener((msg, sender)=>
 		case 'getUsersList':
 		{	
 			sendUsersList();
+			break;
+		}
+		case 'getShare':
+		{
+			sendShare();
 			break;
 		}
 		case 'disconnect':
