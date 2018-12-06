@@ -2,20 +2,20 @@
 
 var nodes = [];
 var recieved = false, recievedEvent;
+var loading = false;
 
 function onEvent(event)
 {
+//	if (event.type === 'progress') console.log('event:'+event.type+' '+event.target.readyState+' recieved: '+recieved+' loading: '+loading);
+//	else console.log('event:'+event.type+' '+' recieved: '+recieved+' loading: '+loading);
 	if (recieved)
 	{
 		if (recievedEvent === 'play')
 		{
-			if (event.type === 'waiting')
+			if (event.type === 'progress')
 			{
-				setTimeout(()=>
-				{
-					if (event.target.readyState < 3) broadcast(event);
-					recieved = false;
-				}, 500);
+				onProgress(event);
+				recieved = false;
 			}
 			else if (event.type === 'playing') recieved = false;
 		}
@@ -34,13 +34,28 @@ function onEvent(event)
 		{
 			if (event.target.paused) broadcast(event);
 		}
+		else if (event.type === 'progress')
+		{
+			onProgress(event);
+		}
 		else broadcast(event);
+	}
+}
+
+function onProgress(event)
+{
+	let prevLoading = loading;
+	if (event.target.readyState < 3) loading = true;
+	else loading = false;
+	if (prevLoading == false && loading == true)
+	{
+		broadcast(event);
 	}
 }
 
 function addListeners(nodesCollection)
 {
-	let eventTypes = ['playing', 'pause', 'waiting', 'seeked', 'ratechange'];
+	let eventTypes = ['playing', 'pause', 'seeked', 'ratechange', 'progress'];
 	for (let i = 0; i < nodesCollection.length; i++)
 	{
 		for (let j = 0; j < eventTypes.length; j++)
@@ -67,14 +82,14 @@ function broadcast(event)
 		currentTime: event.target.currentTime,
 		playbackRate: event.target.playbackRate
 	};
-	if (event_send.type === 'waiting') event_send.type = 'pause';
+	if (event_send.type === 'progress') event_send.type = 'pause';
 	else if (event_send.type === 'playing') event_send.type = 'play';
 	chrome.runtime.sendMessage(
 	{
 		from: 'content',
 		data: event_send
 	});
-	console.log('broadcast: '+event_send.type);
+	console.log("%cbroadcast: "+event_send.type, "background: #00590E;");
 }
 
 function fireEvent(event)
@@ -107,6 +122,6 @@ chrome.runtime.onMessage.addListener((msg)=>
 	{
 		msg = msg.data;
 		fireEvent(msg);
-		console.log('recieved: '+msg.type);
+		console.log("%crecieved: "+msg.type, "background: #542100;");
 	}
 });
