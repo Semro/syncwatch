@@ -134,7 +134,7 @@ function initSocketEvents()
 	}
 	socket.on('connect', ()=>
 	{
-		authUser(user);
+		socket.emit('join', user);
 	});
 	socket.on('disconnect', ()=>
 	{
@@ -146,7 +146,6 @@ function initSocketEvents()
 function authUser(user)
 {
 	chrome.storage.sync.set(user);
-	socket.emit('join', user);
 }
 
 chrome.runtime.onMessage.addListener((msg, sender)=>
