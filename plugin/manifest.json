@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "SyncWatch",
-	"version": "0.211",
+	"version": "0.300",
 	"description": "Watch videos with friends synchronously!",
 	"background":
 	{
@@ -28,7 +28,7 @@
 	"browser_action":
 	{
 		"default_icon": "icons/icon16.png",
-		"default_title": "SyncEvent",
+		"default_title": "SyncWatch",
 		"default_popup": "popup.html"
 	},
 	"permissions": 
