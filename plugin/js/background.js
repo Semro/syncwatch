@@ -2,26 +2,22 @@
 
 var localURL = 'http://localhost:8080';
 var serverURL = 'https://syncevent.herokuapp.com';
-var debug = true;
+var debug = false;
 var connectionURL = debug === true ? localURL : serverURL;
 
 var manifest = chrome.runtime.getManifest();
 var user =
 {
 	name: null,
+	room: null,
 	version: null,
-	room: null
+	agent: null
 };
 var socket = null;
 var status = 'disconnect';
 var list = [];
 var tabid_location = [];
 var share = {};
-
-function sendDebug()
-{
-	chrome.runtime.sendMessage({from: 'sendDebug', debug: debug});
-}
 
 function sendUser()
 {	
@@ -30,9 +26,7 @@ function sendUser()
 		chrome.storage.sync.get(user, (result) => resolve(result));
 	}).then((result)=>
 	{
-		user = result;
-		user.version = manifest.version;
-		chrome.runtime.sendMessage({from: 'sendUser', data: user});
+		chrome.runtime.sendMessage({from: 'sendUser', data: result});
 	});
 }
 
@@ -48,8 +42,11 @@ function sendStatus(newStatus)
 
 function sendShare(data)
 {
-	if (data != undefined) share = data;
-	chrome.runtime.sendMessage({from: 'share', data: share});
+	if (status == 'connect')
+	{
+		if (data != undefined) share = data;
+		chrome.runtime.sendMessage({from: 'share', data: share});
+	}
 }
 
 function sendUsersList()
@@ -98,7 +95,7 @@ function initSockets()
 
 		initSocketEvents();
 
-		socket.on('userList', (msg)=>
+		socket.on('usersList', (msg)=>
 		{
 			list = msg.list;
 			sendUsersList();
@@ -139,11 +136,12 @@ function initSocketEvents()
 	socket.on('disconnect', ()=>
 	{
 		list = [];
+		share = {};
 		sendUsersList();
 	});
 }
 
-function authUser(user)
+function storageUser(user)
 {
 	chrome.storage.sync.set(user);
 }
@@ -166,18 +164,15 @@ chrome.runtime.onMessage.addListener((msg, sender)=>
 		case 'join':
 		{
 			user = msg.data;
+			storageUser(user);
+			user.version = manifest.version;
+			user.agent = navigator.userAgent;
 			initSockets();
-			authUser(user);
 			break;
 		}
 		case 'popupShare':
 		{
 			shareTabLink();
-			break;
-		}
-		case 'getDebug':
-		{
-			sendDebug();
 			break;
 		}
 		case 'getUser':

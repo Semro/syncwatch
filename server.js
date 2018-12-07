@@ -117,7 +117,7 @@ io.on('connection', function(socket)
 			if (rooms[data.room] != undefined)
 			{
 				rooms[data.room].addUser(socket.id, data.name);
-				io.sockets.in(roomid[socket.id]).emit('userList', {'list': rooms[data.room].getUsersNames()});	
+				io.in(roomid[socket.id]).emit('usersList', {'list': rooms[data.room].getUsersNames()});
 				if (rooms[data.room].share != null) socket.emit('share', rooms[data.room].share);
 				if (rooms[data.room].usersLength > 1 && rooms[data.room].timeUpdated != null)
 				{
@@ -133,6 +133,7 @@ io.on('connection', function(socket)
 				roomsLength++;
 				room.addUser(socket.id, data.name);
 				rooms[data.room] = room;
+				socket.emit('usersList', {'list': rooms[data.room].getUsersNames()});
 			}
 	
 			console.log('connected: '+JSON.stringify(data));
@@ -162,7 +163,7 @@ io.on('connection', function(socket)
 		if (rooms[roomid[socket.id]] != undefined)
 		{
 			rooms[roomid[socket.id]].disconnectUser(socket.id);
-			io.sockets.in(roomid[socket.id]).emit('userList', {'list': rooms[roomid[socket.id]].getUsersNames()});
+			io.sockets.in(roomid[socket.id]).emit('usersList', {'list': rooms[roomid[socket.id]].getUsersNames()});
 			if (rooms[roomid[socket.id]].nullUsers())
 			{
 				delete rooms[roomid[socket.id]];
