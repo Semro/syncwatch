@@ -6,6 +6,8 @@ var connectElement = document.getElementById('connect');
 var shareElement = document.getElementById('share');
 var sharedElement = document.getElementById('shared');
 var usersListTitle = document.getElementById('usersListTitle');
+var usersList = document.getElementById('usersList');
+var errorElement = document.getElementById('error');
 
 function getData(type)
 {
@@ -15,10 +17,28 @@ function getData(type)
 	});
 }
 
+function getFaviconFromUrl(url)
+{
+	let i = 0;
+	let positions = [];
+	while(true)
+	{
+		i = url.indexOf('/', i);
+		if (i == -1) break;
+		else
+		{
+			positions.push(i);
+			i++;
+		}
+	}
+	return url.substring(0, positions[2]+1) + 'favicon.ico';
+}
+
 function displayElements(display)
 {
+	shareElement.style.display = display;
 	usersListTitle.style.display = display;
-	share.style.display = display;
+	usersList.style.display = display;
 }
 
 shareElement.onclick = ()=>
@@ -44,17 +64,17 @@ chrome.runtime.onMessage.addListener((msg)=>
 			connectElement.value = 'connect';
 			connectElement.onclick = ()=>
 			{
-				document.getElementById('error').style.display = 'none';
+				errorElement.style.display = 'none';
 				let user =
 				{
 					name: nameElement.value,
-					room: roomElement.value,
+					room: roomElement.value
 				};
 				chrome.runtime.sendMessage({from: 'join', data: user});
 				connectElement.value = 'connecting...';
 			}
 			displayElements('none');
-			shared.style.display = 'none';
+			sharedElement.style.display = 'none';
 		}
 		document.getElementById('status').innerText = 'status: '+msg.status;
 	}
@@ -62,15 +82,20 @@ chrome.runtime.onMessage.addListener((msg)=>
 	{
 		if (Object.keys(msg.data).length !== 0)
 		{
-			shared.style.display = 'block';
 			sharedElement.href = msg.data.url;
-			sharedElement.children[0].src = sharedElement.hostname + '/favicon.ico';
-			sharedElement.children[1].innerText = msg.data.title;
+			sharedElement.innerText = '';
+			let img = document.createElement('img');
+			let span = document.createElement('span');
+			img.style.height = img.style.width = '16px';
+			img.src = getFaviconFromUrl(msg.data.url);
+			span.innerText = msg.data.title;
+			sharedElement.appendChild(img);
+			sharedElement.appendChild(span);
+			sharedElement.style.display = 'block';
 		}
 	}
 	if (msg.from === 'sendUsersList')
 	{
-		let usersList = document.getElementById('usersList');
 		usersList.innerText = '';
 		for (let key in msg.list)
 		{
@@ -81,20 +106,18 @@ chrome.runtime.onMessage.addListener((msg)=>
 	}
 	if (msg.from === 'sendError')
 	{
-		let errorElement = document.getElementById('error');
 		errorElement.style.display = 'block';
 		errorElement.innerText = msg.error;
 	}
 	if (msg.from === 'sendUser')
 	{
-		msg = msg.data;
-		nameElement.value = msg.name;
-		roomElement.value = msg.room;
+		nameElement.value = msg.data.name;
+		roomElement.value = msg.data.room;
 	}
 });
 
 window.onload = ()=>
 {
-	let typesOfData = ['Debug', 'User', 'Status', 'UsersList', 'Share'];
+	let typesOfData = ['User', 'Status', 'UsersList', 'Share'];
 	for (let val of typesOfData) getData(val);
 }
