@@ -100,9 +100,17 @@ function fireEvent(event)
 	else
 	{
 		nodes[event.element].currentTime = event.currentTime;
-		if (event.type === 'play') nodes[event.element].play();
+		if (event.type === 'play') nodes[event.element].play().catch(errorOnEvent);
 		else if (event.type === 'pause') nodes[event.element].pause();
 	}
+}
+
+function errorOnEvent(err)
+{
+	chrome.runtime.sendMessage(
+	{
+		from: 'errorOnEvent'
+	});
 }
 
 window.onload = ()=>

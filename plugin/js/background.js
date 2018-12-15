@@ -19,7 +19,7 @@ var list = [];
 var tabid_location = [];
 var share = {};
 
-function sendUser()
+function sendUserToPopup()
 {	
 	new Promise((resolve)=>
 	{
@@ -30,7 +30,7 @@ function sendUser()
 	});
 }
 
-function sendStatus(newStatus)
+function sendStatusToPopup(newStatus)
 {	
 	if (newStatus != undefined) status = newStatus;
 	chrome.runtime.sendMessage(
@@ -40,7 +40,7 @@ function sendStatus(newStatus)
 	});
 }
 
-function sendShare(data)
+function sendShareToPopup(data)
 {
 	if (status == 'connect')
 	{
@@ -49,7 +49,7 @@ function sendShare(data)
 	}
 }
 
-function sendUsersList()
+function sendUsersListToPopup()
 {
 	chrome.runtime.sendMessage(
 	{
@@ -58,7 +58,7 @@ function sendUsersList()
 	});
 }
 
-function sendError(err)
+function sendErrorToPopup(err)
 {
 	chrome.runtime.sendMessage(
 	{
@@ -72,12 +72,12 @@ function broadcast(event)
 	if (status === 'connect') socket.json.send(event);
 }
 
-function shareTabLink()
+function shareVideoLink()
 {
 	chrome.tabs.getSelected(null, (tab)=>
 	{
-		let msg = {title: tab.title, url: tab.url};
-		sendShare(msg);
+		let msg = {title: tab.title, url: tab.url, user: user.name};
+		sendShareToPopup(msg);
 		socket.emit('share', msg);
 	});
 }
@@ -98,7 +98,7 @@ function initSockets()
 		socket.on('usersList', (msg)=>
 		{
 			list = msg.list;
-			sendUsersList();
+			sendUsersListToPopup();
 		});
 
 		socket.on('message', (msg)=>
@@ -111,9 +111,13 @@ function initSockets()
 		});
 		socket.on('share', (msg)=>
 		{
-			sendShare(msg);
+			if (msg.title != undefined)
+			{
+				sendShareToPopup(msg);
+				onShareNotification(msg);
+			}
 		})
-		socket.on('error', (msg)=> { sendError(msg) });
+		socket.on('error', (msg)=> { sendErrorToPopup(msg) });
 	}
 	else
 	{
@@ -127,7 +131,7 @@ function initSocketEvents()
 	for (let i = 0; i < socket_events.length; i++)
 	{
 		let event = socket_events[i];
-		socket.on(event, ()=> { sendStatus(event); });
+		socket.on(event, ()=> { sendStatusToPopup(event); });
 	}
 	socket.on('connect', ()=>
 	{
@@ -137,7 +141,7 @@ function initSocketEvents()
 	{
 		list = [];
 		share = {};
-		sendUsersList();
+		sendUsersListToPopup();
 	});
 }
 
@@ -145,6 +149,47 @@ function storageUser(user)
 {
 	chrome.storage.sync.set(user);
 }
+
+function errorOnEventNotification()
+{
+	chrome.notifications.create('Interact with page',
+	{
+		type: 'basic',
+		iconUrl: 'icons/icon128.png',
+		title: 'Interact with page',
+		message: 'Click on video to play it'
+	})
+	chrome.notifications.clear('Interact with page');
+}
+
+function onShareNotification(msg)
+{
+	chrome.notifications.create('Share',
+	{
+		type: 'basic',
+		iconUrl: 'icons/icon128.png',
+		title: msg.user+' shared with video',
+		message: msg.title,
+		contextMessage: msg.url,
+		buttons:
+		[{
+			title: 'Open link'
+		}]
+	})
+	chrome.notifications.clear('Share');
+}
+
+function onNotificatuionClicked(idNotification)
+{
+	if (idNotification === 'Share')
+	{
+		chrome.tabs.create({url: share.url});
+		chrome.notifications.clear('Share');
+	}
+}
+
+chrome.notifications.onButtonClicked.addListener(onNotificatuionClicked);
+chrome.notifications.onClicked.addListener(onNotificatuionClicked);
 
 chrome.runtime.onMessage.addListener((msg, sender)=>
 {
@@ -172,27 +217,27 @@ chrome.runtime.onMessage.addListener((msg, sender)=>
 		}
 		case 'popupShare':
 		{
-			shareTabLink();
+			shareVideoLink();
 			break;
 		}
 		case 'getUser':
 		{
-			sendUser();
+			sendUserToPopup();
 			break;
 		}
 		case 'getStatus':
 		{
-			sendStatus();
+			sendStatusToPopup();
 			break;
 		}
 		case 'getUsersList':
 		{	
-			sendUsersList();
+			sendUsersListToPopup();
 			break;
 		}
 		case 'getShare':
 		{
-			sendShare();
+			sendShareToPopup();
 			break;
 		}
 		case 'disconnect':
@@ -203,6 +248,11 @@ chrome.runtime.onMessage.addListener((msg, sender)=>
 		case 'console':
 		{
 			console.log(msg.res);
+			break;
+		}
+		case 'errorOnEvent':
+		{
+			errorOnEventNotification();
 			break;
 		}
 	}
