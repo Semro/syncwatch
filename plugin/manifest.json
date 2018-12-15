@@ -34,7 +34,7 @@
 	"permissions": 
 	[
 		"storage",
-		"*://*/*",
-		"<all_urls>"
+		"activeTab",
+		"notifications"
 	]
 }
