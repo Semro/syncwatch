@@ -12,10 +12,10 @@ const server = express()
 
 const io = socketIO(server);
 
-var roomsLength = 0;
-var rooms = [], roomid = [];
-var wake = false;
-var countConnections = 0;
+let roomsLength = 0;
+let rooms = [], roomid = [];
+let wake = false;
+let countConnections = 0;
 
 function wakeServer(status)
 {
@@ -75,7 +75,7 @@ class Room
 
 	disconnectUser(socket_id)
 	{
-		console.log(roomid[socket_id]+': '+rooms[roomid[socket_id]].getUser(socket_id)+' disconnected');
+		console.log(this.name+': '+this.getUser(socket_id)+' disconnected');
 		delete this.users[socket_id];
 		this.usersLength--;
 	}
@@ -106,6 +106,7 @@ io.on('connection', function(socket)
 
 	socket.on('join', function(data)
 	{
+		socket.join(data.room);
 		let err = checkUserNameAndRoom(data);
 		if (err != null)
 		{
@@ -115,29 +116,29 @@ io.on('connection', function(socket)
 		}
 		else
 		{
-			socket.join(data.room);
-			roomid[socket.id] = data.room;
-			if (rooms[data.room] != undefined)
+			let room = rooms[data.room];
+			if (room != undefined)
 			{
-				rooms[data.room].addUser(socket.id, data.name);
-				io.in(data.room).emit('usersList', {'list': rooms[data.room].getUsersNames()});
-				if (rooms[data.room].share != null) socket.emit('share', rooms[data.room].share);
-				if (rooms[data.room].usersLength > 1 && rooms[data.room].timeUpdated != null)
+				room.addUser(socket.id, data.name);
+				io.in(room.name).emit('usersList', {'list': room.getUsersNames()});
+				if (room.share != null) socket.emit('share', room.share);
+				if (room.usersLength > 1 && room.timeUpdated != null)
 				{
-					rooms[data.room].event.currentTime = rooms[data.room].event.type === 'play' ? rooms[data.room].event.currentTime + 
-					(Date.now() - rooms[data.room].timeUpdated) / 1000 : rooms[data.room].event.currentTime;
+					room.event.currentTime = room.event.type === 'play' ? room.event.currentTime + 
+					(Date.now() - room.timeUpdated) / 1000 : room.event.currentTime;
 					// Time is about second earlier then needed
-					socket.send(rooms[data.room].event);
+					socket.send(room.event);
 				}
 			}
 			else
 			{
-				let room = new Room(data.room);
+				room = new Room(data.room);
 				roomsLength++;
 				room.addUser(socket.id, data.name);
 				rooms[data.room] = room;
 				socket.emit('usersList', {'list': rooms[data.room].getUsersNames()});
 			}
+			roomid[socket.id] = room;
 	
 			console.log('connected: '+countConnections+' '+JSON.stringify(data));
 		}
@@ -145,35 +146,46 @@ io.on('connection', function(socket)
 
 	socket.on('message', function(msg)
 	{
-		if (rooms[roomid[socket.id]] != undefined)
+		let room = roomid[socket.id];
+		if (room != undefined)
 		{
-			rooms[roomid[socket.id]].event = msg;
-			rooms[roomid[socket.id]].timeUpdated = Date.now();
-			socket.broadcast.to(roomid[socket.id]).send(rooms[roomid[socket.id]].event);
-			console.log(roomid[socket.id]+': '+rooms[roomid[socket.id]].getUser(socket.id)+' '+JSON.stringify(msg));
+			room.event = msg;
+			room.timeUpdated = Date.now();
+			socket.broadcast.to(room.name).send(room.event);
+			console.log(room.name+': '+room.getUser(socket.id)+' '+JSON.stringify(msg));
 		}
 	});
 
 	socket.on('share', function(msg)
 	{
-		rooms[roomid[socket.id]].share = msg;
-		socket.broadcast.to(roomid[socket.id]).emit('share', rooms[roomid[socket.id]].share);
-		console.log(rooms[roomid[socket.id]].name+' shared '+JSON.stringify(msg));
+		let room = roomid[socket.id];
+		room.share = msg;
+		socket.broadcast.to(room.name).emit('share', room.share);
+		console.log(room.name+' shared '+JSON.stringify(msg));
 	});
 
 	socket.on('disconnect', function()
 	{
-		if (rooms[roomid[socket.id]] != undefined)
+		let room = roomid[socket.id];
+		if (room != undefined)
 		{
-			rooms[roomid[socket.id]].disconnectUser(socket.id);
-			io.sockets.in(roomid[socket.id]).emit('usersList', {'list': rooms[roomid[socket.id]].getUsersNames()});
-			if (rooms[roomid[socket.id]].nullUsers())
+			room.disconnectUser(socket.id);
+			io.sockets.in(room.name).emit('usersList', {'list': room.getUsersNames()});
+			if (room.nullUsers())
 			{
-				delete rooms[roomid[socket.id]];
+				delete rooms[room.name];
+				delete roomid[socket.id];
 				roomsLength--;
 			}
-			if (!roomsLength)
+			if (roomsLength === 0)
 			{
+				rooms = [];
+				roomid = [];
+				if (global.gc)
+				{
+					gc();
+					console.log('Collected garbage!');
+				}
 				console.log('All authorized users disconnected!');
 			}
 		}
