@@ -21,15 +21,12 @@ function wakeServer(status)
 {
 	if (status)
 	{
-		if (!wake)
+		wake = setInterval(function()
 		{
-			wake = setInterval(function()
-			{
-				if (process.env.PORT != undefined) http.get('http://syncevent.herokuapp.com');
-				else http.get('http://localhost:8080');		
-				console.log('Server waked!');
-			}, 30 * 60000); // 30 minutes
-		}
+			if (process.env.PORT != undefined) http.get('http://syncevent.herokuapp.com');
+			else http.get('http://localhost:8080');
+			console.log('Server waked!');
+		}, 30 * 60000); // 30 minutes
 	}
 	else
 	{
@@ -40,15 +37,19 @@ function wakeServer(status)
 
 function checkUserNameAndRoom(data)
 {
-	if (data.name === '')
-		return 'Write your name';
-	else if (data.name.length < 2 || data.name.length > 24)
-		return 'Name length must be between 2 and 24';
-	else if (data.room === '')
-		return 'Write room name';
-	else if (data.room.length < 2 || data.room.length > 24)
-		return 'Room length must be between 2 and 24';
-	else return ''
+	if (String(data.name) === '[object Object]' || String(data.room) === '[object Object]') return 'Dont try make subrooms :D';
+	else
+	{
+		if (data.name === '')
+			return 'Write your name';
+		else if (data.name.length < 2 || data.name.length > 24)
+			return 'Name length must be between 2 and 24';
+		else if (data.room === '')
+			return 'Write room name';
+		else if (data.room.length < 2 || data.room.length > 24)
+			return 'Room length must be between 2 and 24';
+		else return null;
+	}
 }
 
 class Room
@@ -101,14 +102,16 @@ class Room
 io.on('connection', function(socket)
 {
 	countConnections++;
-	wakeServer(true);
+	if (!wake) wakeServer(true);
 
 	socket.on('join', function(data)
 	{
-		if (checkUserNameAndRoom(data).length > 0)
+		let err = checkUserNameAndRoom(data);
+		if (err != null)
 		{
-			socket.error(checkUserNameAndRoom(data));
+			socket.error(err);
 			socket.disconnect();
+			console.log('Error join: '+err);
 		}
 		else
 		{
@@ -117,7 +120,7 @@ io.on('connection', function(socket)
 			if (rooms[data.room] != undefined)
 			{
 				rooms[data.room].addUser(socket.id, data.name);
-				io.in(roomid[socket.id]).emit('usersList', {'list': rooms[data.room].getUsersNames()});
+				io.in(data.room).emit('usersList', {'list': rooms[data.room].getUsersNames()});
 				if (rooms[data.room].share != null) socket.emit('share', rooms[data.room].share);
 				if (rooms[data.room].usersLength > 1 && rooms[data.room].timeUpdated != null)
 				{
@@ -136,7 +139,7 @@ io.on('connection', function(socket)
 				socket.emit('usersList', {'list': rooms[data.room].getUsersNames()});
 			}
 	
-			console.log('connected: '+JSON.stringify(data));
+			console.log('connected: '+countConnections+' '+JSON.stringify(data));
 		}
 	});
 
@@ -177,10 +180,12 @@ io.on('connection', function(socket)
 //		else console.log('try disconnect undefined user');
 
 		countConnections--;
+		/*
 		if (countConnections === 0)
 		{
 			wakeServer(false);
 			console.log('All connections aborted, server will shutdown in 30 minutes');
 		}
+		*/
 	});
 });

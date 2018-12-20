@@ -2,7 +2,7 @@
 
 var localURL = 'http://localhost:8080';
 var serverURL = 'https://syncevent.herokuapp.com';
-var debug = false;
+var debug = true;
 var connectionURL = debug === true ? localURL : serverURL;
 
 var manifest = chrome.runtime.getManifest();
