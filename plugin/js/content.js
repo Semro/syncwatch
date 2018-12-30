@@ -107,10 +107,13 @@ function fireEvent(event)
 
 function errorOnEvent(err)
 {
-	chrome.runtime.sendMessage(
+	if (err.name === 'NotAllowedError')
 	{
-		from: 'errorOnEvent'
-	});
+		chrome.runtime.sendMessage(
+		{
+			from: 'errorOnEvent'
+		});
+	}
 }
 
 window.onload = ()=>
