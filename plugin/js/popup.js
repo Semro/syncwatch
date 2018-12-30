@@ -24,7 +24,7 @@ function getFaviconFromUrl(url)
 	while(true)
 	{
 		i = url.indexOf('/', i);
-		if (i == -1) break;
+		if (i === -1) break;
 		else
 		{
 			positions.push(i);

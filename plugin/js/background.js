@@ -42,7 +42,7 @@ function sendStatusToPopup(newStatus)
 
 function sendShareToPopup(data)
 {
-	if (status == 'connect')
+	if (status === 'connect')
 	{
 		if (data != undefined) share = data;
 		chrome.runtime.sendMessage({from: 'share', data: share});
