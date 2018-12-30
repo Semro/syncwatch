@@ -47,7 +47,7 @@ function onProgress(event)
 	let prevLoading = loading;
 	if (event.target.readyState < 3) loading = true;
 	else loading = false;
-	if (prevLoading == false && loading == true)
+	if (prevLoading === false && loading === true)
 	{
 		broadcast(event);
 	}
