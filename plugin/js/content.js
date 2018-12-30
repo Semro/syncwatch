@@ -116,10 +116,20 @@ function errorOnEvent(err)
 	}
 }
 
-window.onload = ()=>
+init();
+
+let observer = new MutationObserver(()=> //need optimization
 {
-   init();
-};
+	init();
+});
+
+let config =
+{
+   childList: true,
+   subtree: true
+}
+
+observer.observe(document.body, config);
 
 chrome.runtime.sendMessage(
 {
