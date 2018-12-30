@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 8080;
 
 const server = express()
 	.use(express.static(__dirname + '/public'))
-	.listen(PORT, () => console.log(`Listening on ${ PORT }`));
+	.listen(PORT, ()=> console.log(`Listening on ${ PORT }`));
 
 const io = socketIO(server);
 
@@ -21,7 +21,7 @@ function wakeServer(status)
 {
 	if (status)
 	{
-		wake = setInterval(function()
+		wake = setInterval(()=>
 		{
 			if (process.env.PORT != undefined) http.get('http://syncevent.herokuapp.com');
 			else http.get('http://localhost:8080');
@@ -98,12 +98,12 @@ class Room
 	}
 }
 
-io.on('connection', function(socket)
+io.on('connection', (socket)=>
 {
 	countConnections++;
 	if (!wake) wakeServer(true);
 
-	socket.on('join', function(data)
+	socket.on('join', (data)=>
 	{
 		socket.join(data.room);
 		let err = checkUserNameAndRoom(data);
@@ -143,7 +143,7 @@ io.on('connection', function(socket)
 		}
 	});
 
-	socket.on('message', function(msg)
+	socket.on('message', (msg)=>
 	{
 		let room = roomid[socket.id];
 		if (room != undefined)
@@ -155,7 +155,7 @@ io.on('connection', function(socket)
 		}
 	});
 
-	socket.on('share', function(msg)
+	socket.on('share', (msg)=>
 	{
 		let room = roomid[socket.id];
 		room.share = msg;
@@ -163,7 +163,7 @@ io.on('connection', function(socket)
 		console.log(room.name+' shared '+JSON.stringify(msg));
 	});
 
-	socket.on('disconnect', function()
+	socket.on('disconnect', ()=>
 	{
 		let room = roomid[socket.id];
 		if (room != undefined)
