@@ -51,7 +51,6 @@ function checkUserNameAndRoom(data)
 		else return null;
 	}
 }
-
 class Room
 {
 	constructor(name)
