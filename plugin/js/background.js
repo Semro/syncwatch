@@ -74,8 +74,9 @@ function broadcast(event)
 
 function shareVideoLink()
 {
-	chrome.tabs.getSelected(null, (tab)=>
+	chrome.tabs.query({active: true}, (tab)=>
 	{
+		tab = tab[0];
 		let msg = {title: tab.title, url: tab.url, user: user.name};
 		sendShareToPopup(msg);
 		socket.emit('share', msg);
