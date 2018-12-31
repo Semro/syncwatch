@@ -3,6 +3,7 @@
 	"name": "SyncWatch",
 	"version": "0.302",
 	"description": "Watch videos with friends synchronously!",
+	"default_locale": "en",
 	"background":
 	{
 		"persistent": true,

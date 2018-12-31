@@ -1,0 +1,66 @@
+locales,,"en 
+(английский)","ru 
+(русский)"
+popup_input_name,message,Type your name,Введите своё имя
+,description,,
+,placeholders,,
+popup_input_room,message,Type room name,Введите название комнаты
+,description,,
+,placeholders,,
+popup_button_connect,message,connect,подключиться
+,description,,
+,placeholders,,
+popup_button_disconnect,message,disconnect,отключиться
+,description,,
+,placeholders,,
+popup_button_connecting,message,connecting,подключение
+,description,,
+,placeholders,,
+popup_button_share,message,share video,поделиться видео
+,description,,
+,placeholders,,
+popup_status,message,status,статус
+,description,,
+,placeholders,,
+popup_usersInRoom,message,Users in room,Пользователи в комнате
+,description,,
+,placeholders,,
+notification_interact_title,message,Click somewhere on the page,Кликните куда-нибудь на страничке
+,description,,
+,placeholders,,
+notification_interact_message,message,"For example, click on video","Например, нажмите на видео"
+,description,,
+,placeholders,,
+notification_shared_title,message,shared with video,поделился видео
+,description,,
+,placeholders,,
+notification_shared_button,message,Open link,Перейти по ссылке
+,description,,
+,placeholders,,
+socket_event_connect,message,connected,подключён
+,description,,
+,placeholders,,
+socket_event_connect_error,message,connection error,ошибка подключения
+,description,,
+,placeholders,,
+socket_event_connect_timeout,message,connection timeout,время подключения истекло
+,description,,
+,placeholders,,
+socket_event_error,message,error,ошибка
+,description,,
+,placeholders,,
+socket_event_disconnect,message,disconnected,отключён
+,description,,
+,placeholders,,
+socket_event_reconnect,message,reconnect,переподключение
+,description,,
+,placeholders,,
+socket_event_reconnecting,message,reconnecting,переподключение
+,description,,
+,placeholders,,
+socket_event_reconnect_error,message,reconnection error,ошибка переподключения
+,description,,
+,placeholders,,
+socket_event_reconnect_failed,message,reconnection failed,переподключиться не удалось
+,description,,
+,placeholders,,
