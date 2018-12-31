@@ -52,7 +52,7 @@ chrome.runtime.onMessage.addListener((msg)=>
 	{
 		if (msg.status === 'connect')
 		{
-			connectElement.value = 'disconnect';
+			connectElement.value = chrome.i18n.getMessage('popup_button_disconnect');
 			connectElement.onclick = ()=>
 			{
 				chrome.runtime.sendMessage({from: 'disconnect'});
@@ -61,7 +61,7 @@ chrome.runtime.onMessage.addListener((msg)=>
 		}
 		else
 		{
-			connectElement.value = 'connect';
+			connectElement.value = chrome.i18n.getMessage('popup_button_connect');
 			connectElement.onclick = ()=>
 			{
 				errorElement.style.display = 'none';
@@ -71,12 +71,13 @@ chrome.runtime.onMessage.addListener((msg)=>
 					room: roomElement.value
 				};
 				chrome.runtime.sendMessage({from: 'join', data: user});
-				connectElement.value = 'connecting...';
+				connectElement.value = `${chrome.i18n.getMessage('popup_button_connecting')}...`;
 			}
 			displayElements('none');
 			sharedElement.style.display = 'none';
 		}
-		document.getElementById('status').innerText = 'status: '+msg.status;
+		document.getElementById('status').innerText = `${chrome.i18n.getMessage('popup_status')}:\
+													   ${chrome.i18n.getMessage('socket_event_'+msg.status)}`;
 	}
 	if (msg.from === 'share')
 	{
@@ -116,8 +117,10 @@ chrome.runtime.onMessage.addListener((msg)=>
 	}
 });
 
-window.onload = ()=>
-{
-	let typesOfData = ['User', 'Status', 'UsersList', 'Share'];
-	for (let val of typesOfData) getData(val);
-}
+nameElement.placeholder = chrome.i18n.getMessage('popup_input_name');
+roomElement.placeholder = chrome.i18n.getMessage('popup_input_room');
+shareElement.value = chrome.i18n.getMessage('popup_button_share');
+usersListTitle.innerText = `${chrome.i18n.getMessage('popup_usersInRoom')}:`;
+
+let typesOfData = ['User', 'Status', 'UsersList', 'Share'];
+for (let val of typesOfData) getData(val);

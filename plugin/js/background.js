@@ -157,8 +157,8 @@ function errorOnEventNotification()
 	{
 		type: 'basic',
 		iconUrl: 'icons/icon128.png',
-		title: 'Interact with page',
-		message: 'Click on video to play it'
+		title: chrome.i18n.getMessage('notification_interact_title'),
+		message: chrome.i18n.getMessage('notification_interact_message')
 	})
 	chrome.notifications.clear('Interact with page');
 }
@@ -169,12 +169,12 @@ function onShareNotification(msg)
 	{
 		type: 'basic',
 		iconUrl: 'icons/icon128.png',
-		title: msg.user+' shared with video',
+		title: `${msg.user} ${chrome.i18n.getMessage('notification_shared_title')}`,
 		message: msg.title,
 		contextMessage: msg.url,
 		buttons:
 		[{
-			title: 'Open link'
+			title: `${chrome.i18n.getMessage('notification_shared_button')}`
 		}]
 	})
 	chrome.notifications.clear('Share');
