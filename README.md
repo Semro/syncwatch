@@ -19,7 +19,7 @@ SyncWatch is extension for browsers which lets you watch videos together with fr
 
 ## Communicate
  - [Discord](https://discord.gg/7AYpju4)
- - [Telegram](https://t.me/syncevent)
+ - [Telegram](https://t.me/syncwatch)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
