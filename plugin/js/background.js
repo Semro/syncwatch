@@ -20,7 +20,7 @@ var tabid_location = [];
 var share = {};
 
 function sendUserToPopup()
-{	
+{
 	new Promise((resolve)=>
 	{
 		chrome.storage.sync.get(user, (result) => resolve(result));
@@ -31,7 +31,7 @@ function sendUserToPopup()
 }
 
 function sendStatusToPopup(newStatus)
-{	
+{
 	if (newStatus != undefined) status = newStatus;
 	chrome.runtime.sendMessage(
 	{
@@ -232,7 +232,7 @@ chrome.runtime.onMessage.addListener((msg, sender)=>
 			break;
 		}
 		case 'getUsersList':
-		{	
+		{
 			sendUsersListToPopup();
 			break;
 		}
