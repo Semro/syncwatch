@@ -191,12 +191,11 @@ io.on('connection', (socket)=>
 //		else console.log('try disconnect undefined user');
 
 		countConnections--;
-		/*
+		
 		if (countConnections === 0)
 		{
 			wakeServer(false);
 			console.log('All connections aborted, server will shutdown in 30 minutes');
 		}
-		*/
 	});
 });
