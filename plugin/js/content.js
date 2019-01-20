@@ -65,6 +65,36 @@ function addListeners(nodesCollection)
 	}
 }
 
+function iframeIndex(win)
+{
+	win = win || window; // Assume self by default
+	if (win.parent != win)
+	{
+		for (var i = 0; i < win.parent.frames.length; i++)
+		{
+			if (win.parent.frames[i] == win) { return i; }
+		}
+		throw Error("In a frame, but could not find myself");
+	}
+	else
+	{
+		return -1;
+	}
+}
+
+function iframeFullIndex(win)
+{
+	win = win || window; // Assume self by default
+	if (iframeIndex(win) < 0)
+	{
+		return '-1';
+	}
+	else
+	{
+		return `${iframeFullIndex(win.parent)}${iframeIndex(win)}`;
+	}
+}
+
 function init()
 {
 	let nodesCollection = document.getElementsByTagName('video');
@@ -76,7 +106,7 @@ function broadcast(event)
 {
 	let event_send = 
 	{
-		location: window.location.href,
+		location: iframeFullIndex(window),
 		type: event.type,
 		element: nodes.indexOf(event.target),
 		currentTime: event.target.currentTime,
@@ -131,15 +161,9 @@ let config =
 
 observer.observe(document.body, config);
 
-chrome.runtime.sendMessage(
-{
-	from: 'tabid',
-	location: window.location.href
-});
-
 chrome.runtime.onMessage.addListener((msg)=>
 {
-	if (msg.from === 'background' && msg.data.location === window.location.href)
+	if (msg.from === 'background' && msg.data.location === iframeFullIndex(window))
 	{
 		msg = msg.data;
 		fireEvent(msg);
