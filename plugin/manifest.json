@@ -36,6 +36,7 @@
 	[
 		"storage",
 		"activeTab",
+		"tabs",
 		"notifications"
 	]
 }
