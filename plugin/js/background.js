@@ -16,7 +16,7 @@ var user =
 var socket = null;
 var status = 'disconnect';
 var list = [];
-var tabid_location = [];
+var syncTab = null;
 var share = {};
 
 function sendUserToPopup()
@@ -67,20 +67,27 @@ function sendErrorToPopup(err)
 	});
 }
 
-function broadcast(event)
+function broadcast(event, tabid)
 {
-	if (status === 'connect') socket.json.send(event);
+	if (status === 'connect' && syncTab !== null)
+	{
+		if (syncTab.id === tabid)
+		{
+			socket.json.send(event);
+		}
+	}
 }
 
-function shareVideoLink()
+function shareVideoLink(tab)
 {
-	chrome.tabs.query({active: true}, (tab)=>
+	let msg = 
 	{
-		tab = tab[0];
-		let msg = {title: tab.title, url: tab.url, user: user.name};
-		sendShareToPopup(msg);
-		socket.emit('share', msg);
-	});
+		title: tab.title,
+		url: tab.url,
+		user: user.name
+	};
+	sendShareToPopup(msg);
+	socket.emit('share', msg);
 }
 
 function initSockets()
@@ -104,20 +111,30 @@ function initSockets()
 
 		socket.on('message', (msg)=>
 		{
-			if (tabid_location[msg.location] != undefined)
+			chrome.tabs.sendMessage(syncTab.id,
 			{
-				chrome.tabs.sendMessage(tabid_location[msg.location], {from: 'background', data: msg});
-				console.log('socket.on: '+msg.type);
-			}
+				from: 'background',
+				data: msg
+			});
+			console.log(`socket.on: ${msg.type}`);
 		});
+
 		socket.on('share', (msg)=>
 		{
 			if (msg.title != undefined)
 			{
 				sendShareToPopup(msg);
 				onShareNotification(msg);
+				chrome.tabs.query({active: true}, (tabs)=>
+				{
+					if (tabs[0].url === share.url)
+					{
+						syncTab = tabs[0];
+					}
+				});
 			}
 		})
+
 		socket.on('error', (msg)=> { sendErrorToPopup(msg) });
 	}
 	else
@@ -192,19 +209,35 @@ function onNotificatuionClicked(idNotification)
 chrome.notifications.onButtonClicked.addListener(onNotificatuionClicked);
 chrome.notifications.onClicked.addListener(onNotificatuionClicked);
 
+chrome.tabs.onUpdated.addListener((tabid, changeInfo, tab)=>
+{
+	if (changeInfo.status === 'complete')
+	{
+		if (tab.url === share.url)
+		{
+			syncTab = tab;
+		}
+	}
+})
+
+chrome.tabs.onActivated.addListener(()=>
+{
+	chrome.tabs.query({active: true}, (tabs)=>
+	{
+		if (tabs[0].url === share.url)
+		{
+			syncTab = tabs[0];
+		}
+	})
+})
+
 chrome.runtime.onMessage.addListener((msg, sender)=>
 {
 	switch(msg.from)
 	{
-		case 'tabid':
-		{
-			tabid_location[msg.location] = sender.tab.id;
-			break;
-		}
 		case 'content':
 		{
-			tabid_location[msg.data.location] = sender.tab.id;
-			broadcast(msg.data);
+			broadcast(msg.data, sender.tab.id);
 			break;
 		}
 		case 'join':
@@ -218,7 +251,11 @@ chrome.runtime.onMessage.addListener((msg, sender)=>
 		}
 		case 'popupShare':
 		{
-			shareVideoLink();
+			chrome.tabs.query({active: true}, (tabs)=>
+			{
+				syncTab = tabs[0];
+				shareVideoLink(syncTab);
+			})
 			break;
 		}
 		case 'getUser':
