@@ -3,6 +3,7 @@
 var nodes = [];
 var recieved = false, recievedEvent;
 var loading = false;
+var debug = false;
 
 function onEvent(event)
 {
@@ -119,7 +120,7 @@ function broadcast(event)
 		from: 'content',
 		data: event_send
 	});
-	console.log("%cbroadcast: "+event_send.type, "background: #00590E;");
+	if (debug) console.log("%cbroadcast: "+event_send.type, "background: #00590E;");
 }
 
 function fireEvent(event)
@@ -167,6 +168,6 @@ chrome.runtime.onMessage.addListener((msg)=>
 	{
 		msg = msg.data;
 		fireEvent(msg);
-		console.log("%crecieved: "+msg.type, "background: #542100;");
+		if (debug) console.log("%crecieved: "+msg.type, "background: #542100;");
 	}
 });

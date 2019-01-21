@@ -116,7 +116,7 @@ function initSockets()
 				from: 'background',
 				data: msg
 			});
-			console.log(`socket.on: ${msg.type}`);
+			if (debug) console.log(`socket.on: ${msg.type}`);
 		});
 
 		socket.on('share', (msg)=>
