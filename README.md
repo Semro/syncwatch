@@ -12,10 +12,10 @@ SyncWatch is extension for browsers which lets you watch videos together with fr
 2. Click on plugin icon.
 3. Write your name and room name. (If room is not exist it will be created)
 4. Click 'connect'.
-5. Share name of the room with friends. They must follow this instruction (1-3 steps).
+5. Share name of the room with friends. They must follow this instruction (1-4 steps).
 6. Go to the page where video is located.
 7. Click 'share' to send link in room.
-8. Disconnect from room when your together watching is completed. (Extension sends information about any video which is playing)
+8. Other in room should open this link.
 
 ## Communicate
  - [Discord](https://discord.gg/7AYpju4)
