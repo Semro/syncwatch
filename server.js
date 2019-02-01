@@ -40,11 +40,11 @@ function checkUserNameAndRoom(data)
 	if (String(data.name) === '[object Object]' || String(data.room) === '[object Object]') return 'Dont try make subrooms :D';
 	else
 	{
-		if (data.name === '')
+		if (data.name === '' || data.name === undefined)
 			return 'Write your name';
 		else if (data.name.length < 2 || data.name.length > 24)
 			return 'Name length must be between 2 and 24';
-		else if (data.room === '')
+		else if (data.room === '' || data.name === undefined)
 			return 'Write room name';
 		else if (data.room.length < 2 || data.room.length > 24)
 			return 'Room length must be between 2 and 24';
@@ -105,7 +105,6 @@ io.on('connection', (socket)=>
 
 	socket.on('join', (data)=>
 	{
-		socket.join(data.room);
 		let err = checkUserNameAndRoom(data);
 		if (err != null)
 		{
@@ -115,6 +114,7 @@ io.on('connection', (socket)=>
 		}
 		else
 		{
+			socket.join(data.room);
 			let room = rooms[data.room];
 			if (room != undefined)
 			{
