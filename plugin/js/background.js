@@ -197,7 +197,7 @@ function onShareNotification(msg)
 	chrome.notifications.clear('Share');
 }
 
-function onNotificatuionClicked(idNotification)
+function onNotificationClicked(idNotification)
 {
 	if (idNotification === 'Share')
 	{
@@ -206,8 +206,8 @@ function onNotificatuionClicked(idNotification)
 	}
 }
 
-chrome.notifications.onButtonClicked.addListener(onNotificatuionClicked);
-chrome.notifications.onClicked.addListener(onNotificatuionClicked);
+chrome.notifications.onButtonClicked.addListener(onNotificationClicked);
+chrome.notifications.onClicked.addListener(onNotificationClicked);
 
 chrome.tabs.onUpdated.addListener((tabid, changeInfo, tab)=>
 {
