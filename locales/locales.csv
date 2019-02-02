@@ -70,3 +70,15 @@ socket_event_reconnect_error,message,reconnection error,ошибка переп�
 socket_event_reconnect_failed,message,reconnection failed,переподключиться не удалось
 ,description,,
 ,placeholders,,
+socket_error_write_name,message,Write your name,Напишите своё имя
+,description,,
+,placeholders,,
+socket_error_write_room,message,Write room name,Напишите название комнаты
+,description,,
+,placeholders,,
+socket_error_name_length,message,Name length must be between 2 and 24,Длина имени должна быть от 2 до 24
+,description,,
+,placeholders,,
+socket_error_room_length,message,Room length must be between 2 and 24,Длина названия комнаты должна быть от 2 до 24
+,description,,
+,placeholders,,

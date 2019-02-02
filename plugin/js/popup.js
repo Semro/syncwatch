@@ -108,7 +108,7 @@ chrome.runtime.onMessage.addListener((msg)=>
 	if (msg.from === 'sendError')
 	{
 		errorElement.style.display = 'block';
-		errorElement.innerText = msg.error;
+		errorElement.innerText = chrome.i18n.getMessage(msg.error);
 	}
 	if (msg.from === 'sendUser')
 	{

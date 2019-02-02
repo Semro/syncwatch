@@ -41,13 +41,13 @@ function checkUserNameAndRoom(data)
 	else
 	{
 		if (data.name === '' || data.name === undefined)
-			return 'Write your name';
+			return 'socket_error_write_name';
 		else if (data.name.length < 2 || data.name.length > 24)
-			return 'Name length must be between 2 and 24';
+			return 'socket_error_name_length';
 		else if (data.room === '' || data.name === undefined)
-			return 'Write room name';
+			return 'socket_error_write_room';
 		else if (data.room.length < 2 || data.room.length > 24)
-			return 'Room length must be between 2 and 24';
+			return 'socket_error_room_length';
 		else return null;
 	}
 }
