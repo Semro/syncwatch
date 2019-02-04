@@ -90,6 +90,17 @@ function shareVideoLink(tab)
 	socket.emit('share', msg);
 }
 
+function changeSyncTab()
+{
+	chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs)=>
+	{
+		if (tabs[0].url === share.url)
+		{
+			syncTab = tabs[0];
+		}
+	})
+}
+
 function initSockets()
 {
 	if (socket === null)
@@ -128,7 +139,7 @@ function initSockets()
 			{
 				sendShareToPopup(msg);
 				onShareNotification(msg);
-				chrome.tabs.query({active: true}, (tabs)=>
+				chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs)=>
 				{
 					if (tabs[0].url === share.url)
 					{
@@ -226,13 +237,12 @@ chrome.tabs.onUpdated.addListener((tabid, changeInfo, tab)=>
 
 chrome.tabs.onActivated.addListener(()=>
 {
-	chrome.tabs.query({active: true}, (tabs)=>
-	{
-		if (tabs[0].url === share.url)
-		{
-			syncTab = tabs[0];
-		}
-	})
+	changeSyncTab();
+})
+
+chrome.windows.onFocusChanged.addListener(()=>
+{
+	changeSyncTab();
 })
 
 chrome.runtime.onMessage.addListener((msg, sender)=>
@@ -255,7 +265,7 @@ chrome.runtime.onMessage.addListener((msg, sender)=>
 		}
 		case 'popupShare':
 		{
-			chrome.tabs.query({active: true}, (tabs)=>
+			chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs)=>
 			{
 				syncTab = tabs[0];
 				shareVideoLink(syncTab);
