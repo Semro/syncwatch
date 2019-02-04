@@ -162,6 +162,7 @@ function initSocketEvents()
 	{
 		list = [];
 		share = {};
+		syncTab = null;
 		sendUsersListToPopup();
 	});
 }
