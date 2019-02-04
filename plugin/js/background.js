@@ -32,7 +32,7 @@ function sendUserToPopup()
 
 function sendStatusToPopup(newStatus)
 {
-	if (newStatus != undefined) status = newStatus;
+	if (newStatus !== undefined) status = newStatus;
 	chrome.runtime.sendMessage(
 	{
 		from: 'status',
@@ -44,7 +44,7 @@ function sendShareToPopup(data)
 {
 	if (status === 'connect')
 	{
-		if (data != undefined) share = data;
+		if (data !== undefined) share = data;
 		chrome.runtime.sendMessage({from: 'share', data: share});
 	}
 }
@@ -111,17 +111,20 @@ function initSockets()
 
 		socket.on('message', (msg)=>
 		{
-			chrome.tabs.sendMessage(syncTab.id,
+			if (syncTab !== null)
 			{
-				from: 'background',
-				data: msg
-			});
-			if (debug) console.log(`socket.on: ${msg.type}`);
+				chrome.tabs.sendMessage(syncTab.id,
+				{
+					from: 'background',
+					data: msg
+				});
+				if (debug) console.log(`socket.on: ${msg.type}`);
+			}
 		});
 
 		socket.on('share', (msg)=>
 		{
-			if (msg.title != undefined)
+			if (msg.title !== undefined)
 			{
 				sendShareToPopup(msg);
 				onShareNotification(msg);

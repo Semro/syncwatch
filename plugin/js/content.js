@@ -68,8 +68,8 @@ function addListeners(nodesCollection)
 
 function iframeIndex(win)
 {
-	win = win || window; // Assume self by default
-	if (win.parent != win)
+	win = win || window;
+	if (win.parent !== win)
 	{
 		for (var i = 0; i < win.parent.frames.length; i++)
 		{
@@ -85,7 +85,7 @@ function iframeIndex(win)
 
 function iframeFullIndex(win)
 {
-	win = win || window; // Assume self by default
+	win = win || window;
 	if (iframeIndex(win) < 0)
 	{
 		return '-1';

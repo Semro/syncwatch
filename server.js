@@ -23,7 +23,7 @@ function wakeServer(status)
 	{
 		wake = setInterval(()=>
 		{
-			if (process.env.PORT != undefined) http.get('http://syncevent.herokuapp.com');
+			if (process.env.PORT !== undefined) http.get('http://syncevent.herokuapp.com');
 			else http.get('http://localhost:8080');
 			console.log('Server waked!');
 		}, 30 * 60000); // 30 minutes
@@ -106,7 +106,7 @@ io.on('connection', (socket)=>
 	socket.on('join', (data)=>
 	{
 		let err = checkUserNameAndRoom(data);
-		if (err != null)
+		if (err !== null)
 		{
 			socket.error(err);
 			socket.disconnect();
@@ -116,12 +116,12 @@ io.on('connection', (socket)=>
 		{
 			socket.join(data.room);
 			let room = rooms[data.room];
-			if (room != undefined)
+			if (room !== undefined)
 			{
 				room.addUser(socket.id, data.name);
 				io.in(room.name).emit('usersList', {'list': room.getUsersNames()});
-				if (room.share != null) socket.emit('share', room.share);
-				if (room.usersLength > 1 && room.timeUpdated != null)
+				if (room.share !== null) socket.emit('share', room.share);
+				if (room.usersLength > 1 && room.timeUpdated !== null)
 				{
 					room.event.currentTime = room.event.type === 'play' ? room.event.currentTime + 
 					(Date.now() - room.timeUpdated) / 1000 : room.event.currentTime;
@@ -146,7 +146,7 @@ io.on('connection', (socket)=>
 	socket.on('message', (msg)=>
 	{
 		let room = roomid[socket.id];
-		if (room != undefined)
+		if (room !== undefined)
 		{
 			room.event = msg;
 			room.timeUpdated = Date.now();
@@ -166,7 +166,7 @@ io.on('connection', (socket)=>
 	socket.on('disconnect', ()=>
 	{
 		let room = roomid[socket.id];
-		if (room != undefined)
+		if (room !== undefined)
 		{
 			room.disconnectUser(socket.id);
 			io.sockets.in(room.name).emit('usersList', {'list': room.getUsersNames()});
