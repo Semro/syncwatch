@@ -190,7 +190,11 @@ function errorOnEventNotification()
 		type: 'basic',
 		iconUrl: 'icons/icon128.png',
 		title: chrome.i18n.getMessage('notification_interact_title'),
-		message: chrome.i18n.getMessage('notification_interact_message')
+		message: chrome.i18n.getMessage('notification_interact_message'),
+		buttons:
+		[{
+			title: chrome.i18n.getMessage('notification_interact_button')
+		}]
 	})
 	chrome.notifications.clear('Interact with page');
 }
@@ -206,7 +210,7 @@ function onShareNotification(msg)
 		contextMessage: msg.url,
 		buttons:
 		[{
-			title: `${chrome.i18n.getMessage('notification_shared_button')}`
+			title: chrome.i18n.getMessage('notification_shared_button')
 		}]
 	})
 	chrome.notifications.clear('Share');
@@ -218,6 +222,11 @@ function onNotificationClicked(idNotification)
 	{
 		chrome.tabs.create({url: share.url});
 		chrome.notifications.clear('Share');
+	}
+	if (idNotification === 'Interact with page')
+	{
+		chrome.tabs.create({url: 'https://developers.google.com/web/updates/2017/09/autoplay-policy-changes'});
+		chrome.notifications.clear('Interact with page');
 	}
 }
 

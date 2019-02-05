@@ -37,6 +37,9 @@ notification_interact_title,message,Click somewhere on the page,Кликните
 notification_interact_message,message,"For example, click on video","Например, нажмите на видео"
 ,description,,
 ,placeholders,,
+notification_interact_button,message,More,Подробнее
+,description,,
+,placeholders,,
 notification_shared_title,message,shared with video,поделился видео
 ,description,,
 ,placeholders,,
