@@ -94,7 +94,7 @@ function changeSyncTab()
 {
 	chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs)=>
 	{
-		if (tabs[0].url === share.url)
+		if (share.url !== undefined && tabs[0].url === share.url)
 		{
 			syncTab = tabs[0];
 		}
