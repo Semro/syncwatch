@@ -4,6 +4,7 @@ var localURL = 'http://localhost:8080';
 var serverURL = 'https://syncevent.herokuapp.com';
 var debug = false;
 var connectionURL = debug === true ? localURL : serverURL;
+var isFirefox = isFirefox = typeof InstallTrigger !== 'undefined';
 
 var manifest = chrome.runtime.getManifest();
 var user =
@@ -204,37 +205,52 @@ function storageUser(user)
 	chrome.storage.sync.set(user);
 }
 
+function createNotification(id, options)
+{
+	chrome.notifications.create(id, options);
+	chrome.notifications.clear(id);
+}
+
 function errorOnEventNotification()
 {
-	chrome.notifications.create('Interact with page',
+	if (!isFirefox)
 	{
-		type: 'basic',
-		iconUrl: 'icons/icon128.png',
-		title: chrome.i18n.getMessage('notification_interact_title'),
-		message: chrome.i18n.getMessage('notification_interact_message'),
-		buttons:
-		[{
-			title: chrome.i18n.getMessage('notification_interact_button')
-		}]
-	})
-	chrome.notifications.clear('Interact with page');
+		createNotification('Interact with page',
+		{
+			type: 'basic',
+			iconUrl: 'icons/icon128.png',
+			title: chrome.i18n.getMessage('notification_interact_title'),
+			message: chrome.i18n.getMessage('notification_interact_message'),
+			buttons:
+			[{
+				title: chrome.i18n.getMessage('notification_interact_button')
+			}]
+		})
+	}
 }
 
 function onShareNotification(msg)
 {
-	chrome.notifications.create('Share',
+	let options =
 	{
 		type: 'basic',
 		iconUrl: 'icons/icon128.png',
 		title: `${msg.user} ${chrome.i18n.getMessage('notification_shared_title')}`,
-		message: msg.title,
-		contextMessage: msg.url,
-		buttons:
+		message: msg.title
+	};
+	if (isFirefox)
+	{
+		options.message = `${msg.title} (${msg.url})\n${chrome.i18n.getMessage('notification_shared_firefox')}`;
+	}
+	else
+	{	
+		options.buttons = 
 		[{
 			title: chrome.i18n.getMessage('notification_shared_button')
 		}]
-	})
-	chrome.notifications.clear('Share');
+		options.contextMessage = msg.url;
+	}
+	createNotification('Share', options)
 }
 
 function onNotificationClicked(idNotification)

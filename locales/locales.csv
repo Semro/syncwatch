@@ -43,7 +43,10 @@ notification_interact_button,message,More,Подробнее
 notification_shared_title,message,shared with video,поделился видео
 ,description,,
 ,placeholders,,
-notification_shared_button,message,Open link,Перейти по ссылке
+notification_shared_firefox,message,Click to open video,"Нажмите, чтобы открыть видео"
+,description,,
+,placeholders,,
+notification_shared_button,message,Open video,Открыть видео
 ,description,,
 ,placeholders,,
 socket_event_connect,message,connected,подключён
