@@ -149,18 +149,16 @@ function errorOnEvent(err)
 
 init();
 
-let observer = new MutationObserver(()=> //need optimization
+var observer = new MutationObserver(()=> // need optimization
 {
 	init();
 });
 
-let config =
+observer.observe(document.body,
 {
-   childList: true,
-   subtree: true
-}
-
-observer.observe(document.body, config);
+	childList: true,
+	subtree: true
+});
 
 chrome.runtime.onMessage.addListener((msg)=>
 {

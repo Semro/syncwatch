@@ -17,6 +17,7 @@ var socket = null;
 var status = 'disconnect';
 var list = [];
 var syncTab = null;
+var injectedTabsId = [];
 var share = {};
 
 function sendUserToPopup()
@@ -90,13 +91,33 @@ function shareVideoLink(tab)
 	socket.emit('share', msg);
 }
 
+function injectScriptInTab(tab)
+{
+	if (injectedTabsId[tab.id] === undefined)
+	{
+		chrome.tabs.executeScript(tab.id,
+		{
+			allFrames: true,
+			file: 'js/content.js',
+			runAt: 'document_end'
+		});
+		injectedTabsId[tab.id] = true;
+	}
+}
+
+function setSyncTab(tab)
+{
+	syncTab = tab;
+	injectScriptInTab(tab);
+}
+
 function changeSyncTab()
 {
 	chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs)=>
 	{
 		if (share.url !== undefined && tabs[0].url === share.url)
 		{
-			syncTab = tabs[0];
+			setSyncTab(tabs[0]);
 		}
 	})
 }
@@ -143,7 +164,7 @@ function initSockets()
 				{
 					if (tabs[0].url === share.url)
 					{
-						syncTab = tabs[0];
+						setSyncTab(tabs[0]);
 					}
 				});
 			}
@@ -239,7 +260,8 @@ chrome.tabs.onUpdated.addListener((tabid, changeInfo, tab)=>
 	{
 		if (tab.url === share.url)
 		{
-			syncTab = tab;
+			delete injectedTabsId[tab.id];
+			setSyncTab(tab);
 		}
 	}
 })
@@ -276,7 +298,7 @@ chrome.runtime.onMessage.addListener((msg, sender)=>
 		{
 			chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs)=>
 			{
-				syncTab = tabs[0];
+				setSyncTab(tabs[0]);
 				shareVideoLink(syncTab);
 			})
 			break;

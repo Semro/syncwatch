@@ -13,13 +13,6 @@
     	    "js/background.js"
     	]
 	},
-    "content_scripts":
-    [{
-		"matches": ["<all_urls>"],
-		"all_frames": true,
-        "js": ["js/content.js"],
-        "run_at": "document_end"
-    }],
 	"icons":
 	{
 		"16": "icons/icon16.png",
@@ -34,9 +27,9 @@
 	},
 	"permissions": 
 	[
-		"storage",
-		"activeTab",
+		"<all_urls>",
 		"tabs",
+		"storage",
 		"notifications"
 	]
 }
