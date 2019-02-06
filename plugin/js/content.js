@@ -103,6 +103,18 @@ function init()
 	nodes = Array.from(nodesCollection);
 }
 
+function sendMessageInRuntime(msg)
+{
+	try
+	{
+		chrome.runtime.sendMessage(msg);
+	}
+	catch (err)
+	{
+		if (debug === true) throw new Error(err);
+	}
+}
+
 function broadcast(event)
 {
 	let event_send = 
@@ -115,7 +127,7 @@ function broadcast(event)
 	};
 	if (event_send.type === 'progress') event_send.type = 'pause';
 	else if (event_send.type === 'playing') event_send.type = 'play';
-	chrome.runtime.sendMessage(
+	sendMessageInRuntime(
 	{
 		from: 'content',
 		data: event_send
@@ -140,7 +152,7 @@ function errorOnEvent(err)
 {
 	if (err.name === 'NotAllowedError')
 	{
-		chrome.runtime.sendMessage(
+		sendMessageInRuntime(
 		{
 			from: 'errorOnEvent'
 		});
