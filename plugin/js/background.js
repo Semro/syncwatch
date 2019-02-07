@@ -1,7 +1,7 @@
 'use strict';
 
 var localURL = 'http://localhost:8080';
-var serverURL = 'https://syncevent.herokuapp.com';
+var serverURL = 'http://syncwatch.eu-central-1.elasticbeanstalk.com/'; //'https://syncevent.herokuapp.com';
 var debug = false;
 var connectionURL = debug === true ? localURL : serverURL;
 var isFirefox = isFirefox = typeof InstallTrigger !== 'undefined';
