@@ -4,7 +4,7 @@ var localURL = 'http://localhost:8080';
 var serverURL = 'http://syncwatch.eu-central-1.elasticbeanstalk.com/'; //'https://syncevent.herokuapp.com';
 var debug = false;
 var connectionURL = debug === true ? localURL : serverURL;
-var isFirefox = isFirefox = typeof InstallTrigger !== 'undefined';
+var isFirefox = typeof InstallTrigger !== 'undefined';
 
 var manifest = chrome.runtime.getManifest();
 var user =
@@ -19,7 +19,7 @@ var status = 'disconnect';
 var list = [];
 var syncTab = null;
 var injectedTabsId = [];
-var share = {};
+var share = null;
 
 function sendUserToPopup()
 {
@@ -116,9 +116,12 @@ function changeSyncTab()
 {
 	chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs)=>
 	{
-		if (share.url !== undefined && tabs[0].url === share.url)
+		if (share !== null)
 		{
-			setSyncTab(tabs[0]);
+			if (tabs[0].url === share.url)
+			{
+				setSyncTab(tabs[0]);
+			}
 		}
 	})
 }
@@ -159,8 +162,8 @@ function initSockets()
 		{
 			if (msg.title !== undefined)
 			{
+				if (share !== null) onShareNotification(msg);
 				sendShareToPopup(msg);
-				onShareNotification(msg);
 				chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs)=>
 				{
 					if (tabs[0].url === share.url)
@@ -194,7 +197,7 @@ function initSocketEvents()
 	socket.on('disconnect', ()=>
 	{
 		list = [];
-		share = {};
+		share = null;
 		syncTab = null;
 		sendUsersListToPopup();
 	});
@@ -274,10 +277,13 @@ chrome.tabs.onUpdated.addListener((tabid, changeInfo, tab)=>
 {
 	if (changeInfo.status === 'complete')
 	{
-		if (tab.url === share.url)
+		if (share !== null)
 		{
-			delete injectedTabsId[tab.id];
-			setSyncTab(tab);
+			if (tab.url === share.url)
+			{
+				delete injectedTabsId[tab.id];
+				setSyncTab(tab);
+			}
 		}
 	}
 })

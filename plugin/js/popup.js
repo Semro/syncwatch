@@ -81,7 +81,7 @@ chrome.runtime.onMessage.addListener((msg)=>
 	}
 	if (msg.from === 'share')
 	{
-		if (Object.keys(msg.data).length !== 0)
+		if (share !== null)
 		{
 			sharedElement.href = msg.data.url;
 			sharedElement.innerText = '';
