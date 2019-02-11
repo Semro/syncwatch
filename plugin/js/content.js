@@ -139,12 +139,30 @@ function fireEvent(event)
 {
 	recieved = true;
 	recievedEvent = event.type;
-	if (event.type === 'ratechange') nodes[event.element].playbackRate = event.playbackRate;
-	else
+	switch (event.type)
 	{
-		nodes[event.element].currentTime = event.currentTime;
-		if (event.type === 'play') nodes[event.element].play().catch(errorOnEvent);
-		else if (event.type === 'pause') nodes[event.element].pause();
+		case 'play':
+		{
+			nodes[event.element].currentTime = event.currentTime;
+			nodes[event.element].play().catch(errorOnEvent);
+			break;
+		}
+		case 'pause':
+		{
+			nodes[event.element].pause();
+			nodes[event.element].currentTime = event.currentTime;
+			break;
+		}
+		case 'seeked':
+		{
+			nodes[event.element].currentTime = event.currentTime;
+			break;
+		}
+		case 'ratechange':
+		{
+			nodes[event.element].playbackRate = event.playbackRate;
+			break;
+		}
 	}
 }
 
