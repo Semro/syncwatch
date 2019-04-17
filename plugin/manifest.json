@@ -21,7 +21,7 @@
 	},
 	"browser_action":
 	{
-		"default_icon": "icons/icon16.png",
+		"default_icon": "icons/icon128.png",
 		"default_title": "SyncWatch",
 		"default_popup": "popup.html"
 	},
