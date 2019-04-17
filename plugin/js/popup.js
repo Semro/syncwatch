@@ -13,7 +13,7 @@ function getData(type)
 {
 	chrome.runtime.sendMessage(
 	{
-		from: 'get'+type
+		from: `get${ type }`
 	});
 }
 
@@ -31,7 +31,7 @@ function getFaviconFromUrl(url)
 			i++;
 		}
 	}
-	return url.substring(0, positions[2]+1) + 'favicon.ico';
+	return `${ url.substring(0, positions[2]+1) }favicon.ico`;
 }
 
 function displayElements(display)
@@ -71,13 +71,13 @@ chrome.runtime.onMessage.addListener((msg)=>
 					room: roomElement.value
 				};
 				chrome.runtime.sendMessage({from: 'join', data: user});
-				connectElement.value = `${chrome.i18n.getMessage('popup_button_connecting')}...`;
+				connectElement.value = `${ chrome.i18n.getMessage('popup_button_connecting') }...`;
 			}
 			displayElements('none');
 			sharedElement.style.display = 'none';
 		}
-		document.getElementById('status').innerText = `${chrome.i18n.getMessage('popup_status')}:\
-													   ${chrome.i18n.getMessage('socket_event_'+msg.status)}`;
+		document.getElementById('status').innerText = `${ chrome.i18n.getMessage('popup_status') }:\
+													   ${ chrome.i18n.getMessage('socket_event_'+msg.status) }`;
 	}
 	if (msg.from === 'share')
 	{

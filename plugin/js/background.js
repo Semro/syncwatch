@@ -154,7 +154,7 @@ function initSockets()
 					from: 'background',
 					data: msg
 				});
-				if (debug) console.log(`socket.on: ${msg.type}`);
+				if (debug) console.log(`socket.on: ${ msg.type }`);
 			}
 		});
 
@@ -190,16 +190,20 @@ function initSockets()
 
 function initSocketEvents()
 {
-	let socket_events = ['connect', 'connect_error', 'connect_timeout', 'error', 'disconnect', 'reconnect', 'reconnecting', 'reconnect_error', 'reconnect_failed']
+	let socket_events = ['connect', 'connect_error', 'connect_timeout', 'error',
+	'disconnect', 'reconnect', 'reconnecting', 'reconnect_error', 'reconnect_failed']
+
 	for (let i = 0; i < socket_events.length; i++)
 	{
 		let event = socket_events[i];
 		socket.on(event, ()=> { sendStatusToPopup(event); });
 	}
+
 	socket.on('connect', ()=>
 	{
 		socket.emit('join', user);
 	});
+
 	socket.on('disconnect', ()=>
 	{
 		list = [];
@@ -244,12 +248,12 @@ function onShareNotification(msg)
 	{
 		type: 'basic',
 		iconUrl: 'icons/icon128.png',
-		title: `${msg.user} ${chrome.i18n.getMessage('notification_shared_title')}`,
+		title: `${ msg.user } ${ chrome.i18n.getMessage('notification_shared_title') }`,
 		message: msg.title
 	};
 	if (isFirefox)
 	{
-		options.message = `${msg.title} (${msg.url})\n${chrome.i18n.getMessage('notification_shared_firefox')}`;
+		options.message = `${ msg.title } (${ msg.url })\n${ chrome.i18n.getMessage('notification_shared_firefox') }`;
 	}
 	else
 	{	

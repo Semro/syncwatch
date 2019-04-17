@@ -7,16 +7,17 @@ const http = require('http');
 const PORT = process.env.PORT || 8080;
 
 const server = express()
-	.use(express.static(__dirname + '/public'))
+	.use(express.static(`${ __dirname }/public`))
 	.listen(PORT, ()=> console.log(`Listening on ${ PORT }`));
 
 const io = socketIO(server);
+const wakeServerTime = 20;	// in minutes
+const afkTime = 15;			// in minutes
 
 let roomsLength = 0;
 let rooms = [], roomid = [];
 let wake = false;
 let countConnections = 0;
-let afkTime = 20; // in minutes
 
 function wakeServer(status)
 {
@@ -26,8 +27,8 @@ function wakeServer(status)
 		{
 			if (process.env.PORT !== undefined) http.get('http://syncevent.herokuapp.com');
 			else http.get('http://localhost:8080');
-			console.log(`Server waked! ${countConnections} users, ${roomsLength} rooms`);
-		}, 20 * 60000); // 20 minutes
+			console.log(`Server waked! ${ countConnections } users, ${ roomsLength } rooms`);
+		}, wakeServerTime * 60000);
 	}
 	else
 	{
@@ -87,7 +88,7 @@ class Room
 
 	disconnectUser(socket_id)
 	{
-		console.log(this.name+': '+this.getUser(socket_id)+' disconnected');
+		console.log(`${ this.name }: ${ this.getUser(socket_id) } disconnected`);
 		delete this.users[socket_id];
 		this.usersLength--;
 
@@ -137,7 +138,7 @@ io.on('connection', (socket)=>
 		{
 			socket.error(err);
 			socket.disconnect();
-			console.log('Error join: '+err);
+			console.log(`Error join: ${ err }`);
 		}
 		else
 		{
@@ -166,7 +167,7 @@ io.on('connection', (socket)=>
 			}
 			roomid[socket.id] = room;
 	
-			console.log('connected: '+countConnections+' '+JSON.stringify(data));
+			console.log(`connected: ${ countConnections } ${ JSON.stringify(data) }`);
 		}
 	});
 
@@ -178,7 +179,7 @@ io.on('connection', (socket)=>
 			room.event = msg;
 			room.timeUpdated = Date.now();
 			socket.broadcast.to(room.name).send(room.event);
-			console.log(room.name+': '+room.getUser(socket.id)+' '+JSON.stringify(msg));
+			console.log(`${ room.name }: ${ room.getUser(socket.id) } ${ JSON.stringify(msg) }`);
 		}
 	});
 
@@ -187,7 +188,7 @@ io.on('connection', (socket)=>
 		let room = roomid[socket.id];
 		room.share = msg;
 		socket.broadcast.to(room.name).emit('share', room.share);
-		console.log(room.name+' shared '+JSON.stringify(msg));
+		console.log(`${ room.name } shared ${ JSON.stringify(msg) }`);
 	});
 
 	socket.on('disconnect', ()=>
@@ -222,7 +223,7 @@ io.on('connection', (socket)=>
 		if (countConnections === 0)
 		{
 			wakeServer(false);
-			console.log('All connections aborted, server will shutdown in 30 minutes');
+			console.log(`All connections aborted, server will shutdown in ${ wakeServerTime } minutes`);
 		}
 	});
 });

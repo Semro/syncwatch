@@ -75,7 +75,7 @@ function iframeIndex(win)
 		{
 			if (win.parent.frames[i] == win) { return i; }
 		}
-		throw Error("In a frame, but could not find myself");
+		throw Error('In a frame, but could not find myself');
 	}
 	else
 	{
@@ -92,7 +92,7 @@ function iframeFullIndex(win)
 	}
 	else
 	{
-		return `${iframeFullIndex(win.parent)}${iframeIndex(win)}`;
+		return `${ iframeFullIndex(win.parent)}${iframeIndex(win) }`;
 	}
 }
 
@@ -132,7 +132,7 @@ function broadcast(event)
 		from: 'content',
 		data: event_send
 	});
-	if (debug) console.log("%cbroadcast: "+event_send.type, "background: #00590E;");
+	if (debug) console.log(`%cbroadcast: ${ event_send.type }`, 'background: #00590E;');
 }
 
 function fireEvent(event)
@@ -196,6 +196,6 @@ chrome.runtime.onMessage.addListener((msg)=>
 	{
 		msg = msg.data;
 		fireEvent(msg);
-		if (debug) console.log("%crecieved: "+msg.type, "background: #542100;");
+		if (debug) console.log(`%crecieved: ${ msg.type }`, 'background: #542100;');
 	}
 });
