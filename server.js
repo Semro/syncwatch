@@ -25,8 +25,8 @@ function wakeServer(status)
 		{
 			if (process.env.PORT !== undefined) http.get('http://syncevent.herokuapp.com');
 			else http.get('http://localhost:8080');
-			console.log('Server waked!');
-		}, 30 * 60000); // 30 minutes
+			console.log(`Server waked! ${countConnections} users, ${roomsLength} rooms`);
+		}, 20 * 60000); // 20 minutes
 	}
 	else
 	{
