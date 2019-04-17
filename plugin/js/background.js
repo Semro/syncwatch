@@ -172,8 +172,14 @@ function initSockets()
 					}
 				});
 			}
-		})
+		});
 
+		socket.on('afk', ()=>
+		{
+			onAfkNotification();
+			socket.close();
+		});
+		
 		socket.on('error', (msg)=> { sendErrorToPopup(msg) });
 	}
 	else
@@ -254,6 +260,17 @@ function onShareNotification(msg)
 		options.contextMessage = msg.url;
 	}
 	createNotification('Share', options)
+}
+
+function onAfkNotification()
+{
+	createNotification('afk',
+	{
+		type: 'basic',
+		iconUrl: 'icons/icon128.png',
+		title: chrome.i18n.getMessage('notification_afk_title'),
+		message: chrome.i18n.getMessage('notification_afk_message')
+	})
 }
 
 function onNotificationClicked(idNotification)

@@ -49,6 +49,12 @@ notification_shared_firefox,message,Click to open video,"Нажмите, что�
 notification_shared_button,message,Open video,Открыть видео
 ,description,,
 ,placeholders,,
+notification_afk_title,message,You have been disconnected (AFK),Вы отключены (АФК)
+,description,,
+,placeholders,,
+notification_afk_message,message,You were alone in the room for several minutes. To save traffic you have been disconnected.,Вы были одни в комнате на протяжении нескольких минут. Для экономии трафика вы были отключены.
+,description,,
+,placeholders,,
 socket_event_connect,message,connected,подключён
 ,description,,
 ,placeholders,,

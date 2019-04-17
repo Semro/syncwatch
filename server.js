@@ -16,6 +16,7 @@ let roomsLength = 0;
 let rooms = [], roomid = [];
 let wake = false;
 let countConnections = 0;
+let afkTime = 20; // in minutes
 
 function wakeServer(status)
 {
@@ -51,6 +52,15 @@ function checkUserNameAndRoom(data)
 		else return null;
 	}
 }
+
+function disconnectAfk(users)
+{
+	for (let user in users)
+	{
+		io.in(user).emit('afk');
+		console.log(`${ users[user] } - AFK`);
+	}
+}
 class Room
 {
 	constructor(name)
@@ -61,6 +71,7 @@ class Room
 		this.users = [];
 		this.usersLength = 0;
 		this.share = null;
+		this.afkTimer = null;
 	}
 
 	addUser(socket_id, name)
@@ -70,6 +81,8 @@ class Room
 			this.users[socket_id] = name;
 			this.usersLength++;
 		}
+
+		this.setAfkTimer();
 	}
 
 	disconnectUser(socket_id)
@@ -77,6 +90,8 @@ class Room
 		console.log(this.name+': '+this.getUser(socket_id)+' disconnected');
 		delete this.users[socket_id];
 		this.usersLength--;
+
+		this.setAfkTimer();
 	}
 
 	getUser(socket_id)
@@ -95,6 +110,18 @@ class Room
 	{
 		if (!this.usersLength) return true;
 		else return false;
+	}
+
+	setAfkTimer()
+	{
+		if (this.usersLength === 1)
+		{
+			this.afkTimer = setTimeout(disconnectAfk, afkTime * 60000, this.users);
+		}
+		else
+		{
+			clearTimeout(this.afkTimer);
+		}
 	}
 }
 
