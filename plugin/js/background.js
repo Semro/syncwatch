@@ -69,13 +69,13 @@ function sendErrorToPopup(err)
 	});
 }
 
-function broadcast(event, tabid)
+function broadcast(event, senderTab)
 {
 	if (status === 'connect' && syncTab !== null)
 	{
-		if (syncTab.id === tabid)
+		if (syncTab.url === senderTab.url)
 		{
-			socket.json.send(event);
+			socket.send(event);
 		}
 	}
 }
@@ -109,7 +109,7 @@ function injectScriptInTab(tab)
 function setSyncTab(tab)
 {
 	syncTab = tab;
-	injectScriptInTab(tab);
+	if (tab !== null) injectScriptInTab(tab);
 }
 
 function changeSyncTab()
@@ -121,6 +121,10 @@ function changeSyncTab()
 			if (tabs[0].url === share.url)
 			{
 				setSyncTab(tabs[0]);
+			}
+			else
+			{
+				setSyncTab(null);
 			}
 		}
 	})
@@ -164,13 +168,7 @@ function initSockets()
 			{
 				if (share !== null) onShareNotification(msg);
 				sendShareToPopup(msg);
-				chrome.tabs.query({active: true, lastFocusedWindow: true}, (tabs)=>
-				{
-					if (tabs[0].url === share.url)
-					{
-						setSyncTab(tabs[0]);
-					}
-				});
+				changeSyncTab();
 			}
 		});
 
@@ -325,7 +323,7 @@ chrome.runtime.onMessage.addListener((msg, sender)=>
 	{
 		case 'content':
 		{
-			broadcast(msg.data, sender.tab.id);
+			broadcast(msg.data, sender.tab);
 			break;
 		}
 		case 'join':
