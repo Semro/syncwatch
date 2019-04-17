@@ -2,7 +2,7 @@
   "name": "syncwatch",
   "version": "1.0.0",
   "engines": {
-    "node": "10.14.2"
+    "node": "10.15.3"
   },
   "description": "Syncing media events in browsers",
   "main": "server.js",
