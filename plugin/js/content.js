@@ -3,7 +3,7 @@
 var nodes = [];
 var recieved = false, recievedEvent;
 var loading = false;
-var debug = false;
+var debug = true;
 
 function onEvent(event)
 {
@@ -182,6 +182,7 @@ init();
 var observer = new MutationObserver(()=> // need optimization
 {
 	init();
+	console.warn('HELLO');
 });
 
 observer.observe(document.body,
@@ -190,12 +191,19 @@ observer.observe(document.body,
 	subtree: true
 });
 
-chrome.runtime.onMessage.addListener((msg)=>
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse)=>
 {
-	if (msg.from === 'background' && msg.data.location === iframeFullIndex(window))
+	if (msg.from === 'background')
 	{
-		msg = msg.data;
-		fireEvent(msg);
-		if (debug) console.log(`%crecieved: ${ msg.type }`, 'background: #542100;');
+		if (msg.data.location === iframeFullIndex(window))
+		{
+			msg = msg.data;
+			fireEvent(msg);
+			if (debug) console.log(`%crecieved: ${ msg.type }`, 'background: #542100;');
+		}
+		if (msg.data === 'isContentScriptInjected')
+		{
+			sendResponse('injected');
+		}
 	}
 });

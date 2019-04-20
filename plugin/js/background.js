@@ -2,7 +2,7 @@
 
 var localURL = 'http://localhost:8080';
 var serverURL = 'https://syncevent.herokuapp.com';
-var debug = false;
+var debug = true;
 var connectionURL = debug === true ? localURL : serverURL;
 var isFirefox = typeof InstallTrigger !== 'undefined';
 
@@ -92,18 +92,37 @@ function shareVideoLink(tab)
 	socket.emit('share', msg);
 }
 
+function isContentScriptInjected(tab)
+{
+	return new Promise((resolve, reject)=>
+	{
+		chrome.tabs.sendMessage(tab.id,
+		{
+			from: 'background',
+			data: 'isContentScriptInjected'
+		}, (response)=>
+		{
+			if (response !== 'injected') resolve(response)
+			else reject(response);
+		});
+	});
+}
+
 function injectScriptInTab(tab)
 {
-	if (injectedTabsId[tab.id] === undefined)
+	isContentScriptInjected(tab).then((response)=>
 	{
+		console.log(`response:\t${ response }`);
 		chrome.tabs.executeScript(tab.id,
 		{
 			allFrames: true,
 			file: 'js/content.js',
 			runAt: 'document_end'
 		});
-		injectedTabsId[tab.id] = true;
-	}
+	}, (reject)=>
+	{
+		console.log(`reject:\t${ reject }`);
+	});
 }
 
 function setSyncTab(tab)
