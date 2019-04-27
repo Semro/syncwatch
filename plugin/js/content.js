@@ -3,7 +3,7 @@
 var nodes = [];
 var recieved = false, recievedEvent;
 var loading = false;
-var debug = true;
+var debug = false;
 
 function onEvent(event)
 {
@@ -182,7 +182,6 @@ init();
 var observer = new MutationObserver(()=> // need optimization
 {
 	init();
-	console.warn('HELLO');
 });
 
 observer.observe(document.body,
@@ -203,7 +202,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse)=>
 		}
 		if (msg.data === 'isContentScriptInjected')
 		{
-			sendResponse('injected');
+			if (nodes.length !== 0)
+			{
+				sendResponse(true);
+			}
 		}
 	}
 });

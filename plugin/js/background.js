@@ -2,7 +2,7 @@
 
 var localURL = 'http://localhost:8080';
 var serverURL = 'https://syncevent.herokuapp.com';
-var debug = true;
+var debug = false;
 var connectionURL = debug === true ? localURL : serverURL;
 var isFirefox = typeof InstallTrigger !== 'undefined';
 
@@ -18,7 +18,6 @@ var socket = null;
 var status = 'disconnect';
 var list = [];
 var syncTab = null;
-var injectedTabsId = [];
 var share = null;
 
 function sendUserToPopup()
@@ -102,7 +101,7 @@ function isContentScriptInjected(tab)
 			data: 'isContentScriptInjected'
 		}, (response)=>
 		{
-			if (response !== 'injected') resolve(response)
+			if (response !== true) resolve(response)
 			else reject(response);
 		});
 	});
@@ -112,16 +111,12 @@ function injectScriptInTab(tab)
 {
 	isContentScriptInjected(tab).then((response)=>
 	{
-		console.log(`response:\t${ response }`);
 		chrome.tabs.executeScript(tab.id,
 		{
 			allFrames: true,
 			file: 'js/content.js',
 			runAt: 'document_end'
 		});
-	}, (reject)=>
-	{
-		console.log(`reject:\t${ reject }`);
 	});
 }
 
@@ -319,7 +314,6 @@ chrome.tabs.onUpdated.addListener((tabid, changeInfo, tab)=>
 		{
 			if (tab.url === share.url)
 			{
-				delete injectedTabsId[tab.id];
 				setSyncTab(tab);
 			}
 		}
