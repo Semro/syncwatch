@@ -93,7 +93,7 @@ function shareVideoLink(tab)
 
 function isContentScriptInjected(tab)
 {
-	return new Promise((resolve, reject)=>
+	return new Promise((resolve)=>
 	{
 		chrome.tabs.sendMessage(tab.id,
 		{
@@ -101,15 +101,14 @@ function isContentScriptInjected(tab)
 			data: 'isContentScriptInjected'
 		}, (response)=>
 		{
-			if (response !== true) resolve(response)
-			else reject(response);
+			if (chrome.runtime.lastError || response !== true) resolve();
 		});
 	});
 }
 
 function injectScriptInTab(tab)
 {
-	isContentScriptInjected(tab).then((response)=>
+	isContentScriptInjected(tab).then(()=>
 	{
 		chrome.tabs.executeScript(tab.id,
 		{
