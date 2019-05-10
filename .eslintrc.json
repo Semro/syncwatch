@@ -1,0 +1,30 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "script",
+    "ecmaFeatures": {
+      "impliedStrict": true
+    }
+  },
+  "extends": ["airbnb", "prettier"],
+  "plugins": ["prettier"],
+  "env": {
+    "shared-node-browser": true,
+    "webextensions": true
+  },
+  "globals": {
+    "document": "readonly",
+    "window": "readonly",
+    "navigator": "readonly",
+    "MutationObserver": "readonly",
+    "gc": "readonly",
+    "io": "readonly"
+  },
+  "rules": {
+    "prettier/prettier": ["error"],
+    "no-plusplus": "off",
+    "default-case": "off",
+    "guard-for-in": "off",
+    "no-restricted-syntax": "off"
+  }
+}
