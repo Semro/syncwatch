@@ -100,7 +100,7 @@ function injectScriptInTab(tab) {
       () => {
         const e = chrome.runtime.lastError;
         if (e !== undefined) {
-          console.log('Injecting in chrome://');
+          console.warn('Injecting error: ', e.message);
         }
       }
     );
