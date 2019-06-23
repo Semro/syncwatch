@@ -58,7 +58,7 @@ chrome.runtime.onMessage.addListener(msg => {
 													   ${chrome.i18n.getMessage(`socket_event_${msg.status}`)}`;
   }
   if (msg.from === 'share') {
-    if (msg.data !== undefined) {
+    if (msg.data !== null) {
       sharedElement.href = msg.data.url;
       sharedElement.innerText = '';
       const img = document.createElement('img');
