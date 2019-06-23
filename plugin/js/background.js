@@ -90,11 +90,20 @@ function isContentScriptInjected(tab) {
 
 function injectScriptInTab(tab) {
   isContentScriptInjected(tab).then(() => {
-    chrome.tabs.executeScript(tab.id, {
-      allFrames: true,
-      file: 'js/content.js',
-      runAt: 'document_end'
-    });
+    chrome.tabs.executeScript(
+      tab.id,
+      {
+        allFrames: true,
+        file: 'js/content.js',
+        runAt: 'document_end'
+      },
+      () => {
+        const e = chrome.runtime.lastError;
+        if (e !== undefined) {
+          console.log('Injecting in chrome://');
+        }
+      }
+    );
   });
 }
 
