@@ -1,4 +1,4 @@
-const debug = true;
+const debug = false;
 
 const localURL = 'http://localhost:8080';
 const serverURL = 'https://syncevent.herokuapp.com';

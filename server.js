@@ -1,4 +1,4 @@
-const debug = true;
+const debug = false;
 
 const express = require('express');
 const socketIO = require('socket.io');

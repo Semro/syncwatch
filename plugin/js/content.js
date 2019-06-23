@@ -1,4 +1,4 @@
-const debug = true;
+const debug = false;
 
 let nodes = [];
 let recieved = false;
