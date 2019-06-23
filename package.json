@@ -2,7 +2,7 @@
   "name": "syncwatch",
   "version": "1.0.0",
   "engines": {
-    "node": "12.3.1"
+    "node": "12.4"
   },
   "description": "Extension to watch videos together",
   "main": "server.js",
