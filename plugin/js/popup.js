@@ -63,7 +63,7 @@ chrome.runtime.onMessage.addListener(msg => {
       sharedElement.innerText = '';
       const img = document.createElement('img');
       const span = document.createElement('span');
-      [img.style.height, img.style.width] = '16px';
+      img.style.height = '16px';
       img.src = getFaviconFromUrl(msg.data.url);
       span.innerText = msg.data.title;
       sharedElement.appendChild(img);
