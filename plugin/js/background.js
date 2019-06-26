@@ -215,9 +215,7 @@ function initSocketEvents() {
 
   socket.on('disconnect', () => {
     list = [];
-    share = null;
     syncTab = null;
-    sendUsersListToPopup();
   });
 }
 
@@ -248,11 +246,9 @@ function initSockets() {
     });
 
     socket.on('share', msg => {
-      if (msg.title !== undefined) {
-        if (share !== null) onShareNotification(msg);
-        sendShareToPopup(msg);
-        changeSyncTab();
-      }
+      if (share === null || share.url !== msg.url) onShareNotification(msg);
+      sendShareToPopup(msg);
+      changeSyncTab();
     });
 
     socket.on('afk', () => {
