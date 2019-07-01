@@ -4,8 +4,8 @@
 SyncWatch is extension for browsers which lets you watch videos together with friends synchrounosly.
 
 ## Browsers support
-|[<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />Firefox ](https://addons.mozilla.org/ru/firefox/addon/syncwatch/) |[<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />Chrome](https://chrome.google.com/webstore/detail/syncwatch/ggiafipgeeaaahnjamgpjcgkdpanhddg)|
-| --------- | --------- |
+|[<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />Firefox ](https://addons.mozilla.org/ru/firefox/addon/syncwatch/)|[<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />Chrome](https://chrome.google.com/webstore/detail/syncwatch/ggiafipgeeaaahnjamgpjcgkdpanhddg)|[<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />Opera](https://addons.opera.com/ru/extensions/details/syncwatch/)|
+| --------- | --------- | --------- |
 
 ## How to use
 1. Install extension.
