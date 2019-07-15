@@ -2,7 +2,7 @@
   "name": "syncwatch",
   "version": "1.0.0",
   "engines": {
-    "node": "12.4"
+    "node": "^12.6"
   },
   "description": "Extension to watch videos together",
   "main": "server.js",
@@ -17,17 +17,17 @@
   "author": "Semro",
   "license": "MIT",
   "dependencies": {
-    "express": "4.17",
+    "express": "^4.17.1",
     "socket.io": "2.2"
   },
   "devDependencies": {
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb": "^17.1.0",
-    "eslint-config-prettier": "^4.2.0",
-    "eslint-plugin-import": "^2.17.2",
-    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint": "^6",
+    "eslint-config-airbnb": "^17.1.1",
+    "eslint-config-prettier": "^6",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-react": "^7.13.0",
-    "prettier": "^1.17.0"
+    "eslint-plugin-react": "^7.14.2",
+    "prettier": "^1.18.2"
   }
 }
