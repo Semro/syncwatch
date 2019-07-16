@@ -117,8 +117,6 @@ function changeSyncTab() {
     if (share !== null && tabs.length !== 0) {
       if (tabs[0].url === share.url) {
         setSyncTab(tabs[0]);
-      } else {
-        setSyncTab(null);
       }
     }
   });
