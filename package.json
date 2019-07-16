@@ -17,6 +17,7 @@
   "author": "Semro",
   "license": "MIT",
   "dependencies": {
+    "csv-locales": "^1.2.2",
     "express": "^4.17.1",
     "socket.io": "2.2"
   },
