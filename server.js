@@ -26,7 +26,6 @@ function wakeServer(status) {
   if (status) {
     wake = setInterval(() => {
       if (!debug) http.get('http://syncevent.herokuapp.com');
-      console.log('Server waked!');
       printStatus();
     }, wakeServerTime * 60000);
   } else {
@@ -103,9 +102,10 @@ class Room {
   }
 }
 
+wakeServer(true);
+
 io.on('connection', socket => {
   countConnections++;
-  if (!wake) wakeServer(true);
 
   socket.on('join', data => {
     const err = checkUserNameAndRoom(data);
@@ -178,13 +178,8 @@ io.on('connection', socket => {
         console.log('All authorized users disconnected!');
       }
     }
-    //		else console.log('try disconnect undefined user');
+    // else console.log('try disconnect undefined user');
 
     countConnections--;
-
-    if (countConnections === 0) {
-      wakeServer(false);
-      console.log(`All connections aborted, server will shutdown in about 30 minutes`);
-    }
   });
 });
