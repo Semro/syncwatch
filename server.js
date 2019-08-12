@@ -10,7 +10,7 @@ const server = express()
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 const io = socketIO(server);
 const wakeServerTime = 20; // in minutes
-const afkTime = 15; // in minutes
+const afkTime = 60; // in minutes
 
 let roomsLength = 0;
 let rooms = [];
