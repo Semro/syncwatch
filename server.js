@@ -19,7 +19,9 @@ let wake = false;
 let countConnections = 0;
 
 function printStatus() {
-  console.log(`${countConnections} user(s), ${roomsLength} room(s)`);
+  if (countConnections !== 0) {
+    console.log(`${countConnections} user(s), ${roomsLength} room(s)`);
+  }
 }
 
 function wakeServer(status) {
