@@ -1,6 +1,6 @@
 {
-  "name": "syncwatch",
-  "version": "1.0.0",
+  "name": "syncwatch-extension",
+  "version": "0.0.1",
   "engines": {
     "node": "^12.6"
   },
