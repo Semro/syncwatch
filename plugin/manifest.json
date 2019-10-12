@@ -4,6 +4,10 @@
   "description": "__MSG_appDesc__",
   "version": "0.316",
   "default_locale": "en",
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
   "background": {
     "persistent": true,
     "scripts": ["js/socket.io.slim.js", "js/background.js"]
