@@ -1,11 +1,7 @@
 const debug = false;
 
-const localURL = 'http://localhost:8080';
-const serverURL = 'https://syncevent.herokuapp.com';
-const connectionURL = debug === true ? localURL : serverURL;
-const isFirefox = typeof InstallTrigger !== 'undefined';
 const manifest = chrome.runtime.getManifest();
-
+const isFirefox = typeof InstallTrigger !== 'undefined';
 let user = {
   name: null,
   room: null,
@@ -17,6 +13,15 @@ let status = 'disconnect';
 let list = [];
 let syncTab = null;
 let share = null;
+let connectionUrl = '';
+
+function initUrlInStorage() {
+  chrome.storage.sync.get('connectionUrl', obj => {
+    if (obj.connectionUrl === undefined) {
+      chrome.storage.sync.set({ connectionUrl: 'https://syncevent.herokuapp.com' });
+    }
+  });
+}
 
 function sendUserToPopup() {
   new Promise(resolve => {
@@ -218,46 +223,44 @@ function initSocketEvents() {
 }
 
 function initSockets() {
-  if (socket === null) {
-    socket = io.connect(connectionURL, {
-      reconnection: true,
-      reconnectionDelayMax: 5000,
-      reconnectionDelay: 1000
-    });
+  socket = io.connect(connectionUrl, {
+    reconnection: true,
+    reconnectionDelayMax: 5000,
+    reconnectionDelay: 1000
+  });
 
-    initSocketEvents();
+  initSocketEvents();
 
-    socket.on('usersList', msg => {
-      // eslint-disable-next-line prefer-destructuring
-      list = msg.list;
-      sendUsersListToPopup();
-    });
+  socket.on('usersList', msg => {
+    // eslint-disable-next-line prefer-destructuring
+    list = msg.list;
+    sendUsersListToPopup();
+  });
 
-    socket.on('message', msg => {
-      if (syncTab !== null) {
-        chrome.tabs.sendMessage(syncTab.id, {
-          from: 'background',
-          data: msg
-        });
-        if (debug) console.log(`socket.on: ${msg.type}`);
-      }
-    });
+  socket.on('message', msg => {
+    if (syncTab !== null) {
+      chrome.tabs.sendMessage(syncTab.id, {
+        from: 'background',
+        data: msg
+      });
+      if (debug) console.log(`socket.on: ${msg.type}`);
+    }
+  });
 
-    socket.on('share', msg => {
-      if (share === null || share.url !== msg.url) onShareNotification(msg);
-      sendShareToPopup(msg);
-      changeSyncTab();
-    });
+  socket.on('share', msg => {
+    if (share === null || share.url !== msg.url) onShareNotification(msg);
+    sendShareToPopup(msg);
+    changeSyncTab();
+  });
 
-    socket.on('afk', () => {
-      onAfkNotification();
-      socket.close();
-    });
+  socket.on('afk', () => {
+    onAfkNotification();
+    socket.close();
+  });
 
-    socket.on('error', msg => {
-      sendErrorToPopup(msg);
-    });
-  } else if (socket.disconnected) socket.open();
+  socket.on('error', msg => {
+    sendErrorToPopup(msg);
+  });
 }
 
 // eslint-disable-next-line no-shadow
@@ -284,6 +287,16 @@ chrome.tabs.onActivated.addListener(() => {
 
 chrome.windows.onFocusChanged.addListener(() => {
   changeSyncTab();
+});
+
+chrome.storage.sync.onChanged.addListener(obj => {
+  if (obj.connectionUrl) {
+    connectionUrl = obj.connectionUrl.newValue;
+    if (status === 'connect') {
+      socket.disconnect();
+      initSockets();
+    }
+  }
 });
 
 chrome.runtime.onMessage.addListener((msg, sender) => {
@@ -337,3 +350,5 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
     }
   }
 });
+
+initUrlInStorage();

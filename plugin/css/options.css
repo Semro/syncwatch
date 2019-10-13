@@ -1,0 +1,19 @@
+#main {
+  width: 450px;
+  padding: 4px;
+}
+
+.block {
+  display: inline;
+  width: 260px;
+  margin: 0 0 3px 0;
+}
+
+#status {
+  float: right;
+}
+
+#save {
+  width: 150px;
+  float: right;
+}

@@ -1,28 +1,25 @@
-function saveOptions(obj) {
-  chrome.storage.sync.set(obj);
+const serverUrlElement = document.getElementById('serverUrl');
+
+function saveOptions() {
+  chrome.storage.sync.set(
+    {
+      connectionUrl: serverUrlElement.value
+    },
+    () => {
+      const status = document.getElementById('status');
+      status.innerText = 'Options saved.';
+      setTimeout(() => {
+        status.innerText = '';
+      }, 1000);
+    }
+  );
 }
 
 function restoreOptions() {
-  chrome.storage.sync.get('options', obj => {
-    console.log(obj);
+  chrome.storage.sync.get('connectionUrl', obj => {
+    serverUrlElement.value = obj.connectionUrl;
   });
 }
-saveOptions({
-  options: {
-    server: {
-      servers: [
-        {
-          name: 'Official',
-          url: 'https://syncevent.herokuapp.com',
-          selected: true
-        },
-        {
-          name: 'localhost',
-          url: 'https://localhost:8080',
-          selected: false
-        }
-      ]
-    }
-  }
-});
-restoreOptions();
+
+document.addEventListener('DOMContentLoaded', restoreOptions);
+document.getElementById('save').addEventListener('click', saveOptions);

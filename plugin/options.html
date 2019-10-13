@@ -2,9 +2,19 @@
 <html>
   <head>
     <title>Options</title>
+    <link rel="stylesheet" type="text/css" href="css/ui.css" />
+    <link rel="stylesheet" type="text/css" href="css/options.css" />
   </head>
   <body>
-      Options page
+    <div id="main">
+      <div>
+        <h1>Server</h1>
+        <div id="status"></div>
+      </div>
+      URL:
+      <input class="block" id="serverUrl" type="url" name="serverUrl" />
+      <input class="block button" id="save" type="button" name="save" value="save" />
+    </div>
   </body>
   <script src="js/options.js"></script>
 </html>
