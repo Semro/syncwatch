@@ -289,7 +289,7 @@ chrome.windows.onFocusChanged.addListener(() => {
   changeSyncTab();
 });
 
-chrome.storage.sync.onChanged.addListener(obj => {
+chrome.storage.onChanged.addListener(obj => {
   if (obj.connectionUrl) {
     connectionUrl = obj.connectionUrl.newValue;
     if (status === 'connect') {
