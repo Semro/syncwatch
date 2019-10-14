@@ -13,12 +13,14 @@ let status = 'disconnect';
 let list = [];
 let syncTab = null;
 let share = null;
-let connectionUrl = '';
+let connectionUrl = 'https://syncevent.herokuapp.com';
 
-function initUrlInStorage() {
+function initConnectionUrl() {
   chrome.storage.sync.get('connectionUrl', obj => {
     if (obj.connectionUrl === undefined) {
       chrome.storage.sync.set({ connectionUrl: 'https://syncevent.herokuapp.com' });
+    } else {
+      connectionUrl = obj.connectionUrl;
     }
   });
 }
@@ -351,4 +353,4 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
   }
 });
 
-initUrlInStorage();
+initConnectionUrl();
