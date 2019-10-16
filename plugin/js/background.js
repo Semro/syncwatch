@@ -257,7 +257,7 @@ function initSockets() {
 
   socket.on('afk', () => {
     onAfkNotification();
-    socket.close();
+    socket.disconnect();
   });
 
   socket.on('error', msg => {
@@ -339,7 +339,7 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
       break;
     }
     case 'disconnect': {
-      socket.close();
+      socket.disconnect();
       break;
     }
     case 'console': {
