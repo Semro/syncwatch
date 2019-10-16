@@ -296,6 +296,9 @@ chrome.storage.onChanged.addListener(obj => {
     connectionUrl = obj.connectionUrl.newValue;
     if (status === 'connect') {
       socket.disconnect();
+      list = [];
+      syncTab = null;
+      share = null;
       initSockets();
     }
   }
