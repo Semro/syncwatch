@@ -32,3 +32,7 @@ socket_error_write_name,message,Write your name,Напишите своё имя
 socket_error_write_room,message,Write room name,Напишите название комнаты
 socket_error_name_length,message,Name length must be between 2 and 24,Длина имени должна быть от 2 до 24
 socket_error_room_length,message,Room length must be between 2 and 24,Длина названия комнаты должна быть от 2 до 24
+options_button_save,message,Save,Сохранить
+options_saved,message,Options saved,Настройки сохранены
+options_server,message,Server,Сервер
+options_server_warning,message,If extension reconnects infinitely then put correct URL and reload extension,"Если расширение бесконечно переподключается, то введите корректный URL и перезагрузите расширение"

@@ -7,7 +7,7 @@ function saveOptions() {
     },
     () => {
       const status = document.getElementById('status');
-      status.innerText = 'Options saved.';
+      status.innerText = chrome.i18n.getMessage('options_saved');
       setTimeout(() => {
         status.innerText = '';
       }, 1000);
@@ -16,6 +16,12 @@ function saveOptions() {
 }
 
 function restoreOptions() {
+  document.getElementById('options_server').innerText = chrome.i18n.getMessage('options_server');
+  document.getElementById('options_server_warning').innerText = chrome.i18n.getMessage(
+    'options_server_warning'
+  );
+  document.getElementById('save').value = chrome.i18n.getMessage('options_button_save');
+
   chrome.storage.sync.get('connectionUrl', obj => {
     serverUrlElement.value = obj.connectionUrl;
   });
