@@ -1,4 +1,5 @@
 const debug = false;
+const logs = false;
 
 const express = require('express');
 const socketIO = require('socket.io');
@@ -7,7 +8,9 @@ const http = require('http');
 const PORT = process.env.PORT || 8080;
 const server = express()
   .use(express.static(`${__dirname}/public`))
-  .listen(PORT, () => console.log(`Listening on ${PORT}`));
+  .listen(PORT, () => {
+    if (logs) console.log(`Listening on ${PORT}`);
+  });
 const io = socketIO(server);
 const wakeServerTime = 20; // in minutes
 const afkTime = 60; // in minutes
@@ -20,7 +23,7 @@ let countConnections = 0;
 
 function printStatus() {
   if (countConnections !== 0) {
-    console.log(`${countConnections} user(s), ${roomsLength} room(s)`);
+    if (logs) console.log(`${countConnections} user(s), ${roomsLength} room(s)`);
   }
 }
 
@@ -175,9 +178,9 @@ io.on('connection', socket => {
         roomid = [];
         if (global.gc) {
           gc();
-          console.log('Collected garbage!');
+          if (logs) console.log('Collected garbage!');
         }
-        console.log('All authorized users disconnected!');
+        if (logs) console.log('All authorized users disconnected!');
       }
     }
     // else console.log('try disconnect undefined user');
