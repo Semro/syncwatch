@@ -21,10 +21,11 @@
     "io": "readonly"
   },
   "rules": {
-    "prettier/prettier": ["error"],
+    "prettier/prettier": ["error", { "endOfLine": "auto" }],
     "no-plusplus": "off",
     "default-case": "off",
     "guard-for-in": "off",
-    "no-restricted-syntax": "off"
+    "no-restricted-syntax": "off",
+    "no-console": "off"
   }
 }
