@@ -9,7 +9,7 @@ const errorElement = document.getElementById('error');
 
 function getData(type) {
   chrome.runtime.sendMessage({
-    from: `get${type}`
+    from: `get${type}`,
   });
 }
 
@@ -32,7 +32,7 @@ shareElement.onclick = () => {
   chrome.runtime.sendMessage({ from: 'popupShare' });
 };
 
-chrome.runtime.onMessage.addListener(msg => {
+chrome.runtime.onMessage.addListener((msg) => {
   if (msg.from === 'status') {
     if (msg.status === 'connect') {
       connectElement.value = chrome.i18n.getMessage('popup_button_disconnect');
@@ -46,7 +46,7 @@ chrome.runtime.onMessage.addListener(msg => {
         errorElement.style.display = 'none';
         const user = {
           name: nameElement.value,
-          room: roomElement.value
+          room: roomElement.value,
         };
         chrome.runtime.sendMessage({ from: 'join', data: user });
         connectElement.value = `${chrome.i18n.getMessage('popup_button_connecting')}...`;

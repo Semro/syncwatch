@@ -10,7 +10,10 @@
   },
   "background": {
     "persistent": true,
-    "scripts": ["js/socket.io.slim.js", "js/background.js"]
+    "scripts": [
+      "js/socket.io.slim.js",
+      "js/background.js"
+    ]
   },
   "icons": {
     "16": "icons/icon16.png",
@@ -23,5 +26,10 @@
     "default_popup": "popup.html"
   },
   "incognito": "split",
-  "permissions": ["<all_urls>", "tabs", "storage", "notifications"]
+  "permissions": [
+    "<all_urls>",
+    "tabs",
+    "storage",
+    "notifications"
+  ]
 }

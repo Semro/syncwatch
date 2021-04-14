@@ -6,7 +6,7 @@ let user = {
   name: null,
   room: null,
   version: null,
-  agent: null
+  agent: null,
 };
 let socket = null;
 let status = 'disconnect';
@@ -16,7 +16,7 @@ let share = null;
 let connectionUrl = 'https://syncevent.herokuapp.com';
 
 function initConnectionUrl() {
-  chrome.storage.sync.get('connectionUrl', obj => {
+  chrome.storage.sync.get('connectionUrl', (obj) => {
     if (obj.connectionUrl === undefined) {
       chrome.storage.sync.set({ connectionUrl: 'https://syncevent.herokuapp.com' });
     } else {
@@ -26,9 +26,9 @@ function initConnectionUrl() {
 }
 
 function sendUserToPopup() {
-  new Promise(resolve => {
-    chrome.storage.sync.get(user, result => resolve(result));
-  }).then(result => {
+  new Promise((resolve) => {
+    chrome.storage.sync.get(user, (result) => resolve(result));
+  }).then((result) => {
     chrome.runtime.sendMessage({ from: 'sendUser', data: result });
   });
 }
@@ -37,7 +37,7 @@ function sendStatusToPopup(newStatus) {
   if (newStatus !== undefined) status = newStatus;
   chrome.runtime.sendMessage({
     from: 'status',
-    status
+    status,
   });
 }
 
@@ -51,14 +51,14 @@ function sendShareToPopup(data) {
 function sendUsersListToPopup() {
   chrome.runtime.sendMessage({
     from: 'sendUsersList',
-    list
+    list,
   });
 }
 
 function sendErrorToPopup(err) {
   chrome.runtime.sendMessage({
     from: 'sendError',
-    error: err
+    error: err,
   });
 }
 
@@ -74,21 +74,21 @@ function shareVideoLink(tab) {
   const msg = {
     title: tab.title,
     url: tab.url,
-    user: user.name
+    user: user.name,
   };
   sendShareToPopup(msg);
   socket.emit('share', msg);
 }
 
 function isContentScriptInjected(tab) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     chrome.tabs.sendMessage(
       tab.id,
       {
         from: 'background',
-        data: 'isContentScriptInjected'
+        data: 'isContentScriptInjected',
       },
-      response => {
+      (response) => {
         if (chrome.runtime.lastError || response !== true) resolve();
       }
     );
@@ -102,7 +102,7 @@ function injectScriptInTab(tab) {
       {
         allFrames: true,
         file: 'js/content.js',
-        runAt: 'document_end'
+        runAt: 'document_end',
       },
       () => {
         const e = chrome.runtime.lastError;
@@ -120,7 +120,7 @@ function setSyncTab(tab) {
 }
 
 function changeSyncTab() {
-  chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
+  chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
     if (share !== null && tabs.length !== 0) {
       if (tabs[0].url === share.url) {
         setSyncTab(tabs[0]);
@@ -143,9 +143,9 @@ function errorOnEventNotification() {
       message: chrome.i18n.getMessage('notification_interact_message'),
       buttons: [
         {
-          title: chrome.i18n.getMessage('notification_interact_button')
-        }
-      ]
+          title: chrome.i18n.getMessage('notification_interact_button'),
+        },
+      ],
     });
   }
 }
@@ -155,7 +155,7 @@ function onShareNotification(msg) {
     type: 'basic',
     iconUrl: 'icons/icon128.png',
     title: `${msg.user} ${chrome.i18n.getMessage('notification_shared_title')}`,
-    message: msg.title
+    message: msg.title,
   };
   if (isFirefox) {
     options.message = `${msg.title} (${msg.url})\n${chrome.i18n.getMessage(
@@ -164,8 +164,8 @@ function onShareNotification(msg) {
   } else {
     options.buttons = [
       {
-        title: chrome.i18n.getMessage('notification_shared_button')
-      }
+        title: chrome.i18n.getMessage('notification_shared_button'),
+      },
     ];
     options.contextMessage = msg.url;
   }
@@ -177,7 +177,7 @@ function onAfkNotification() {
     type: 'basic',
     iconUrl: 'icons/icon128.png',
     title: chrome.i18n.getMessage('notification_afk_title'),
-    message: chrome.i18n.getMessage('notification_afk_message')
+    message: chrome.i18n.getMessage('notification_afk_message'),
   });
 }
 
@@ -188,7 +188,7 @@ function onNotificationClicked(idNotification) {
   }
   if (idNotification === 'Interact with page') {
     chrome.tabs.create({
-      url: 'https://developers.google.com/web/updates/2017/09/autoplay-policy-changes'
+      url: 'https://developers.google.com/web/updates/2017/09/autoplay-policy-changes',
     });
     chrome.notifications.clear('Interact with page');
   }
@@ -204,7 +204,7 @@ function initSocketEvents() {
     'reconnect',
     'reconnecting',
     'reconnect_error',
-    'reconnect_failed'
+    'reconnect_failed',
   ];
 
   for (let i = 0; i < socketEvents.length; i++) {
@@ -228,28 +228,28 @@ function initSockets() {
   socket = io.connect(connectionUrl, {
     reconnection: true,
     reconnectionDelayMax: 5000,
-    reconnectionDelay: 1000
+    reconnectionDelay: 1000,
   });
 
   initSocketEvents();
 
-  socket.on('usersList', msg => {
+  socket.on('usersList', (msg) => {
     // eslint-disable-next-line prefer-destructuring
     list = msg.list;
     sendUsersListToPopup();
   });
 
-  socket.on('message', msg => {
+  socket.on('message', (msg) => {
     if (syncTab !== null) {
       chrome.tabs.sendMessage(syncTab.id, {
         from: 'background',
-        data: msg
+        data: msg,
       });
       if (debug) console.log(`socket.on: ${msg.type}`);
     }
   });
 
-  socket.on('share', msg => {
+  socket.on('share', (msg) => {
     if (share === null || share.url !== msg.url) onShareNotification(msg);
     sendShareToPopup(msg);
     changeSyncTab();
@@ -260,7 +260,7 @@ function initSockets() {
     socket.disconnect();
   });
 
-  socket.on('error', msg => {
+  socket.on('error', (msg) => {
     sendErrorToPopup(msg);
   });
 }
@@ -291,7 +291,7 @@ chrome.windows.onFocusChanged.addListener(() => {
   changeSyncTab();
 });
 
-chrome.storage.onChanged.addListener(obj => {
+chrome.storage.onChanged.addListener((obj) => {
   if (obj.connectionUrl) {
     connectionUrl = obj.connectionUrl.newValue;
     if (status === 'connect') {
@@ -317,7 +317,7 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
       break;
     }
     case 'popupShare': {
-      chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
+      chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
         setSyncTab(tabs[0]);
         shareVideoLink(syncTab);
       });

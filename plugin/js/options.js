@@ -3,7 +3,7 @@ const serverUrlElement = document.getElementById('serverUrl');
 function saveOptions() {
   chrome.storage.sync.set(
     {
-      connectionUrl: serverUrlElement.value
+      connectionUrl: serverUrlElement.value,
     },
     () => {
       const status = document.getElementById('status');
@@ -22,7 +22,7 @@ function restoreOptions() {
   );
   document.getElementById('save').value = chrome.i18n.getMessage('options_button_save');
 
-  chrome.storage.sync.get('connectionUrl', obj => {
+  chrome.storage.sync.get('connectionUrl', (obj) => {
     serverUrlElement.value = obj.connectionUrl;
   });
 }

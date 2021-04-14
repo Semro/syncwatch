@@ -43,13 +43,13 @@ function broadcast(event) {
     type: event.type,
     element: nodes.indexOf(event.target),
     currentTime: event.target.currentTime,
-    playbackRate: event.target.playbackRate
+    playbackRate: event.target.playbackRate,
   };
   if (eventSend.type === 'progress') eventSend.type = 'pause';
   else if (eventSend.type === 'playing') eventSend.type = 'play';
   sendMessageInRuntime({
     from: 'content',
-    data: eventSend
+    data: eventSend,
   });
   if (debug) console.log(`%cbroadcast: ${eventSend.type}`, 'background: #00590E;');
 }
@@ -100,7 +100,7 @@ function init() {
 function errorOnEvent(err) {
   if (err.name === 'NotAllowedError') {
     sendMessageInRuntime({
-      from: 'errorOnEvent'
+      from: 'errorOnEvent',
     });
   }
 }
@@ -138,7 +138,7 @@ const observer = new MutationObserver(() => {
 
 observer.observe(document.body, {
   childList: true,
-  subtree: true
+  subtree: true,
 });
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
