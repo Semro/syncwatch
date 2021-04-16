@@ -227,8 +227,8 @@ function initSocketEvents() {
 function initSockets() {
   socket = io.connect(connectionUrl, {
     reconnection: true,
-    reconnectionDelayMax: 5000,
-    reconnectionDelay: 1000,
+    reconnectionDelayMax: 10000,
+    reconnectionDelay: 5000,
   });
 
   initSocketEvents();
