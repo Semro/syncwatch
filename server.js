@@ -7,10 +7,11 @@ const io = require('socket.io')(server, {
   allowEIO3: true,
   cors: {
     origin: false,
-    methods: ['GET', 'POST']
-  }
+    methods: ['GET', 'POST'],
+  },
 });
 const http = require('http');
+const { RateLimiterMemory } = require('rate-limiter-flexible');
 
 const wakeServerTime = 20; // in minutes
 const afkTime = 60; // in minutes
@@ -25,6 +26,14 @@ const PORT = process.env.PORT || 8080;
 server.listen(PORT, () => {
   if (logs) console.log(`Listening on ${PORT}`);
 });
+
+const rateLimiterOptions = {
+  points: 5, // 6 points
+  duration: 1, // Per second
+  blockDuration: 15, // Block duration in seconds
+};
+
+const rateLimiter = new RateLimiterMemory(rateLimiterOptions);
 
 function printStatus() {
   if (countConnections !== 0) {
@@ -116,11 +125,17 @@ wakeServer(true);
 
 io.on('connection', (socket) => {
   countConnections++;
+  socket.onAny((event) => {
+    rateLimiter.consume(socket.handshake.address).catch(() => {
+      socket.emit('error', `Too many requests. ${rateLimiterOptions.blockDuration} seconds block`);
+      socket.disconnect();
+    });
+  });
 
   socket.on('join', (data) => {
     const err = checkUserNameAndRoom(data);
     if (err !== null) {
-      socket.error(err);
+      socket.emit('error', err);
       socket.disconnect();
       if (debug) console.log(`Error join: ${err}`);
     } else {
