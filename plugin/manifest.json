@@ -10,7 +10,7 @@
   },
   "background": {
     "persistent": true,
-    "scripts": ["js/socket.io.slim.js", "js/background.js"]
+    "scripts": ["js/socket.io.min.js", "js/background.js"]
   },
   "icons": {
     "16": "icons/icon16.png",
