@@ -225,7 +225,7 @@ function initSocketEvents() {
 }
 
 function initSockets() {
-  socket = io.connect(connectionUrl, {
+  socket = io(connectionUrl, {
     reconnection: true,
     reconnectionDelayMax: 5000,
     reconnectionDelay: 1000,

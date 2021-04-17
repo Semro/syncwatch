@@ -1,17 +1,17 @@
 const debug = false;
 const logs = false;
 
-const express = require('express');
-const socketIO = require('socket.io');
+const express = require('express')();
+const server = require('http').createServer(express);
+const io = require('socket.io')(server, {
+  allowEIO3: true,
+  cors: {
+    origin: false,
+    methods: ['GET', 'POST']
+  }
+});
 const http = require('http');
 
-const PORT = process.env.PORT || 8080;
-const server = express()
-  .use(express.static(`${__dirname}/public`))
-  .listen(PORT, () => {
-    if (logs) console.log(`Listening on ${PORT}`);
-  });
-const io = socketIO(server);
 const wakeServerTime = 20; // in minutes
 const afkTime = 60; // in minutes
 
@@ -20,6 +20,11 @@ let rooms = [];
 let roomid = [];
 let wake = false;
 let countConnections = 0;
+
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+  if (logs) console.log(`Listening on ${PORT}`);
+});
 
 function printStatus() {
   if (countConnections !== 0) {
@@ -151,7 +156,7 @@ io.on('connection', (socket) => {
     if (room !== undefined) {
       room.event = msg;
       room.timeUpdated = Date.now();
-      socket.broadcast.to(room.name).send(room.event);
+      socket.broadcast.to(room.name).emit('message', room.event);
       if (debug) console.log(`${room.name}: ${room.getUser(socket.id)} ${JSON.stringify(msg)}`);
     }
   });
