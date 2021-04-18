@@ -7,8 +7,8 @@ const io = require('socket.io')(server, {
   allowEIO3: true,
   cors: {
     origin: false,
-    methods: ['GET', 'POST']
-  }
+    methods: ['GET', 'POST'],
+  },
 });
 const http = require('http');
 
@@ -114,10 +114,10 @@ class Room {
 
 wakeServer(true);
 
-io.on('connection', socket => {
+io.on('connection', (socket) => {
   countConnections++;
 
-  socket.on('join', data => {
+  socket.on('join', (data) => {
     const err = checkUserNameAndRoom(data);
     if (err !== null) {
       socket.error(err);
@@ -151,7 +151,7 @@ io.on('connection', socket => {
     }
   });
 
-  socket.on('message', msg => {
+  socket.on('message', (msg) => {
     const room = roomid[socket.id];
     if (room !== undefined) {
       room.event = msg;
@@ -161,7 +161,7 @@ io.on('connection', socket => {
     }
   });
 
-  socket.on('share', msg => {
+  socket.on('share', (msg) => {
     const room = roomid[socket.id];
     room.share = msg;
     socket.broadcast.to(room.name).emit('share', room.share);
