@@ -28,7 +28,7 @@ server.listen(PORT, () => {
 });
 
 const rateLimiterOptions = {
-  points: 5, // 6 points
+  points: 10, // 6 points
   duration: 1, // Per second
   blockDuration: 15, // Block duration in seconds
 };
@@ -125,9 +125,10 @@ wakeServer(true);
 
 io.on('connection', (socket) => {
   countConnections++;
-  socket.onAny((event) => {
-    rateLimiter.consume(socket.handshake.address).catch(() => {
-      socket.emit('error', `Too many requests. ${rateLimiterOptions.blockDuration} seconds block`);
+  socket.onAny((event, data) => {
+    // console.log(event, data);
+    rateLimiter.consume(socket.id).catch(() => {
+      socket.emit('error', `Too many requests. Disconnected`);
       socket.disconnect();
     });
   });
