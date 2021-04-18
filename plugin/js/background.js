@@ -324,7 +324,10 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
     case 'join': {
       user = msg.data;
       storageUser(user);
-      initSockets();
+      if (status === 'disconnect') {
+        status = 'connecting...';
+        initSockets();
+      }
       break;
     }
     case 'popupShare': {
