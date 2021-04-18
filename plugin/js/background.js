@@ -181,6 +181,15 @@ function onAfkNotification() {
   });
 }
 
+function onErrorNotification(errorMessage) {
+  createNotification('error', {
+    type: 'basic',
+    iconUrl: 'icons/icon128.png',
+    title: 'Error',
+    message: errorMessage,
+  });
+}
+
 function onNotificationClicked(idNotification) {
   if (idNotification === 'Share') {
     chrome.tabs.create({ url: share.url });
@@ -263,6 +272,7 @@ function initSockets() {
 
   socket.on('error', (msg) => {
     sendErrorToPopup(msg);
+    onErrorNotification(msg);
   });
 }
 
