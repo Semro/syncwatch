@@ -16,11 +16,11 @@ const errorLogFile = fs.createWriteStream(__dirname + '/error.log', { flags: 'a'
 
 const wakeServerTime = 20; // in minutes
 const afkTime = 60; // in minutes
+const printStatusTime = 30; // in minutes
 
 let roomsLength = 0;
 let rooms = [];
 let roomid = [];
-let wake = false;
 let countConnections = 0;
 
 const PORT = process.env.PORT || 8080;
@@ -38,19 +38,18 @@ const rateLimiter = new RateLimiterMemory(rateLimiterOptions);
 
 function printStatus() {
   if (countConnections !== 0) {
-    if (logs) console.log(`${countConnections} user(s), ${roomsLength} room(s)`);
+    if (logs)
+      setInterval(() => {
+        console.log(`${countConnections} user(s), ${roomsLength} room(s)`);
+      }, printStatusTime * 60000);
   }
 }
 
 function wakeServer(status) {
   if (status) {
-    wake = setInterval(() => {
-      if (!debug) http.get('http://syncevent.herokuapp.com');
-      printStatus();
+    setInterval(() => {
+      http.get('http://syncevent.herokuapp.com');
     }, wakeServerTime * 60000);
-  } else {
-    clearInterval(wake);
-    wake = false;
   }
 }
 
@@ -133,6 +132,8 @@ process.on('uncaughtException', (err) => {
 });
 
 wakeServer(process.env.HEROKU ? true : false);
+
+printStatus();
 
 io.on('connection', (socket) => {
   countConnections++;
