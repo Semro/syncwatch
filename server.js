@@ -132,6 +132,7 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
+wakeServer(process.env.HEROKU ? true : false);
 
 io.on('connection', (socket) => {
   countConnections++;
