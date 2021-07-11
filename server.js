@@ -1,6 +1,7 @@
 const debug = false;
 const logs = false;
 
+const fs = require('fs');
 const express = require('express')();
 const server = require('http').createServer(express);
 const io = require('socket.io')(server, {
