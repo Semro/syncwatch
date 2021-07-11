@@ -1,6 +1,7 @@
 node_modules
 ignore
 npm-debug.log
+error.log
 .env
 
 # Elastic Beanstalk Files

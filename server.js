@@ -12,6 +12,7 @@ const io = require('socket.io')(server, {
 });
 const http = require('http');
 const { RateLimiterMemory } = require('rate-limiter-flexible');
+const errorLogFile = fs.createWriteStream(__dirname + '/error.log', { flags: 'a' });
 
 const wakeServerTime = 20; // in minutes
 const afkTime = 60; // in minutes
@@ -121,7 +122,16 @@ class Room {
   }
 }
 
-wakeServer(true);
+process.on('uncaughtException', (err) => {
+  let date = new Date().toString();
+  let errorString = `${date} | caught exception: ${err}\n`;
+
+  console.log(errorString);
+  if (debug) errorLogFile.write(errorString);
+
+  process.exit(1);
+});
+
 
 io.on('connection', (socket) => {
   countConnections++;
