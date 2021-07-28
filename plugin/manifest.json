@@ -34,7 +34,7 @@
   ],
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["https://www.netflix.com/*"],
       "js": ["js/loadNetflix.js"]
     }
   ],
