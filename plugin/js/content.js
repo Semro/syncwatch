@@ -105,15 +105,62 @@ function errorOnEvent(err) {
   }
 }
 
+function isNetflix() {
+  // are we on the netflix.com page?
+  return window.location.host === 'www.netflix.com';
+}
+
+function fireEventNetflix(event) {
+  recieved = true;
+  recievedEvent = event.type;
+  switch (event.type) {
+    case 'play': {
+      window.postMessage({
+        action: 'seek',
+        time: event.currentTime,
+      });
+      window.postMessage({
+        action: 'play',
+      });
+      break;
+    }
+    case 'pause': {
+      window.postMessage({
+        action: 'pause',
+      });
+      window.postMessage({
+        action: 'seek',
+        time: event.currentTime,
+      });
+      break;
+    }
+    case 'seeked': {
+      window.postMessage({
+        action: 'seek',
+        time: event.currentTime,
+      });
+      break;
+    }
+    case 'ratechange': {
+      window.postMessage({
+        action: 'setPlaybackRate',
+        playbackRate: event.playbackRate,
+      });
+      break;
+    }
+  }
+}
+
 function fireEvent(event) {
+  recieved = true;
+  recievedEvent = event.type;
+
   // if we are on netflix.com use the custom function instead
   if (isNetflix()) {
     fireEventNetflix(event);
     return;
   }
 
-  recieved = true;
-  recievedEvent = event.type;
   switch (event.type) {
     case 'play': {
       nodes[event.element].currentTime = event.currentTime;
@@ -131,52 +178,6 @@ function fireEvent(event) {
     }
     case 'ratechange': {
       nodes[event.element].playbackRate = event.playbackRate;
-      break;
-    }
-  }
-}
-
-function isNetflix() {
-  // are we on the netflix.com page?
-  return location.host === "www.netflix.com";
-}
-
-function fireEventNetflix(event) {
-  recieved = true;
-  recievedEvent = event.type;
-  switch (event.type) {
-    case 'play': {
-      window.postMessage({
-        "action": "seek",
-        "time": event.currentTime
-      });
-      window.postMessage({
-        "action": "play"
-      });
-      break;
-    }
-    case 'pause': {
-      window.postMessage({
-        "action": "pause"
-      });
-      window.postMessage({
-        "action": "seek",
-        "time": event.currentTime
-      });
-      break;
-    }
-    case 'seeked': {
-      window.postMessage({
-        "action": "seek",
-        "time": event.currentTime
-      });
-      break;
-    }
-    case 'ratechange': {
-      window.postMessage({
-        "action": "setPlaybackRate",
-        "playbackRate": event.playbackRate
-      })
       break;
     }
   }
