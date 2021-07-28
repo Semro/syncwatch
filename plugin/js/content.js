@@ -146,27 +146,27 @@ function fireEventNetflix(event) {
   recievedEvent = event.type;
   switch (event.type) {
     case 'play': {
-      sendEventNetflix({
+      window.postMessage({
         "action": "seek",
         "time": event.currentTime
       });
-      sendEventNetflix({
+      window.postMessage({
         "action": "play"
       });
       break;
     }
     case 'pause': {
-      sendEventNetflix({
+      window.postMessage({
         "action": "pause"
       });
-      sendEventNetflix({
+      window.postMessage({
         "action": "seek",
         "time": event.currentTime
       });
       break;
     }
     case 'seeked': {
-      sendEventNetflix({
+      window.postMessage({
         "action": "seek",
         "time": event.currentTime
       });
@@ -174,20 +174,13 @@ function fireEventNetflix(event) {
     }
     case 'ratechange': {
       console.log("content.js: setting playbackRate to " + event.playbackRate);
-      sendEventNetflix({
+      window.postMessage({
         "action": "setPlaybackRate",
         "playbackRate": event.playbackRate
       })
       break;
     }
   }
-}
-
-function sendEventNetflix(data) {
-  // send a command to netflix.js
-  document.dispatchEvent(new CustomEvent('syncwatchExtension', {
-    detail: data
-  }));
 }
 
 init();

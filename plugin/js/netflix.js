@@ -12,12 +12,12 @@ function getPlayer() {
     return player;
 }
 
-document.addEventListener('syncwatchExtension', event => {
+window.addEventListener('message', event => {
     const player = getPlayer();
 
-    // console.log("registered event", event)
+    console.log("registered event", event)
 
-    switch (event.detail.action) {
+    switch (event.data.action) {
         case "play": {
             player.play();
             break;
@@ -27,11 +27,11 @@ document.addEventListener('syncwatchExtension', event => {
             break;
         }
         case "seek": {
-            player.seek(event.detail.time * 1000);
+            player.seek(event.data.time * 1000);
             break;
         }
         case "setPlaybackRate": {
-            player.setPlaybackRate(event.detail.playbackRate);
+            player.setPlaybackRate(event.data.playbackRate);
             break;
         }
     }
