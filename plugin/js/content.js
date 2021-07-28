@@ -111,8 +111,6 @@ function isNetflix() {
 }
 
 function fireEventNetflix(event) {
-  recieved = true;
-  recievedEvent = event.type;
   switch (event.type) {
     case 'play': {
       window.postMessage({
