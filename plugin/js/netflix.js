@@ -15,8 +15,6 @@ function getPlayer() {
 window.addEventListener('message', event => {
     const player = getPlayer();
 
-    // console.log("registered event", event)
-
     switch (event.data.action) {
         case "play": {
             player.play();

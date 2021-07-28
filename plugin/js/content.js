@@ -173,7 +173,6 @@ function fireEventNetflix(event) {
       break;
     }
     case 'ratechange': {
-      console.log("content.js: setting playbackRate to " + event.playbackRate);
       window.postMessage({
         "action": "setPlaybackRate",
         "playbackRate": event.playbackRate
