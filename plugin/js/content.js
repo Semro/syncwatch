@@ -106,6 +106,12 @@ function errorOnEvent(err) {
 }
 
 function fireEvent(event) {
+  // if we are on netflix.com use the custom function instead
+  if (isNetflix()) {
+    fireEventNetflix(event);
+    return;
+  }
+
   recieved = true;
   recievedEvent = event.type;
   switch (event.type) {
@@ -128,6 +134,60 @@ function fireEvent(event) {
       break;
     }
   }
+}
+
+function isNetflix() {
+  // are we on the netflix.com page?
+  return location.host === "www.netflix.com";
+}
+
+function fireEventNetflix(event) {
+  recieved = true;
+  recievedEvent = event.type;
+  switch (event.type) {
+    case 'play': {
+      sendEventNetflix({
+        "action": "seek",
+        "time": event.currentTime
+      });
+      sendEventNetflix({
+        "action": "play"
+      });
+      break;
+    }
+    case 'pause': {
+      sendEventNetflix({
+        "action": "pause"
+      });
+      sendEventNetflix({
+        "action": "seek",
+        "time": event.currentTime
+      });
+      break;
+    }
+    case 'seeked': {
+      sendEventNetflix({
+        "action": "seek",
+        "time": event.currentTime
+      });
+      break;
+    }
+    case 'ratechange': {
+      console.log("content.js: setting playbackRate to " + event.playbackRate);
+      sendEventNetflix({
+        "action": "setPlaybackRate",
+        "playbackRate": event.playbackRate
+      })
+      break;
+    }
+  }
+}
+
+function sendEventNetflix(data) {
+  // send a command to netflix.js
+  document.dispatchEvent(new CustomEvent('syncwatchExtension', {
+    detail: data
+  }));
 }
 
 init();
