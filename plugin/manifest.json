@@ -31,5 +31,12 @@
     "tabs",
     "storage",
     "notifications"
-  ]
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.netflix.com/*"],
+      "js": ["js/loadNetflix.js"]
+    }
+  ],
+  "web_accessible_resources": ["js/netflix.js"]
 }
