@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "__MSG_appName__",
   "description": "__MSG_appDesc__",
-  "version": "0.400",
+  "version": "0.410",
   "default_locale": "en",
   "options_ui": {
     "page": "options.html",
@@ -34,9 +34,15 @@
   ],
   "content_scripts": [
     {
-      "matches": ["https://www.netflix.com/*"],
-      "js": ["js/loadNetflix.js"]
+      "matches": [
+        "https://www.netflix.com/*"
+      ],
+      "js": [
+        "js/loadNetflix.js"
+      ]
     }
   ],
-  "web_accessible_resources": ["js/netflix.js"]
+  "web_accessible_resources": [
+    "js/netflix.js"
+  ]
 }
