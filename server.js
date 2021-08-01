@@ -13,18 +13,19 @@ const io = require('socket.io')(server, {
 });
 const http = require('http');
 const { RateLimiterMemory } = require('rate-limiter-flexible');
-const errorLogFile = fs.createWriteStream(__dirname + '/error.log', { flags: 'a' });
 
 const wakeServerTime = 20; // in minutes
 const afkTime = 60; // in minutes
 const printStatusTime = 30; // in minutes
+const errorFilePath = __dirname + '/error.log';
+const serverPort = 8080;
 
 let roomsLength = 0;
 let rooms = [];
 let roomid = [];
 let countConnections = 0;
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || serverPort;
 server.listen(PORT, () => {
   console.log(`Listening on ${PORT}`);
 });
@@ -122,14 +123,26 @@ class Room {
   }
 }
 
-process.on('uncaughtException', (err) => {
+function consoleOutputError(message) {
   let date = new Date().toString();
-  let errorString = `${date} | caught exception: ${err}\n`;
-
+  let errorString = `${date} | caught exception: ${message}\n`;
   console.log(errorString);
-  if (debug) errorLogFile.write(errorString);
+  return errorString;
+}
 
-  process.exit(1);
+process.on('uncaughtException', (err) => {
+  const errorLogFileStream = fs.createWriteStream(errorFilePath, { flags: 'a' });
+
+  errorLogFileStream.on('error', (err) => {
+    if (err.code === 'EPERM') {
+      consoleOutputError('Can not create/open file error.log for logging errors');
+    }
+    consoleOutputError(err);
+  });
+
+  errorLogFileStream.write(consoleOutputError(err), () => {
+    process.exit(1);
+  });
 });
 
 wakeServer(process.env.HEROKU ? true : false);
