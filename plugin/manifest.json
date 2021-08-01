@@ -44,5 +44,10 @@
   ],
   "web_accessible_resources": [
     "js/netflix.js"
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{7558bb02-8595-4b93-b3bc-9f34319e9c4a}"
+    }
+  }
 }
