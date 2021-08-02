@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  Firefox:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: '"incognito": "split",'
+          replace: ''
+          include: 'plugin/manifest.json'
+
+      - name: Build Extension for Firefox
+        id: web-ext-build
+        uses: kewisch/action-web-ext@v1
+        with:
+          cmd: build
+          source: ./plugin
+
+      - name: 'Sign & publish'
+        id: web-ext-sign
+        uses: kewisch/action-web-ext@v1
+        with:
+          cmd: sign
+          channel: listed
+          source: ${{ steps.web-ext-build.outputs.target }}
+          apiKey: ${{ secrets.FIREFOX_API_KEY }}
+          apiSecret: ${{ secrets.FIREFOX_CLIENT_SECRET }}
+
+      - name: Drop artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'Firefox Artefacts'
+          path: ${{ steps.web-ext-build.outputs.target }}
+
+  Chrome:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Pack extension
+        uses: TheDoctor0/zip-release@0.4.1
+        with:
+          filename: ./SyncWatchExtension.zip
+          path: ./plugin
+
+      - name: Publish to Chrome Webstore
+        uses: trmcnvn/chrome-addon@v2
+        with:
+          extension: ggiafipgeeaaahnjamgpjcgkdpanhddg
+          zip: ./SyncWatchExtension.zip
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+
+      - name: Upload artifact
+        uses: xresloader/upload-to-github-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: ./SyncWatchExtension.zip
+          tags: true
+          draft: false
+
+      - name: Drop artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'Chrome Artifacts'
+          path: ./SyncWatchExtension.zip
