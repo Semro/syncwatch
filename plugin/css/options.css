@@ -22,7 +22,7 @@
 @supports (-moz-appearance: none) {
   @media only screen and (hover: none) and (pointer: coarse) {
     #main {
-      width: 100%;
+      width: 96%;
     }
   }
 }

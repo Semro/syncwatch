@@ -94,6 +94,9 @@ input {
     .block,
     li {
       width: 100%;
+    }
+    input.block,
+    .button {
       height: 2.5em;
     }
   }
