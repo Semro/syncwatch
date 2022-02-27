@@ -2,6 +2,9 @@ const debug = false;
 
 const manifest = chrome.runtime.getManifest();
 const isFirefox = typeof InstallTrigger !== 'undefined';
+const isMobile =
+  window.matchMedia &&
+  window.matchMedia('only screen and (hover: none) and (pointer: coarse)').matches;
 let user = {
   name: null,
   room: null,
@@ -298,9 +301,11 @@ chrome.tabs.onActivated.addListener(() => {
   changeSyncTab();
 });
 
-chrome.windows.onFocusChanged.addListener(() => {
-  changeSyncTab();
-});
+if (!(isFirefox && isMobile)) {
+  chrome.windows.onFocusChanged.addListener(() => {
+    changeSyncTab();
+  });
+}
 
 chrome.storage.onChanged.addListener((obj) => {
   if (obj.connectionUrl) {
