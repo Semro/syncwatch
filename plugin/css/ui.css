@@ -15,7 +15,7 @@ body {
 
 #main {
   width: 240px;
-  padding: 2px;
+  padding: 2px 0 2px 0;
 }
 
 .block,
@@ -82,4 +82,22 @@ input {
   height: fit-content;
   color: red;
   display: none;
+}
+
+/* adjustments for mobile devices (firefox only) */
+@supports (-moz-appearance: none) {
+  @media only screen and (hover: none) and (pointer: coarse) {
+    #main {
+      width: 96%;
+      margin: 0 auto 0 auto;
+    }
+    .block,
+    li {
+      width: 100%;
+    }
+    input.block,
+    .button {
+      height: 2.5em;
+    }
+  }
 }
