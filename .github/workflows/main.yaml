@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Find and Replace
-        uses: jacobtomlinson/gha-find-replace@master
+        uses: jacobtomlinson/gha-find-replace@v1
         with:
           find: '"incognito": "split",'
           replace: ''
