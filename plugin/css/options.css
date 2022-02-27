@@ -17,3 +17,12 @@
   width: 150px;
   float: right;
 }
+
+/* adjustments for mobile devices (firefox only) */
+@supports (-moz-appearance: none) {
+  @media only screen and (hover: none) and (pointer: coarse) {
+    #main {
+      width: 100%;
+    }
+  }
+}
