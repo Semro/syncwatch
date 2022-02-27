@@ -83,3 +83,18 @@ input {
   color: red;
   display: none;
 }
+
+/* adjustments for mobile devices (firefox only) */
+@supports (-moz-appearance: none) {
+  @media only screen and (hover: none) and (pointer: coarse) {
+    #main {
+      width: 96%;
+      margin: 0 auto 0 auto;
+    }
+    .block,
+    li {
+      width: 100%;
+      height: 2.5em;
+    }
+  }
+}
