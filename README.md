@@ -48,6 +48,13 @@ npm install
 node server.js
 ```
 
+## How to add a localization
+
+1. Determine an ISO language code such as `en` referring to [kLanguageInfoTable](https://src.chromium.org/viewvc/chrome/trunk/src/third_party/cld/languages/internal/languages.cc).
+1. Add a column to [locales.csv](locales/locales.csv) with language code at the top cell.
+1. Add translated messages in following cells.
+1. Generate localized files with `npm run locales` (optional step, you can just pull request .csv file).
+
 ## Communicate
 
 - [Discord](https://discord.gg/7AYpju4)
