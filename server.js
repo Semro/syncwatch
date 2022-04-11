@@ -17,7 +17,7 @@ const { RateLimiterMemory } = require('rate-limiter-flexible');
 const wakeServerTime = 20; // in minutes
 const afkTime = 60; // in minutes
 const printStatusTime = 30; // in minutes
-const errorFilePath = __dirname + '/error.log';
+const errorFilePath = `${__dirname}/error.log`;
 const serverPort = 8080;
 
 let roomsLength = 0;
@@ -124,8 +124,8 @@ class Room {
 }
 
 function consoleOutputError(message) {
-  let date = new Date().toString();
-  let errorString = `${date} | caught exception: ${message}\n`;
+  const date = new Date().toString();
+  const errorString = `${date} | caught exception: ${message}\n`;
   console.log(errorString);
   return errorString;
 }
@@ -133,26 +133,26 @@ function consoleOutputError(message) {
 process.on('uncaughtException', (err) => {
   const errorLogFileStream = fs.createWriteStream(errorFilePath, { flags: 'a' });
 
-  errorLogFileStream.on('error', (err) => {
-    if (err.code === 'EPERM') {
+  errorLogFileStream.on('error', (errFileStream) => {
+    if (errFileStream.code === 'EPERM') {
       consoleOutputError('Can not create/open file error.log for logging errors');
     }
     consoleOutputError(err);
   });
 
   errorLogFileStream.write(consoleOutputError(err), () => {
+    // eslint-disable-next-line no-process-exit
     process.exit(1);
   });
 });
 
-wakeServer(process.env.HEROKU ? true : false);
+wakeServer(!!process.env.HEROKU);
 
 printStatus();
 
 io.on('connection', (socket) => {
   countConnections++;
-  socket.onAny((event, data) => {
-    // console.log(event, data);
+  socket.onAny(() => {
     rateLimiter.consume(socket.id).catch(() => {
       socket.emit('error', `Too many requests. Disconnected`);
       socket.disconnect();
