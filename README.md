@@ -1,3 +1,7 @@
+[![GitHub release](https://img.shields.io/github/v/release/semro/syncwatch.svg)](https://github.com/semro/syncwatch/releases/latest)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
+[![Telegram](https://img.shields.io/badge/telegram-syncwatch-blue.svg?logo=telegram&label=Telegram)](https://t.me/syncwatch)
+[![Discord](https://discordapp.com/api/guilds/483775330524332032/widget.png?style=shield)](https://discord.gg/7AYpju4)
 <img src="plugin/icons/icon128.png" alt="SyncWatch logo" align="right" />
 
 # SyncWatch
@@ -12,13 +16,13 @@ SyncWatch is extension for browsers which lets you watch videos together with fr
 ## How to use
 
 1. Install extension.
-2. Click on plugin icon.
-3. Write your name and room name. (If room is not exist it will be created)
-4. Click 'connect'.
-5. Share name of the room with friends. They must follow this instruction (1-4 steps).
-6. Go to the page where video is located.
-7. Click 'share' to send link in room.
-8. Other in room should open this link.
+1. Click on plugin icon.
+1. Write your name and room name. (If room is not exist it will be created)
+1. Click 'connect'.
+1. Share name of the room with friends. They must follow this instruction (1-4 steps).
+1. Go to the page where video is located.
+1. Click 'share' to send link in room.
+1. Other in room should open this link.
 
 ## Run server locally
 
@@ -45,7 +49,7 @@ npm install
 4. Run the server
 
 ```sh
-node server.js
+npm run start
 ```
 
 ## How to add a localization
@@ -54,11 +58,6 @@ node server.js
 1. Add a column to [locales.csv](locales/locales.csv) with language code at the top cell.
 1. Add translated messages in following cells.
 1. Generate localized files with `npm run locales` (optional step, you can just pull request .csv file).
-
-## Communicate
-
-- [Discord](https://discord.gg/7AYpju4)
-- [Telegram](https://t.me/syncwatch)
 
 ## License
 
