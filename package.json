@@ -2,7 +2,7 @@
   "name": "syncwatch-extension",
   "version": "0.0.1",
   "engines": {
-    "node": "14.x"
+    "node": "17.x"
   },
   "description": "Extension to watch videos together",
   "main": "server.js",
@@ -17,19 +17,24 @@
   "author": "Semro",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1",
-    "socket.io": "4.0.1",
-    "rate-limiter-flexible": "^2.2.1"
+    "express": "^4.17.3",
+    "rate-limiter-flexible": "^2.3.6",
+    "socket.io": "4.4.1"
   },
   "devDependencies": {
-    "csv-locales": "^1.2.2",
-    "eslint": "^7.2.0",
-    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint": "^8.13.0",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-node": "^4.1.0",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-import": "^2.22.1",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "prettier": "^2.2.1"
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.6.2",
+    "csv-locales": "^1.2.2"
+  },
+  "overrides": {
+    "csv-locales": {
+      "csv-parse": "^5.0.4"
+    }
   }
 }
