@@ -10,7 +10,7 @@
   },
   "background": {
     "persistent": true,
-    "scripts": ["js/socket.io.min.js", "js/background.js"]
+    "scripts": ["js/libs/socket.io.min.js", "js/background.js"]
   },
   "icons": {
     "16": "icons/icon16.png",
@@ -28,7 +28,7 @@
   "content_scripts": [
     {
       "matches": ["https://www.netflix.com/*"],
-      "js": ["js/loadNetflix.js"]
+      "js": ["js/players/netflix/loadNetflix.js"]
     }
   ],
   "web_accessible_resources": ["js/netflix.js"],
