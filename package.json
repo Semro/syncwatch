@@ -7,7 +7,8 @@
   "description": "Extension to watch videos together",
   "main": "server.js",
   "scripts": {
-    "start": "node --expose-gc server.js"
+    "start": "node --expose-gc server.js",
+    "locales": "node locales/locales.js"
   },
   "keywords": [],
   "repository": {
@@ -34,7 +35,7 @@
   },
   "overrides": {
     "csv-locales": {
-      "csv-parse": "^5.0.4"
+      "csv-parse": "^4.4.6"
     }
   }
 }

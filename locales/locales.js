@@ -1,8 +1,10 @@
-let csvLocales = require('csv-locales');
+/* eslint-disable node/no-unpublished-require */
+/* eslint-disable import/no-extraneous-dependencies */
+const csvLocales = require('csv-locales');
 
-let params = {
-  csvPath: 'locales.csv',
-  dirPath: '../plugin/_locales',
+const params = {
+  csvPath: 'locales/locales.csv',
+  dirPath: 'plugin/_locales',
 };
 
 csvLocales(params, (err) => {
