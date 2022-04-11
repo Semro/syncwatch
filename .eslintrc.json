@@ -6,7 +6,7 @@
       "impliedStrict": true
     }
   },
-  "extends": ["airbnb-base", "prettier"],
+  "extends": ["airbnb-base", "prettier", "plugin:node/recommended"],
   "plugins": ["prettier"],
   "env": {
     "shared-node-browser": true,
