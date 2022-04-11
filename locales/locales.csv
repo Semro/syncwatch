@@ -1,13 +1,4 @@
-locales,,"en 
-(english)
-(английский)
-(ingilizce)","ru 
-(russian)
-(русский)
-(rusça)","tr
-(turkish)
-(турецкий)
-(türkçe)"
+locales,,"en","ru","tr"
 appName,message,"Sync Watch","Sync Watch","Sync Watch"
 appDesc,message,"Watch videos together at the same time!","Смотрите видеоролики вместе в одно и то же время!","Videoları eşzamanlı olarak izleyin !"
 popup_input_name,message,"Type your name","Введите своё имя","İsmini yaz"
