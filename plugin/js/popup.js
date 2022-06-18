@@ -32,6 +32,11 @@ shareElement.onclick = () => {
   chrome.runtime.sendMessage({ from: 'popupShare' });
 };
 
+sharedElement.onclick = () => {
+  chrome.tabs.create({ url: sharedElement.href });
+  return false;
+};
+
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.from === 'status') {
     if (msg.status === 'connect') {
