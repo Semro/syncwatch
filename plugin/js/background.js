@@ -1,7 +1,7 @@
 const debug = false;
 
 const manifest = chrome.runtime.getManifest();
-const isFirefox = typeof InstallTrigger !== 'undefined';
+const isFirefox = navigator.userAgent.indexOf('Firefox') > -1;
 const isMobile =
   window.matchMedia &&
   window.matchMedia('only screen and (hover: none) and (pointer: coarse)').matches;
