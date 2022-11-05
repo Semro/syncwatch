@@ -53,7 +53,7 @@
       from: 'content',
       data: eventSend,
     });
-    if (debug) console.log(`%cbroadcast: ${eventSend.type}`, 'background: #00590E;');
+    if (debug) console.log(`%cbroadcast: ${eventSend.type}`, 'background: #fefe22;');
   }
 
   function onProgress(event) {
@@ -198,7 +198,7 @@
     if (msg.from === 'background') {
       if (msg.data.location === iframeFullIndex(window)) {
         fireEvent(msg.data);
-        if (debug) console.log(`%crecieved: ${msg.data.type}`, 'background: #542100;');
+        if (debug) console.log(`%crecieved: ${msg.data.type}`, 'background: #9966cc;');
       }
       if (msg.data === 'isContentScriptInjected') {
         if (nodes.length !== 0) {
