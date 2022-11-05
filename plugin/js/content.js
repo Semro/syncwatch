@@ -161,6 +161,8 @@
       return;
     }
 
+    nodes[event.element].playbackRate = event.playbackRate;
+
     switch (event.type) {
       case 'play': {
         nodes[event.element].currentTime = event.currentTime;

@@ -15,6 +15,8 @@ function getPlayer() {
 window.addEventListener('message', (event) => {
   const player = getPlayer();
 
+  player.setPlaybackRate(event.data.playbackRate);
+
   switch (event.data.action) {
     case 'play': {
       player.play();
