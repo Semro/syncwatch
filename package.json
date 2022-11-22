@@ -21,7 +21,7 @@
   "dependencies": {
     "express": "^4.18.2",
     "rate-limiter-flexible": "^2.4.1",
-    "socket.io": "4.4.1"
+    "socket.io": "4.5.3"
   },
   "devDependencies": {
     "csv-locales": "^1.2.2",
