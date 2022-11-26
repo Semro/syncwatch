@@ -18,7 +18,7 @@ const wakeServerTime = 20; // in minutes
 const afkTime = 60; // in minutes
 const printStatusTime = 30; // in minutes
 const errorFilePath = `${__dirname}/error.log`;
-const serverPort = 8080;
+const serverPort = 80;
 
 let roomsLength = 0;
 let rooms = [];

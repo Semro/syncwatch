@@ -1,8 +1,8 @@
 FROM node:18
 ENV NODE_ENV=production
-WORKDIR /app
+WORKDIR /
 COPY package*.json ./
-RUN npm ci --production
+RUN npm ci --omit=dev
 COPY . .
-EXPOSE 8080
+EXPOSE 80
 CMD ["npm", "run", "start"]
