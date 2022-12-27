@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "__MSG_appName__",
   "description": "__MSG_appDesc__",
-  "version": "0.415",
+  "version": "0.421",
   "default_locale": "en",
   "options_ui": {
     "page": "options.html",
@@ -10,10 +10,7 @@
   },
   "background": {
     "persistent": true,
-    "scripts": [
-      "js/libs/socket.io.min.js",
-      "js/background.js"
-    ]
+    "scripts": ["js/libs/socket.io.min.js", "js/background.js"]
   },
   "icons": {
     "16": "icons/icon16.png",
@@ -27,25 +24,14 @@
     "default_popup": "popup.html"
   },
   "incognito": "split",
-  "permissions": [
-    "<all_urls>",
-    "tabs",
-    "storage",
-    "notifications"
-  ],
+  "permissions": ["<all_urls>", "tabs", "storage", "notifications"],
   "content_scripts": [
     {
-      "matches": [
-        "https://www.netflix.com/*"
-      ],
-      "js": [
-        "js/players/netflix/loadNetflix.js"
-      ]
+      "matches": ["https://www.netflix.com/*"],
+      "js": ["js/players/netflix/loadNetflix.js"]
     }
   ],
-  "web_accessible_resources": [
-    "js/players/netflix/netflix.js"
-  ],
+  "web_accessible_resources": ["js/players/netflix/netflix.js"],
   "browser_specific_settings": {
     "gecko": {
       "id": "{7558bb02-8595-4b93-b3bc-9f34319e9c4a}"

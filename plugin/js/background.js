@@ -16,12 +16,12 @@ let status = 'disconnect';
 let list = [];
 let syncTab = null;
 let share = null;
-let connectionUrl = 'https://syncevent.herokuapp.com';
+let connectionUrl = 'http://server.syncwatch.space';
 
 function initConnectionUrl() {
   chrome.storage.sync.get('connectionUrl', (obj) => {
     if (obj.connectionUrl === undefined) {
-      chrome.storage.sync.set({ connectionUrl: 'https://syncevent.herokuapp.com' });
+      chrome.storage.sync.set({ connectionUrl: 'http://server.syncwatch.space' });
     } else {
       connectionUrl = obj.connectionUrl;
     }
