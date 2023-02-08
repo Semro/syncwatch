@@ -16,12 +16,12 @@ let status = 'disconnect';
 let list = [];
 let syncTab = null;
 let share = null;
-let connectionUrl = 'https://syncevent.herokuapp.com';
+let connectionUrl = 'http://server.syncwatch.space';
 
 function initConnectionUrl() {
   chrome.storage.sync.get('connectionUrl', (obj) => {
     if (obj.connectionUrl === undefined) {
-      chrome.storage.sync.set({ connectionUrl: 'https://syncevent.herokuapp.com' });
+      chrome.storage.sync.set({ connectionUrl: 'http://server.syncwatch.space' });
     } else {
       connectionUrl = obj.connectionUrl;
     }
@@ -375,6 +375,14 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
 
 user.version = manifest.version;
 user.agent = navigator.userAgent;
+
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.storage.sync.get('connectionUrl', (obj) => {
+    if (obj.connectionUrl.match('syncevent.herokuapp.com')) {
+      chrome.storage.sync.set({ connectionUrl: 'http://server.syncwatch.space' });
+    }
+  });
+});
 
 chrome.runtime.setUninstallURL(
   `https://docs.google.com/forms/d/e/1FAIpQLSd8Z6m6lAFwLk88WK8arSgMfIcJxhVROR3r64RlCo-Lfs_0rA/viewform?entry.435513449=${user.agent}&entry.126853255=${user.version}`
