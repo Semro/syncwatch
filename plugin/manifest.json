@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "__MSG_appName__",
   "description": "__MSG_appDesc__",
-  "version": "0.421",
+  "version": "0.422",
   "default_locale": "en",
   "options_ui": {
     "page": "options.html",
