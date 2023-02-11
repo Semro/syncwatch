@@ -43,7 +43,7 @@ cd syncwatch
 3. Install NPM packages
 
 ```sh
-npm install
+npm ci
 ```
 
 4. Run the server
