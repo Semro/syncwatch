@@ -52,6 +52,12 @@ npm ci
 npm run start
 ```
 
+- Run the server on other port
+
+```sh
+  npx cross-env PORT=8080 node server.js
+```
+
 ## How to add a localization
 
 1. Determine an ISO language code such as `en` referring to [kLanguageInfoTable](https://src.chromium.org/viewvc/chrome/trunk/src/third_party/cld/languages/internal/languages.cc).
