@@ -11,10 +11,8 @@ const io = require('socket.io')(server, {
     methods: ['GET', 'POST'],
   },
 });
-const http = require('http');
 const { RateLimiterMemory } = require('rate-limiter-flexible');
 
-const wakeServerTime = 20; // in minutes
 const afkTime = 60; // in minutes
 const printStatusTime = 30; // in minutes
 const errorFilePath = `${__dirname}/error.log`;
@@ -44,14 +42,6 @@ function printStatus() {
       setInterval(() => {
         console.log(`${countConnections} user(s), ${roomsLength} room(s)`);
       }, printStatusTime * 60000);
-  }
-}
-
-function wakeServer(status) {
-  if (status) {
-    setInterval(() => {
-      http.get('http://syncevent.herokuapp.com');
-    }, wakeServerTime * 60000);
   }
 }
 
@@ -145,8 +135,6 @@ process.on('uncaughtException', (err) => {
     process.exit(1);
   });
 });
-
-wakeServer(!!process.env.HEROKU);
 
 printStatus();
 
