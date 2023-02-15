@@ -1,0 +1,20 @@
+SyncWatch allows watch videos with friends at the same time! You can watch movies, anime, lectures together.
+Now it is no need to count 1..2..3. Just join to the room and your videos will be synchronized.
+
+Plugin supports: YouTube, Vimeo, Dailymotion, Facebook and other sites with HTML5 video.
+
+How to use:
+1. Click on plugin icon.
+2. Write your name and room name. (If room is not exist it will be created)
+3. Click 'connect'. (First connecting may require 10 seconds)
+4. Share name of the room with friends. They must follow this instruction (1-3 steps).
+5. Go to the page where video is located.
+6. Click 'share' to send link in room.
+7. Other in room should open this link.
+
+Leave a feedback! Tell us about bugs, your experience and how to make extension better.
+
+Join community!
+Discord: https://discord.gg/7AYpju4
+Telegram: https://t.me/syncwatch
+GitHub: https://github.com/Semro/syncwatch
