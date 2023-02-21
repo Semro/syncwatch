@@ -16,12 +16,13 @@ let status = 'disconnect';
 let list = [];
 let syncTab = null;
 let share = null;
-let connectionUrl = 'http://server.syncwatch.space';
+const defaultUrl = 'https://server.syncwatch.space/';
+let connectionUrl = defaultUrl;
 
 function initConnectionUrl() {
   chrome.storage.sync.get('connectionUrl', (obj) => {
     if (obj.connectionUrl === undefined) {
-      chrome.storage.sync.set({ connectionUrl: 'http://server.syncwatch.space' });
+      chrome.storage.sync.set({ connectionUrl: defaultUrl });
     } else {
       connectionUrl = obj.connectionUrl;
     }
@@ -378,8 +379,12 @@ user.agent = navigator.userAgent;
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.get('connectionUrl', (obj) => {
+    if (!obj.connectionUrl) return;
     if (obj.connectionUrl.match('syncevent.herokuapp.com')) {
-      chrome.storage.sync.set({ connectionUrl: 'http://server.syncwatch.space' });
+      chrome.storage.sync.set({ connectionUrl: defaultUrl });
+    }
+    if (obj.connectionUrl.match('http://server.syncwatch.space')) {
+      chrome.storage.sync.set({ connectionUrl: defaultUrl });
     }
   });
 });
