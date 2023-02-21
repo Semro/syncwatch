@@ -1,0 +1,26 @@
+# action.yml
+name: "yc-get-certificate"
+description: "GitHub Action to get certificate from Yandex Cloud Certificate Manager"
+author: "Semyon Rozhkov"
+inputs:
+  yc-sa-json-credentials:
+    required: true
+    description: "JSON containing authorized key for Service Account. More info https://cloud.yandex.ru/docs/container-registry/operations/authentication#sa-json"
+  folder-id:
+    required: true
+    description: "Folder ID"
+  certificate-id:
+    required: true
+    description: "Certificate ID"
+outputs:
+  certificate-full-chain:
+    description: "Full chain certificate"
+  private-key:
+    description: "Private key"
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - ${{ inputs.yc-sa-json-credentials }}
+    - ${{ inputs.folder-id }}
+    - ${{ inputs.certificate-id }}
