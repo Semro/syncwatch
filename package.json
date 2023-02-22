@@ -5,6 +5,7 @@
     "node": "18.x"
   },
   "description": "Extension to watch videos together",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node --expose-gc server.js",

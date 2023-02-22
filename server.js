@@ -1,17 +1,26 @@
+import fs from 'fs';
+import express from 'express';
+import { Server } from 'socket.io';
+import http from 'http';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
+
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
 const debug = false;
 const logs = false;
 
-const fs = require('fs');
-const express = require('express')();
-const server = require('http').createServer(express);
-const io = require('socket.io')(server, {
+// eslint-disable-next-line no-underscore-dangle
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const server = http.createServer(express());
+const io = new Server(server, {
   allowEIO3: true,
   cors: {
     origin: false,
     methods: ['GET', 'POST'],
   },
 });
-const { RateLimiterMemory } = require('rate-limiter-flexible');
 
 const afkTime = 60; // in minutes
 const printStatusTime = 30; // in minutes
