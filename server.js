@@ -13,7 +13,8 @@ const logs = false;
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const server = http.createServer(express());
+const app = express();
+const server = http.createServer(app);
 const io = new Server(server, {
   allowEIO3: true,
   cors: {
@@ -33,8 +34,14 @@ let roomid = [];
 let countConnections = 0;
 
 const PORT = process.env.PORT || serverPort;
+
 server.listen(PORT, () => {
   console.log(`Listening on ${PORT}`);
+});
+
+app.get('/', (req, res) => {
+  res.set('Content-Type', 'text/plain');
+  res.send('server is running!');
 });
 
 const rateLimiterOptions = {
