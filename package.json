@@ -9,7 +9,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node --expose-gc server.js",
-    "locales": "node locales/locales.js",
+    "locales": "node locales/locales.js && npm run style",
     "lint": "npx eslint --fix .",
     "style": "prettier --write \"./**/*.{js,jsx,ts,tsx,json}\""
   },

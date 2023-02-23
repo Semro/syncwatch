@@ -1,1 +1,43 @@
-{"appName":{"message":"Sync Watch"},"appDesc":{"message":"Videoları eşzamanlı olarak izleyin !"},"popup_input_name":{"message":"İsmini yaz"},"popup_input_room":{"message":"Oda ismini Yaz"},"popup_button_connect":{"message":"bağlan"},"popup_button_disconnect":{"message":"bağlantıyı kes"},"popup_button_connecting":{"message":"bağlanıyor"},"popup_button_share":{"message":"videoyu paylaş"},"popup_status":{"message":"durum"},"popup_usersInRoom":{"message":"Odadaki kullanıcılar"},"notification_interact_title":{"message":"Sayfada bir yere tıklayın"},"notification_interact_message":{"message":"Örneğin, videoyu tıklayın"},"notification_interact_button":{"message":"Daha fazla"},"notification_shared_title":{"message":"video olarak paylaş"},"notification_shared_firefox":{"message":"Videoyu açmak için tıkla"},"notification_shared_button":{"message":"Videoyu aç"},"notification_afk_title":{"message":"Bağlantınız kesildi (AFK)"},"notification_afk_message":{"message":"Odada birkaç dakika yalnız kaldın. Trafiği azaltmak için bağlantınız kesildi."},"socket_event_connect":{"message":"bağlı"},"socket_event_connect_error":{"message":"bağlantı hatası"},"socket_event_connect_timeout":{"message":"bağlantı zamanaşımına uğradı"},"socket_event_error":{"message":"hata"},"socket_event_disconnect":{"message":"bağlantı kesildi"},"socket_event_reconnect":{"message":"yeniden bağlan"},"socket_event_reconnecting":{"message":"yeniden bağlanılıyor"},"socket_event_reconnect_error":{"message":"yeniden bağlanma hatası"},"socket_event_reconnect_failed":{"message":"yeniden bağlanma başarısız oldu"},"socket_error_write_name":{"message":"İsminizi yazın"},"socket_error_write_room":{"message":"Oda ismini yazın"},"socket_error_name_length":{"message":"İsim uzunluğu 2 ile 24  karakter arasında olmalıdır"},"socket_error_room_length":{"message":"oda ismi uzunluğu 2 ile 24  karakter arasında olmalıdır"},"options_button_save":{"message":"Kaydet"},"options_saved":{"message":"Seçenekler kaydedildi"},"options_server":{"message":"Sunucu"},"options_server_warning":{"message":"Uzantı sürekli yeniden bağlanmaya çalışırsa, doğru URL'yi girin, uzantıyı kapatın ve yeniden açın"}}
+{
+  "appName": { "message": "Sync Watch" },
+  "appDesc": { "message": "Videoları eşzamanlı olarak izleyin !" },
+  "popup_input_name": { "message": "İsmini yaz" },
+  "popup_input_room": { "message": "Oda ismini Yaz" },
+  "popup_button_connect": { "message": "bağlan" },
+  "popup_button_disconnect": { "message": "bağlantıyı kes" },
+  "popup_button_connecting": { "message": "bağlanıyor" },
+  "popup_button_share": { "message": "videoyu paylaş" },
+  "popup_status": { "message": "durum" },
+  "popup_usersInRoom": { "message": "Odadaki kullanıcılar" },
+  "notification_interact_title": { "message": "Sayfada bir yere tıklayın" },
+  "notification_interact_message": { "message": "Örneğin, videoyu tıklayın" },
+  "notification_interact_button": { "message": "Daha fazla" },
+  "notification_shared_title": { "message": "video olarak paylaş" },
+  "notification_shared_firefox": { "message": "Videoyu açmak için tıkla" },
+  "notification_shared_button": { "message": "Videoyu aç" },
+  "notification_afk_title": { "message": "Bağlantınız kesildi (AFK)" },
+  "notification_afk_message": {
+    "message": "Odada birkaç dakika yalnız kaldın. Trafiği azaltmak için bağlantınız kesildi."
+  },
+  "socket_event_connect": { "message": "bağlı" },
+  "socket_event_connect_error": { "message": "bağlantı hatası" },
+  "socket_event_connect_timeout": { "message": "bağlantı zamanaşımına uğradı" },
+  "socket_event_error": { "message": "hata" },
+  "socket_event_disconnect": { "message": "bağlantı kesildi" },
+  "socket_event_reconnect": { "message": "yeniden bağlan" },
+  "socket_event_reconnecting": { "message": "yeniden bağlanılıyor" },
+  "socket_event_reconnect_error": { "message": "yeniden bağlanma hatası" },
+  "socket_event_reconnect_failed": { "message": "yeniden bağlanma başarısız oldu" },
+  "socket_error_write_name": { "message": "İsminizi yazın" },
+  "socket_error_write_room": { "message": "Oda ismini yazın" },
+  "socket_error_name_length": { "message": "İsim uzunluğu 2 ile 24  karakter arasında olmalıdır" },
+  "socket_error_room_length": {
+    "message": "oda ismi uzunluğu 2 ile 24  karakter arasında olmalıdır"
+  },
+  "options_button_save": { "message": "Kaydet" },
+  "options_saved": { "message": "Seçenekler kaydedildi" },
+  "options_server": { "message": "Sunucu" },
+  "options_server_warning": {
+    "message": "Uzantı sürekli yeniden bağlanmaya çalışırsa, doğru URL'yi girin, uzantıyı kapatın ve yeniden açın"
+  }
+}
