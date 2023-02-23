@@ -10,7 +10,8 @@
   "scripts": {
     "start": "node --expose-gc server.js",
     "locales": "node locales/locales.js",
-    "lint": "npx eslint --fix ."
+    "lint": "npx eslint --fix .",
+    "style": "prettier --write \"./**/*.{js,jsx,ts,tsx,json}\""
   },
   "keywords": [],
   "repository": {
@@ -33,7 +34,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.8.3"
+    "prettier": "^2.8.4"
   },
   "overrides": {
     "csv-locales": {
