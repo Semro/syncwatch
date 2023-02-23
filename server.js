@@ -65,9 +65,9 @@ function checkUserNameAndRoom(data) {
   if (String(data.name) === '[object Object]' || String(data.room) === '[object Object]')
     return 'Dont try make subrooms :D';
 
-  if (data.name === '' || data.name === undefined) return 'socket_error_write_name';
+  if (!data.name || data.name.trim() === '') return 'socket_error_write_name';
   if (data.name.length < 2 || data.name.length > 24) return 'socket_error_name_length';
-  if (data.room === '' || data.name === undefined) return 'socket_error_write_room';
+  if (!data.room || data.room.trim() === '') return 'socket_error_write_room';
   if (data.room.length < 2 || data.room.length > 24) return 'socket_error_room_length';
   return null;
 }
