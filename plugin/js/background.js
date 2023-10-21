@@ -16,7 +16,7 @@ let status = 'disconnect';
 let list = [];
 let syncTab = null;
 let share = null;
-const defaultUrl = 'https://server.syncwatch.space/';
+const defaultUrl = 'http://server.syncwatch.space/';
 let connectionUrl = defaultUrl;
 
 function initConnectionUrl() {
