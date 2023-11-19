@@ -11,7 +11,7 @@ function saveOptions() {
       setTimeout(() => {
         status.innerText = '';
       }, 1000);
-    }
+    },
   );
 }
 

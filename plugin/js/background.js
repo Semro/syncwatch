@@ -94,7 +94,7 @@ function isContentScriptInjected(tab) {
       },
       (response) => {
         if (chrome.runtime.lastError || response !== true) resolve();
-      }
+      },
     );
   });
 }
@@ -113,7 +113,7 @@ function injectScriptInTab(tab) {
         if (e !== undefined) {
           console.warn('Injecting error: ', e.message);
         }
-      }
+      },
     );
   });
 }
@@ -163,7 +163,7 @@ function onShareNotification(msg) {
   };
   if (isFirefox) {
     options.message = `${msg.title} (${msg.url})\n${chrome.i18n.getMessage(
-      'notification_shared_firefox'
+      'notification_shared_firefox',
     )}`;
   } else {
     options.buttons = [
@@ -390,7 +390,7 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.runtime.setUninstallURL(
-  `https://docs.google.com/forms/d/e/1FAIpQLSd8Z6m6lAFwLk88WK8arSgMfIcJxhVROR3r64RlCo-Lfs_0rA/viewform?entry.435513449=${user.agent}&entry.126853255=${user.version}`
+  `https://docs.google.com/forms/d/e/1FAIpQLSd8Z6m6lAFwLk88WK8arSgMfIcJxhVROR3r64RlCo-Lfs_0rA/viewform?entry.435513449=${user.agent}&entry.126853255=${user.version}`,
 );
 
 initConnectionUrl();
