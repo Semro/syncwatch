@@ -1,17 +1,20 @@
 #!/usr/bin/env sh
 
-if [ -z "${NGINX_CERT_KEY}" ]; then
-    echo "NGINX_CERT_KEY env variable is not provided. Provide private key for encrypted certificate in it"
-    exit 1
-fi
+echo "Setting Service Account JSON credentials..."
+echo "$YC_SA_JSON_CREDENTIALS" > key.json
 
-if [ -z "${NGINX_CERT}" ]; then
-    echo "NGINX_CERT env variable is not provided. Provided encrypted certificate in it"
-fi
+echo "Creating Service Account profile..."
+yc config profile create sa-profile
+yc config set service-account-key key.json
+yc config set folder-id $YC_FOLDER_ID
 
 mkdir -p /etc/nginx/certs
 
-echo "$NGINX_CERT" | tr ';' '\n' > /etc/nginx/certs/certificate.crt
-echo "$NGINX_CERT_KEY" | tr ';' '\n' > /etc/nginx/certs/certificate.key
+echo "Getting certificate..."
+yc certificate-manager certificate content \
+    --id $YC_CERTIFICATE_ID \
+    --chain /etc/nginx/certs/certificate_full_chain.pem \
+    --key /etc/nginx/certs/private_key.pem \
+    > /dev/null
 
 nginx -g 'daemon off;'

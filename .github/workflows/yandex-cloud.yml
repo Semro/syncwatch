@@ -2,13 +2,13 @@ name: Docker Image CI
 
 on:
   push:
-    branches: ['main']
+    branches: ["main"]
   workflow_dispatch:
     inputs:
       reason:
-        description: 'why'
+        description: "why"
         required: false
-        default: 'just for fun'
+        default: "just for fun"
 
 env:
   BACKEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-backend:${{ github.sha }}
@@ -62,26 +62,9 @@ jobs:
           push: true
           tags: ${{ env.NGINX_IMAGE }}
 
-  prepare-certificate:
-    runs-on: ubuntu-latest
-    outputs:
-      certificate-full-chain: ${{ steps.yc-get-cert.outputs.certificate-full-chain }}
-      private-key: ${{ steps.yc-get-cert.outputs.private-key }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Get certificate from YC
-        uses: ./yandex-cloud/yc-get-cert-action
-        id: yc-get-cert
-        with:
-          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-          folder-id: ${{ secrets.YC_FOLDER_ID }}
-          certificate-id: ${{ secrets.YC_CERTIFICATE_ID }}
-
   update-yc:
     runs-on: ubuntu-latest
-    needs: [build-backend, build-nginx, prepare-certificate]
+    needs: [build-backend, build-nginx]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -94,18 +77,19 @@ jobs:
           NGINX_IMAGE: ${{ env.NGINX_IMAGE }}
           YC_VM_SSH: ${{ secrets.YC_VM_SSH }}
           YC_VM_USERNAME: ${{ secrets.YC_VM_USERNAME }}
-          NGINX_CERT: ${{ needs.prepare-certificate.outputs.certificate-full-chain }}
-          NGINX_CERT_KEY: ${{ needs.prepare-certificate.outputs.private-key }}
+          YC_SA_JSON_CREDENTIALS: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
+          YC_CERTIFICATE_ID: ${{ secrets.YC_CERTIFICATE_ID }}
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           folder-id: ${{ secrets.YC_FOLDER_ID }}
           vm-name: ${{ secrets.YC_VM_NAME }}
           vm-service-account-id: ${{ secrets.YC_SERVICE_ACCOUNT_ID }}
           vm-cores: 2
-          vm-platform-id: 'standard-v2'
+          vm-platform-id: "standard-v2"
           vm-memory: 512Mb
           vm-disk-size: 30Gb
           vm-core-fraction: 5
           vm-subnet-id: ${{ secrets.YC_SUBNET_ID }}
-          docker-compose-path: './yandex-cloud/docker-compose.yc.yaml'
-          user-data-path: './yandex-cloud/user-data.yaml'
+          docker-compose-path: "./yandex-cloud/docker-compose.yc.yaml"
+          user-data-path: "./yandex-cloud/user-data.yaml"

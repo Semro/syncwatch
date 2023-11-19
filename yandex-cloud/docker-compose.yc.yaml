@@ -8,8 +8,10 @@ services:
       - '443:443'
     restart: always
     environment:
-      NGINX_CERT: {{ env.NGINX_CERT }}
-      NGINX_CERT_KEY: {{ env.NGINX_CERT_KEY }}
+      YC_SA_JSON_CREDENTIALS: >
+        {{ env.YC_SA_JSON_CREDENTIALS }}
+      YC_FOLDER_ID: {{ env.YC_FOLDER_ID }}
+      YC_CERTIFICATE_ID: {{ env.YC_CERTIFICATE_ID }}
     depends_on:
       - backend
 
