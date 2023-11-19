@@ -22,19 +22,19 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
-    "rate-limiter-flexible": "^2.4.1",
-    "socket.io": "^4.6.0"
+    "rate-limiter-flexible": "^3.0.4",
+    "socket.io": "^4.7.2"
   },
   "devDependencies": {
     "csv-locales": "^1.2.2",
-    "eslint": "^8.33.0",
+    "eslint": "^8.54.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-node": "^4.1.0",
-    "eslint-config-prettier": "^8.6.0",
-    "eslint-plugin-import": "^2.27.5",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.8.4"
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.1.0"
   },
   "overrides": {
     "csv-locales": {
