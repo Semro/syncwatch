@@ -26,7 +26,7 @@ const io = new Server(server, {
 const afkTime = 60; // in minutes
 const printStatusTime = 30; // in minutes
 const errorFilePath = `${__dirname}/error.log`;
-const serverPort = 80;
+const serverPort = 8080;
 
 let roomsLength = 0;
 let rooms = [];
@@ -41,7 +41,7 @@ server.listen(PORT, () => {
 
 app.get('/', (req, res) => {
   res.set('Content-Type', 'text/plain');
-  res.send('server is running!');
+  res.send('server is running! (nodejs)');
 });
 
 const rateLimiterOptions = {
