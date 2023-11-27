@@ -16,14 +16,14 @@ jobs:
         with:
           find: '"incognito": "split",'
           replace: ""
-          include: "plugin/manifest.json"
+          include: "packages/syncwatch-extension/dist/manifest.json"
 
       - name: Build Extension for Firefox
         id: web-ext-build
         uses: kewisch/action-web-ext@v1
         with:
           cmd: build
-          source: ./plugin
+          source: ./packages/syncwatch-extension/dist
 
       - name: "Sign & publish"
         id: web-ext-sign
@@ -51,7 +51,7 @@ jobs:
         uses: TheDoctor0/zip-release@0.4.1
         with:
           filename: ./SyncWatchExtension.zip
-          path: ./plugin
+          path: ./packages/syncwatch-extension/dist
 
       - name: Publish to Chrome Webstore
         uses: trmcnvn/chrome-addon@v2

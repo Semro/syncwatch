@@ -3,8 +3,8 @@
 import csvLocales from 'csv-locales';
 
 const params = {
-  csvPath: 'locales/locales.csv',
-  dirPath: 'plugin/_locales',
+  csvPath: 'locales.csv',
+  dirPath: '../syncwatch-extension/dist/_locales',
 };
 
 csvLocales(params, (err) => {
