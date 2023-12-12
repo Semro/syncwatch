@@ -1,8 +1,18 @@
 {
   "name": "syncwatch-extension",
+  "private": true,
   "version": "1.0.0",
-  "description": "",
-  "author": "",
-  "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "compile": "tsc --noEmit",
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "@types/webextension-polyfill": "^0.10.7",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8",
+    "vite-plugin-web-extension": "^4.0.1",
+    "webextension-polyfill": "^0.10.0"
+  }
 }
