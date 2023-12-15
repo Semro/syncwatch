@@ -1,21 +1,40 @@
 {
-  "{{chrome}}.manifest_version": 3,
-  "{{firefox}}.manifest_version": 2,
-  "icons": {
-    "16": "icon/16.png",
-    "32": "icon/32.png",
-    "48": "icon/48.png",
-    "96": "icon/96.png",
-    "128": "icon/128.png"
-  },
-  "{{chrome}}.action": {
-    "default_popup": "src/popup.html"
-  },
-  "{{firefox}}.browser_action": {
-    "default_popup": "src/popup.html"
+  "manifest_version": 2,
+  "name": "__MSG_appName__",
+  "description": "__MSG_appDesc__",
+  "version": "0.423",
+  "default_locale": "en",
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
   },
   "background": {
-    "{{chrome}}.service_worker": "src/background.ts",
-    "{{firefox}}.scripts": ["src/background.ts"]
+    "persistent": true,
+    "scripts": ["js/libs/socket.io.min.js", "js/background.js"]
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_action": {
+    "default_icon": "icons/icon128.png",
+    "default_title": "SyncWatch",
+    "default_popup": "popup.html"
+  },
+  "incognito": "split",
+  "permissions": ["<all_urls>", "tabs", "storage", "notifications"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.netflix.com/*"],
+      "js": ["js/players/netflix/loadNetflix.js"]
+    }
+  ],
+  "web_accessible_resources": ["js/players/netflix/netflix.js"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{7558bb02-8595-4b93-b3bc-9f34319e9c4a}"
+    }
   }
 }

@@ -1,16 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./popup.css" />
-    <script type="module" src="./popup.ts"></script>
-    <title>Popup</title>
+    <title>SyncWatch</title>
+    <link rel="stylesheet" type="text/css" href="css/ui.css" />
+    <link rel="stylesheet" type="text/css" href="css/popup.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   </head>
   <body>
-    <img src="/icon-with-shadow.svg" />
-    <h1>vite-plugin-web-extension</h1>
-    <p>Template: <code>vanilla-ts</code></p>
+    <div id="main">
+      <div class="block" id="logo">SyncWatch</div>
+      <input class="block" id="name" type="text" name="name" placeholder="Type your name" />
+      <input class="block" id="room" type="text" name="room" placeholder="Type room name" />
+      <div class="block" id="error"></div>
+      <input class="block button" id="share" type="button" name="share" value="share" />
+      <a
+        class="block"
+        id="shared"
+        href="https://www.youtube.com/watch?v=kJQP7kiw5Fk"
+        target="_blank"
+      >
+        <img src="https://www.youtube.com/favicon.ico" width="16px" height="16px" />
+        <span>Luis Fonsi - Despacito ft. Daddy Yankee (Official Music Video)</span>
+      </a>
+      <div class="block" id="usersListTitle">Users in room:</div>
+      <ul id="usersList"></ul>
+      <div class="block" id="status">status:</div>
+      <input class="block button" id="connect" type="button" name="connect" value="connect" />
+    </div>
   </body>
+  <script type="module" src="js/popup.js"></script>
 </html>

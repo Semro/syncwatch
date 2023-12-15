@@ -1,33 +1,30 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script type="module" src="http://localhost:5173/@vite/client"></script>
+
     <title>SyncWatch</title>
-    <link rel="stylesheet" type="text/css" href="css/ui.css" />
-    <link rel="stylesheet" type="text/css" href="css/popup.css" />
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script type="module" crossorigin src="/popup.js"></script>
+    <link rel="modulepreload" crossorigin href="/ui.js">
+    <link rel="stylesheet" crossorigin href="/ui.css">
   </head>
   <body>
     <div id="main">
       <div class="block" id="logo">SyncWatch</div>
-      <input class="block" id="name" type="text" name="name" placeholder="Type your name" />
-      <input class="block" id="room" type="text" name="room" placeholder="Type room name" />
+      <input class="block" id="name" type="text" name="name" placeholder="Type your name">
+      <input class="block" id="room" type="text" name="room" placeholder="Type room name">
       <div class="block" id="error"></div>
-      <input class="block button" id="share" type="button" name="share" value="share" />
-      <a
-        class="block"
-        id="shared"
-        href="https://www.youtube.com/watch?v=kJQP7kiw5Fk"
-        target="_blank"
-      >
-        <img src="https://www.youtube.com/favicon.ico" width="16px" height="16px" />
+      <input class="block button" id="share" type="button" name="share" value="share">
+      <a class="block" id="shared" href="https://www.youtube.com/watch?v=kJQP7kiw5Fk" target="_blank">
+        <img src="https://www.youtube.com/favicon.ico" width="16px" height="16px">
         <span>Luis Fonsi - Despacito ft. Daddy Yankee (Official Music Video)</span>
       </a>
       <div class="block" id="usersListTitle">Users in room:</div>
       <ul id="usersList"></ul>
       <div class="block" id="status">status:</div>
-      <input class="block button" id="connect" type="button" name="connect" value="connect" />
+      <input class="block button" id="connect" type="button" name="connect" value="connect">
     </div>
   </body>
-  <script src="js/popup.js"></script>
 </html>

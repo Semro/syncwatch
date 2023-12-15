@@ -1,0 +1,41 @@
+{
+  "appName": { "message": "Sync Watch" },
+  "appDesc": { "message": "Watch videos together at the same time!" },
+  "popup_input_name": { "message": "Type your name" },
+  "popup_input_room": { "message": "Type room name" },
+  "popup_button_connect": { "message": "connect" },
+  "popup_button_disconnect": { "message": "disconnect" },
+  "popup_button_connecting": { "message": "connecting" },
+  "popup_button_share": { "message": "share video" },
+  "popup_status": { "message": "status" },
+  "popup_usersInRoom": { "message": "Users in room" },
+  "notification_interact_title": { "message": "Click somewhere on the page" },
+  "notification_interact_message": { "message": "For example, click on video" },
+  "notification_interact_button": { "message": "More" },
+  "notification_shared_title": { "message": "shared with video" },
+  "notification_shared_firefox": { "message": "Click to open video" },
+  "notification_shared_button": { "message": "Open video" },
+  "notification_afk_title": { "message": "You have been disconnected (AFK)" },
+  "notification_afk_message": {
+    "message": "You were alone in the room for several minutes. To save traffic you have been disconnected."
+  },
+  "socket_event_connect": { "message": "connected" },
+  "socket_event_connect_error": { "message": "connection error" },
+  "socket_event_connect_timeout": { "message": "connection timeout" },
+  "socket_event_error": { "message": "error" },
+  "socket_event_disconnect": { "message": "disconnected" },
+  "socket_event_reconnect": { "message": "reconnect" },
+  "socket_event_reconnecting": { "message": "reconnecting" },
+  "socket_event_reconnect_error": { "message": "reconnection error" },
+  "socket_event_reconnect_failed": { "message": "reconnection failed" },
+  "socket_error_write_name": { "message": "Write your name" },
+  "socket_error_write_room": { "message": "Write room name" },
+  "socket_error_name_length": { "message": "Name length must be between 2 and 24" },
+  "socket_error_room_length": { "message": "Room length must be between 2 and 24" },
+  "options_button_save": { "message": "Save" },
+  "options_saved": { "message": "Options saved" },
+  "options_server": { "message": "Server" },
+  "options_server_warning": {
+    "message": "If extension reconnects infinitely then put correct URL and reload extension"
+  }
+}
