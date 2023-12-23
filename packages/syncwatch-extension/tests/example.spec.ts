@@ -29,16 +29,18 @@ const initialState = (page) => {
 };
 
 test('connect to the server', async ({ page, extensionId, context }) => {
+  const userName = 'User1';
+  const serverUrl = `http://localhost:${process.env.SERVER_PORT}`;
+  const video = 'https://www.w3.org/2010/05/video/mediaevents.html';
+
   // Change server URL
   await page.goto(`chrome-extension://${extensionId}/options.html`);
 
-  await page.locator('#serverUrl').fill(`http://localhost:${process.env.SERVER_PORT}`);
+  await page.locator('#serverUrl').fill(serverUrl);
   await page.getByRole('button', { name: 'save' }).click();
 
-  const userName = 'User1';
-  await page.goto(`chrome-extension://${extensionId}/popup.html`);
-
   // Initial State
+  await page.goto(`chrome-extension://${extensionId}/popup.html`);
   await initialState(page);
 
   // Connect to the server
@@ -53,7 +55,6 @@ test('connect to the server', async ({ page, extensionId, context }) => {
   // Share a video
   await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
-  const video = 'https://www.w3.org/2010/05/video/mediaevents.html';
   const pageVideo = await context.newPage();
   await pageVideo.goto(video);
 
