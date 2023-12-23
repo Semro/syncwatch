@@ -35,6 +35,8 @@ test('connect to the server', async ({ page, extensionId, context }) => {
   await page.getByPlaceholder('Type room name').fill('RoomName');
 
   await page.getByRole('button', { name: 'connect' }).click();
+  await expect(page.locator('#status')).toHaveText('status: connected');
+  await expect(page.locator('#usersList')).toBeVisible();
   await expect(page.locator('#usersList')).toHaveText(userName);
 
   // Share a video
@@ -56,4 +58,10 @@ test('connect to the server', async ({ page, extensionId, context }) => {
   const pagePromise = page.context().waitForEvent('page', (p) => p.url() === video);
   const newPage = await pagePromise;
   await expect(newPage).toHaveURL(video);
+
+  // Disconnect from the server
+  await page.getByRole('button', { name: 'connect' }).click();
+  await expect(sharedElement).toBeVisible({ visible: false });
+  await expect(page.locator('#usersList')).toBeVisible({ visible: false });
+  await expect(page.locator('#status')).toHaveText('status: disconnected');
 });
