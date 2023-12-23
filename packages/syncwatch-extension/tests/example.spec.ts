@@ -20,6 +20,14 @@ test('screenshot_option', async ({ page, extensionId }) => {
   await expect(page.locator('#main')).toHaveScreenshot();
 });
 
+const initialState = (page) => {
+  return Promise.all([
+    expect(page.locator('#shared')).toBeVisible({ visible: false }),
+    expect(page.locator('#usersList')).toBeVisible({ visible: false }),
+    expect(page.locator('#status')).toHaveText('status: disconnected'),
+  ]);
+};
+
 test('connect to the server', async ({ page, extensionId, context }) => {
   // Change server URL
   await page.goto(`chrome-extension://${extensionId}/options.html`);
@@ -27,10 +35,13 @@ test('connect to the server', async ({ page, extensionId, context }) => {
   await page.locator('#serverUrl').fill(`http://localhost:${process.env.SERVER_PORT}`);
   await page.getByRole('button', { name: 'save' }).click();
 
-  // Connect to the server
   const userName = 'User1';
   await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
+  // Initial State
+  await initialState(page);
+
+  // Connect to the server
   await page.getByPlaceholder('Type your name').fill(userName);
   await page.getByPlaceholder('Type room name').fill('RoomName');
 
@@ -46,12 +57,9 @@ test('connect to the server', async ({ page, extensionId, context }) => {
   const pageVideo = await context.newPage();
   await pageVideo.goto(video);
 
-  const sharedElement = page.locator('#shared');
-  await expect(sharedElement).toBeVisible({ visible: false });
-
   await page.getByRole('button', { name: 'share' }).click();
-  await expect(sharedElement).toHaveAttribute('href', video);
-  await expect(sharedElement).toBeVisible();
+  await expect(page.locator('#shared')).toHaveAttribute('href', video);
+  await expect(page.locator('#shared')).toBeVisible();
 
   // Open a shared video
   await page.locator('#shared').click();
@@ -61,7 +69,5 @@ test('connect to the server', async ({ page, extensionId, context }) => {
 
   // Disconnect from the server
   await page.getByRole('button', { name: 'connect' }).click();
-  await expect(sharedElement).toBeVisible({ visible: false });
-  await expect(page.locator('#usersList')).toBeVisible({ visible: false });
-  await expect(page.locator('#status')).toHaveText('status: disconnected');
+  await initialState(page);
 });
