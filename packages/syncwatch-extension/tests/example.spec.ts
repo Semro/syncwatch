@@ -21,7 +21,7 @@ test('screenshot_option', async ({ page, extensionId }) => {
   await expect(page.locator('#main')).toHaveScreenshot();
 });
 
-test('connect to the server', async ({ page, extensionId }) => {
+test('connect to the server', async ({ page, extensionId, context }) => {
   // Change server URL
   await page.goto(`chrome-extension://${extensionId}/options.html`);
 
@@ -39,8 +39,18 @@ test('connect to the server', async ({ page, extensionId }) => {
   await expect(page.locator('#usersList')).toHaveText(userName);
 
   // Share a video
-  // const video = 'https://www.w3.org/2010/05/video/mediaevents.html';
-  // await page.goto(video);
+  await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
-  // await page.getByRole('button', { name: 'share' }).click();
+  const video = 'https://www.w3.org/2010/05/video/mediaevents.html';
+  const pageVideo = await context.newPage();
+  await pageVideo.goto(video);
+
+  await page.getByRole('button', { name: 'share' }).click();
+  await expect(page.locator('#shared')).toHaveAttribute('href', video);
+
+  // Open a shared video
+  await page.locator('#shared').click();
+  const pagePromise = page.context().waitForEvent('page', (p) => p.url() === video);
+  const newPage = await pagePromise;
+  await expect(newPage.url()).toBe(video);
 });
