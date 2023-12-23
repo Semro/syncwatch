@@ -44,8 +44,12 @@ test('connect to the server', async ({ page, extensionId, context }) => {
   const pageVideo = await context.newPage();
   await pageVideo.goto(video);
 
+  const sharedElement = page.locator('#shared');
+  await expect(sharedElement).toBeVisible({ visible: false });
+
   await page.getByRole('button', { name: 'share' }).click();
-  await expect(page.locator('#shared')).toHaveAttribute('href', video);
+  await expect(sharedElement).toHaveAttribute('href', video);
+  await expect(sharedElement).toBeVisible();
 
   // Open a shared video
   await page.locator('#shared').click();
