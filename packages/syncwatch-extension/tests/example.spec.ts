@@ -5,8 +5,7 @@ dotenv.config();
 
 test('popup page', async ({ page, extensionId }) => {
   await page.goto(`chrome-extension://${extensionId}/popup.html`);
-  const title = await page.title();
-  await expect(title).toBe('SyncWatch');
+  await expect(page).toHaveTitle('SyncWatch');
 });
 
 test('screenshot_popup', async ({ page, extensionId }) => {
@@ -52,5 +51,5 @@ test('connect to the server', async ({ page, extensionId, context }) => {
   await page.locator('#shared').click();
   const pagePromise = page.context().waitForEvent('page', (p) => p.url() === video);
   const newPage = await pagePromise;
-  await expect(newPage.url()).toBe(video);
+  await expect(newPage).toHaveURL(video);
 });
