@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import { test, expect, describe } from './fixtures';
+import { test, expect } from './fixtures';
 import dotenv from 'dotenv';
 
 dotenv.config();
