@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test';
 import { test, expect } from './fixtures';
 import dotenv from 'dotenv';
+import { Socket, io } from 'socket.io-client';
 
 dotenv.config();
 
@@ -31,8 +32,30 @@ const initialState = (page: Page) => {
   });
 };
 
+const initSocket = (serverUrl) => {
+  return new Promise((resolve: (value: Socket) => void, reject) => {
+    const socket = io(serverUrl, {
+      reconnection: true,
+      reconnectionDelayMax: 10000,
+      reconnectionDelay: 5000,
+      reconnectionAttempts: 5,
+    });
+
+    socket.on('connect', () => {
+      resolve(socket);
+    });
+
+    socket.on('connect_error', (err) => {
+      reject(err);
+    });
+  });
+};
+
 test('user scenario', async ({ page, extensionId, context }) => {
-  const userName = 'User1';
+  const user1 = {
+    name: 'User1',
+    room: 'RoomName',
+  };
   const serverUrl = `http://localhost:${process.env.SERVER_PORT}`;
   const video = 'https://www.w3.org/2010/05/video/mediaevents.html';
 
@@ -49,13 +72,13 @@ test('user scenario', async ({ page, extensionId, context }) => {
   });
 
   await test.step('Connect to the server', async () => {
-    await page.getByPlaceholder('Type your name').fill(userName);
-    await page.getByPlaceholder('Type room name').fill('RoomName');
+    await page.getByPlaceholder('Type your name').fill(user1.name);
+    await page.getByPlaceholder('Type room name').fill(user1.room);
 
     await page.getByRole('button', { name: 'connect' }).click();
     await expect(page.locator('#status')).toHaveText('status: connected');
     await expect(page.locator('#usersList')).toBeVisible();
-    await expect(page.locator('#usersList')).toHaveText(userName);
+    await expect(page.locator('#usersList')).toContainText(user1.name);
   });
 
   await test.step('Share a video', async () => {
@@ -74,6 +97,22 @@ test('user scenario', async ({ page, extensionId, context }) => {
     const pagePromise = page.context().waitForEvent('page', (p) => p.url() === video);
     const newPage = await pagePromise;
     await expect(newPage).toHaveURL(video);
+  });
+
+  const user2 = { name: 'User2', room: user1.room };
+  const socket = await initSocket(serverUrl);
+
+  const socketEmit = async (ev, data) => {
+    return new Promise((resolve, reject) => {
+      socket.emit(ev, data);
+      resolve('success');
+    });
+  };
+
+  await test.step('User2 joins room', async () => {
+    await page.goto(`chrome-extension://${extensionId}/popup.html`);
+    await socketEmit('join', user2);
+    await expect(page.locator('#usersList')).toContainText(user2.name);
   });
 
   await test.step('Disconnect from the server', async () => {

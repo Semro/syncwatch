@@ -9,5 +9,8 @@
     "@playwright/test": "^1.40.1",
     "@types/node": "^20.10.4",
     "dotenv": "^16.3.1"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.7.2"
   }
 }
