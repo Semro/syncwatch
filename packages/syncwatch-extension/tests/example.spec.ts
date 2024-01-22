@@ -2,6 +2,7 @@ import { Page } from '@playwright/test';
 import { test, expect } from './fixtures';
 import dotenv from 'dotenv';
 import { Socket, io } from 'socket.io-client';
+import { DefaultEventsMap } from '@socket.io/component-emitter';
 
 dotenv.config();
 
@@ -49,6 +50,16 @@ const initSocket = (serverUrl) => {
     socket.on('connect_error', (err) => {
       reject(err);
     });
+  });
+};
+
+const waitForSocketEvent = async (socket: Socket, event: string, callback: () => void) => {
+  return new Promise<Record<string, string>>((resolve, reject) => {
+    socket.on(event, (data) => {
+      resolve(data);
+    });
+
+    callback();
   });
 };
 
@@ -171,6 +182,22 @@ test('user scenario', async ({ page, extensionId, context }) => {
       'playbackRate',
       eventChangePlaybackRate.playbackRate,
     );
+  });
+
+  await test.step('Video event should reach other user in the room', async () => {
+    await page.goto(video);
+
+    const videoElement = page.locator('#video');
+    await videoElement.focus();
+
+    const type = (
+      await waitForSocketEvent(socket, 'message', () => {
+        page.keyboard.press(' ');
+      })
+    ).type;
+
+    // For some there will be "pause" event when  user clicks video element first time
+    expect(type).toBe('pause');
   });
 
   await test.step('Disconnect from the server', async () => {
