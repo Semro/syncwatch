@@ -12,5 +12,10 @@
   },
   "dependencies": {
     "socket.io-client": "^4.7.2"
+  },
+  "scripts": {
+    "serve:test-page": "npx serve tests/test-page/",
+    "test:e2e": "npx playwright test",
+    "test:e2e-ui": "npx playwright test --ui"
   }
 }

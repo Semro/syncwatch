@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)https://www.w3.org/2010/05/video/mediaevents.html -->
+<html lang="en" data-lt-installed="true" class=" kzbahzlzc idc0_350">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <title>HTML5 Video</title>
+  <script src="./assets/script.js">
+  </script>
+  <link href="./assets/style.css" rel="stylesheet" type="text/css">
+  <meta name="d41d8cd98f00b204e9800998ecf8427e_lib_detect" id="d41d8cd98f00b204e9800998ecf8427e_lib_detect">
+  <script src="chrome-extension://cgaocdmhkmfnkdkbnckgmpopcbpaaejo/library/libraries.js"></script>
+  <script src="chrome-extension://cgaocdmhkmfnkdkbnckgmpopcbpaaejo/content_scripts/lib_detect.js"></script>
+</head>
+
+<body>
+  <h1>HTML5 Video Events and API</h1>
+
+  <p>This page demonstrates the new <a href="http://www.w3.org/TR/html5/embedded-content-0.html#the-video-element">HTML5
+      video
+      element</a>, its <a href="http://www.w3.org/TR/html5/embedded-content-0.html#htmlmediaelement">media API</a>, and
+    the <a href="http://www.w3.org/TR/html5/embedded-content-0.html#mediaevents">media events</a>. Play, pause, and seek
+    in the entire
+    video, change the volume, mute, change the playback rate (including
+    going into negative values). See the effect on the video and on the
+    underlying events and properties.</p>
+
+  <div>
+    <video id="video" controls="" preload="none" poster="https://media.w3.org/2010/05/sintel/poster.png">
+      <!--
+      <source id='mp4'
+        src="../sintel/trailer.mp4"
+        type='video/mp4'>
+      <source id='webm'
+        src="../sintel/trailer.webm"
+        type='video/webm'>
+-->
+      <source id="mp4" src="./assets/trailer.mp4" type="video/mp4">
+      <source id="webm" src="https://media.w3.org/2010/05/sintel/trailer.webm" type="video/webm">
+      <source id="ogv" src="https://media.w3.org/2010/05/sintel/trailer.ogv" type="video/ogg">
+
+      <p>Your user agent does not support the HTML5 Video element.</p>
+    </video>
+    <div id="buttons">
+      <button onclick="getVideo().load()">load()</button>
+      <button onclick="getVideo().play()">play()</button>
+      <button onclick="getVideo().pause()">pause()</button><br>
+      <button onclick="getVideo().currentTime+=10">currentTime+=10</button>
+      <button onclick="getVideo().currentTime-=10">currentTime-=10</button>
+      <button onclick="getVideo().currentTime=50">currentTime=50</button><br>
+      <button onclick="getVideo().playbackRate++">playbackRate++</button>
+      <button onclick="getVideo().playbackRate--">playbackRate--</button>
+      <button onclick="getVideo().playbackRate+=0.1">playbackRate+=0.1</button>
+      <button onclick="getVideo().playbackRate-=0.1">playbackRate-=0.1</button><br>
+      <button onclick="getVideo().volume+=0.1">volume+=0.1</button>
+      <button onclick="getVideo().volume-=0.1">volume-=0.1</button>
+      <button onclick="getVideo().muted=true">muted=true</button>
+      <button onclick="getVideo().muted=false">muted=false</button><br>
+      <button onclick="switchVideo(0);">Sintel teaser</button>
+      <button onclick="switchVideo(1);">Bunny trailer</button>
+      <button onclick="switchVideo(2);">Bunny movie</button>
+      <button onclick="switchVideo(3);">Test movie</button>
+    </div>
+
+    <table>
+      <caption>Media Events</caption>
+      <tbody id="events">
+        <tr>
+          <th>loadstart</th>
+          <td id="e_loadstart" class="true">1</td>
+          <th>progress</th>
+          <td id="e_progress" class="false">0</td>
+          <th>suspend</th>
+          <td id="e_suspend" class="true">1</td>
+          <th>abort</th>
+          <td id="e_abort" class="false">0</td>
+          <th>error</th>
+          <td id="e_error" class="false">0</td>
+        </tr>
+        <tr>
+          <th>emptied</th>
+          <td id="e_emptied" class="false">0</td>
+          <th>stalled</th>
+          <td id="e_stalled" class="false">0</td>
+          <th>loadedmetadata</th>
+          <td id="e_loadedmetadata" class="false">0</td>
+          <th>loadeddata</th>
+          <td id="e_loadeddata" class="false">0</td>
+          <th>canplay</th>
+          <td id="e_canplay" class="false">0</td>
+        </tr>
+        <tr>
+          <th>canplaythrough</th>
+          <td id="e_canplaythrough" class="false">0</td>
+          <th>playing</th>
+          <td id="e_playing" class="false">0</td>
+          <th>waiting</th>
+          <td id="e_waiting" class="false">0</td>
+          <th>seeking</th>
+          <td id="e_seeking" class="false">0</td>
+          <th>seeked</th>
+          <td id="e_seeked" class="false">0</td>
+        </tr>
+        <tr>
+          <th>ended</th>
+          <td id="e_ended" class="false">0</td>
+          <th>durationchange</th>
+          <td id="e_durationchange" class="false">0</td>
+          <th>timeupdate</th>
+          <td id="e_timeupdate" class="false">0</td>
+          <th>play</th>
+          <td id="e_play" class="false">0</td>
+          <th>pause</th>
+          <td id="e_pause" class="false">0</td>
+        </tr>
+        <tr>
+          <th>ratechange</th>
+          <td id="e_ratechange" class="false">0</td>
+          <th>resize</th>
+          <td id="e_resize" class="false">0</td>
+          <th>volumechange</th>
+          <td id="e_volumechange" class="false">0</td>
+        </tr>
+      </tbody>
+    </table>
+    <table>
+      <caption>Media Properties</caption>
+      <tbody id="properties">
+        <tr>
+          <th>error</th>
+          <td id="p_error" class="true"></td>
+          <th>src</th>
+          <td id="p_src" class="true"></td>
+          <th>srcObject</th>
+          <td id="p_srcObject" class="true"></td>
+        </tr>
+        <tr>
+          <th>currentSrc</th>
+          <td id="p_currentSrc" class="true">https://media.w3.org/2010/05/sintel/trailer.mp4</td>
+          <th>crossOrigin</th>
+          <td id="p_crossOrigin" class="true"></td>
+          <th>networkState</th>
+          <td id="p_networkState" class="true">1</td>
+        </tr>
+        <tr>
+          <th>preload</th>
+          <td id="p_preload" class="true">none</td>
+          <th>buffered</th>
+          <td id="p_buffered" class="true">[object TimeRanges]</td>
+          <th>readyState</th>
+          <td id="p_readyState" class="true">0</td>
+        </tr>
+        <tr>
+          <th>seeking</th>
+          <td id="p_seeking" class="true">false</td>
+          <th>currentTime</th>
+          <td id="p_currentTime" class="true">0</td>
+          <th>duration</th>
+          <td id="p_duration" class="true">NaN</td>
+        </tr>
+        <tr>
+          <th>paused</th>
+          <td id="p_paused" class="true">true</td>
+          <th>defaultPlaybackRate</th>
+          <td id="p_defaultPlaybackRate" class="true">1</td>
+          <th>playbackRate</th>
+          <td id="p_playbackRate" class="true">1</td>
+        </tr>
+        <tr>
+          <th>played</th>
+          <td id="p_played" class="true">[object TimeRanges]</td>
+          <th>seekable</th>
+          <td id="p_seekable" class="true">[object TimeRanges]</td>
+          <th>ended</th>
+          <td id="p_ended" class="true">false</td>
+        </tr>
+        <tr>
+          <th>autoplay</th>
+          <td id="p_autoplay" class="true">false</td>
+          <th>loop</th>
+          <td id="p_loop" class="true">false</td>
+          <th>controls</th>
+          <td id="p_controls" class="true">true</td>
+        </tr>
+        <tr>
+          <th>volume</th>
+          <td id="p_volume" class="true">1</td>
+          <th>muted</th>
+          <td id="p_muted" class="true">false</td>
+          <th>defaultMuted</th>
+          <td id="p_defaultMuted" class="true">false</td>
+        </tr>
+        <tr>
+          <th>audioTracks</th>
+          <td id="p_audioTracks" class="false"></td>
+          <th>videoTracks</th>
+          <td id="p_videoTracks" class="false"></td>
+          <th>textTracks</th>
+          <td id="p_textTracks" class="true">[object TextTrackList]</td>
+        </tr>
+        <tr>
+          <th>width</th>
+          <td id="p_width" class="true">0</td>
+          <th>height</th>
+          <td id="p_height" class="true">0</td>
+          <th>videoWidth</th>
+          <td id="p_videoWidth" class="true">0</td>
+        </tr>
+        <tr>
+          <th>videoHeight</th>
+          <td id="p_videoHeight" class="true">0</td>
+          <th>poster</th>
+          <td id="p_poster" class="true">https://media.w3.org/2010/05/sintel/poster.png</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table id="canPlayType">
+      <caption>canPlayType</caption>
+      <tbody id="m_video">
+        <tr>
+          <th>video/mp4</th>
+          <th>video/webm</th>
+        </tr>
+        <tr>
+          <td class="true">"maybe"</td>
+          <td class="true">"maybe"</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table id="tracks">
+      <caption>Tracks</caption>
+      <tbody>
+        <tr>
+          <th>Audio</th>
+          <th>Video</th>
+          <th>Text</th>
+        </tr>
+        <tr>
+          <td id="m_audiotracks" class="false">?</td>
+          <td id="m_videotracks" class="false">?</td>
+          <td id="m_texttracks" class="true">0</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!--
+  <div id='canPlayType'>
+      // @@TODO canPlayType
+    </div>
+    -->
+  </div>
+
+  <h2>Limitations</h2>
+
+  <ul>
+    <li>Some events may be fired despite the lack of effect on the video itself,
+      in particular while trying to change the playback rate;</li>
+    <li>Not all conditions are necessarily there to generate every single
+      possible event, such as <code>stalled</code> or <code>emptied</code>;</li>
+    <li>The rendered page may not be updated while the video is
+      playing. Thus you may see plenty of <code>timeupdate</code>
+      events counted after the video is paused/stopped;</li>
+  </ul>
+  <hr>
+
+  <address>plh@w3.org - April 2017</address>
+  <p>
+    Many, many thanks to the <a href="http://www.blender.org/blenderorg/blender-foundation/">Blender
+      Foundation</a> and the community around the <a href="http://www.blender.org/">blender project</a>.
+  </p>
+
+
+
+</body>
+
+</html>

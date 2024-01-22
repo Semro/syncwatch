@@ -1,0 +1,25 @@
+body {  background-color: black; color: #ffffe0; font-family: Arial, sans-serif; }
+video {
+  border: 1px solid black;
+  padding: 0; margin: 0;
+  width: 427px;
+  height: 240px;
+  background-color: black;
+  margin: auto;
+  float: left;
+}
+
+a { color: #ffffe0;}
+
+table { border: none; margin: auto; margin-top: 1ex;}
+th {  text-align: right; }
+caption { background-color: #ffffe0; color: black;}
+thead th {  background-color: #ffffe0; color: black;}
+#events td { text-align: right; width: 4ex;}
+#properties td { }
+hr { clear: both; margin-top: 2em;}
+.true { background-color: #360; color: #ffffe0; }
+.false { background-color: #603; color: #ffffe0; }
+#buttons { text-align: center; }
+
+#m_video td, #m_video th, #tracks td, #tracks tth { text-align: center; padding-left: 0.5ex; padding-right: 0.5ex;}

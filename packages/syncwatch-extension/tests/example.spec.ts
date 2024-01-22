@@ -68,7 +68,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
     room: 'RoomName',
   };
   const serverUrl = `http://localhost:${process.env.SERVER_PORT}`;
-  const video = 'https://www.w3.org/2010/05/video/mediaevents.html';
+  const pageVideoUrl = `http://localhost:${process.env.TEST_PAGE_PORT}/`;
 
   await test.step('Change server URL', async () => {
     await page.goto(`chrome-extension://${extensionId}/options.html`);
@@ -98,18 +98,18 @@ test('user scenario', async ({ page, extensionId, context }) => {
     await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
     const pageVideo = await context.newPage();
-    await pageVideo.goto(video);
+    await pageVideo.goto(pageVideoUrl);
 
     await page.getByRole('button', { name: 'share' }).click();
-    await expect(page.locator('#shared')).toHaveAttribute('href', video);
+    await expect(page.locator('#shared')).toHaveAttribute('href', pageVideoUrl);
     await expect(page.locator('#shared')).toBeVisible();
   });
 
   await test.step('Open a shared video', async () => {
     await page.locator('#shared').click();
-    const pagePromise = page.context().waitForEvent('page', (p) => p.url() === video);
+    const pagePromise = page.context().waitForEvent('page', (p) => p.url() === pageVideoUrl);
     const newPage = await pagePromise;
-    await expect(newPage).toHaveURL(video);
+    await expect(newPage).toHaveURL(pageVideoUrl);
   });
 
   const user2 = { name: 'User2', room: user1.room };
@@ -130,7 +130,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
   });
 
   await test.step('Dispatch events from server to video player', async () => {
-    await page.goto(video);
+    await page.goto(pageVideoUrl);
 
     const eventPlay = {
       location: '-1',
@@ -184,7 +184,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
   });
 
   await test.step('Video event should reach other user in the room', async () => {
-    await page.goto(video);
+    await page.goto(pageVideoUrl);
 
     const videoElement = page.locator('#video');
     await videoElement.focus();
