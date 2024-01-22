@@ -7,6 +7,7 @@ dotenv.config();
 
 test('popup page', async ({ page, extensionId }) => {
   await page.goto(`chrome-extension://${extensionId}/popup.html`);
+
   await expect(page).toHaveTitle('SyncWatch');
 });
 
@@ -72,6 +73,8 @@ test('user scenario', async ({ page, extensionId, context }) => {
   });
 
   await test.step('Connect to the server', async () => {
+    await page.goto(`chrome-extension://${extensionId}/popup.html`);
+
     await page.getByPlaceholder('Type your name').fill(user1.name);
     await page.getByPlaceholder('Type room name').fill(user1.room);
 
@@ -111,11 +114,29 @@ test('user scenario', async ({ page, extensionId, context }) => {
 
   await test.step('User2 joins room', async () => {
     await page.goto(`chrome-extension://${extensionId}/popup.html`);
+
     await socketEmit('join', user2);
     await expect(page.locator('#usersList')).toContainText(user2.name);
   });
 
+  await test.step('Test video player', async () => {
+    await page.goto(video);
+
+    const event = {
+      location: '-1',
+      type: 'play',
+      element: 0,
+      currentTime: 1.960892,
+      playbackRate: 1,
+    };
+
+    await socketEmit('message', event);
+    await expect(page.locator('#video')).toHaveJSProperty('paused', false);
+  });
+
   await test.step('Disconnect from the server', async () => {
+    await page.goto(`chrome-extension://${extensionId}/popup.html`);
+
     await page.getByRole('button', { name: 'connect' }).click();
     await initialState(page);
   });
