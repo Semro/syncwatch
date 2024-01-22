@@ -119,7 +119,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
     await expect(page.locator('#usersList')).toContainText(user2.name);
   });
 
-  await test.step('Test video player', async () => {
+  await test.step('Dispatch events from server to video player', async () => {
     await page.goto(video);
 
     const eventPlay = {
