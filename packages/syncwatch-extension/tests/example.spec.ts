@@ -122,16 +122,55 @@ test('user scenario', async ({ page, extensionId, context }) => {
   await test.step('Test video player', async () => {
     await page.goto(video);
 
-    const event = {
+    const eventPlay = {
       location: '-1',
       type: 'play',
       element: 0,
-      currentTime: 1.960892,
+      currentTime: 2,
+      playbackRate: 1,
+    };
+    await socketEmit('message', eventPlay);
+    await expect(page.locator('#video')).toHaveJSProperty('paused', false);
+
+    const eventPause = {
+      location: '-1',
+      type: 'pause',
+      element: 0,
+      currentTime: 2,
+      playbackRate: 1,
+    };
+    await socketEmit('message', eventPause);
+    await expect(page.locator('#video')).toHaveJSProperty('paused', true);
+    await expect(page.locator('#video')).toHaveJSProperty('currentTime', eventPause.currentTime);
+
+    const eventSeekWhenPaused = {
+      location: '-1',
+      type: 'seeked',
+      element: 0,
+      currentTime: 3,
       playbackRate: 1,
     };
 
-    await socketEmit('message', event);
-    await expect(page.locator('#video')).toHaveJSProperty('paused', false);
+    await socketEmit('message', eventSeekWhenPaused);
+    await expect(page.locator('#video')).toHaveJSProperty('paused', true);
+    await expect(page.locator('#video')).toHaveJSProperty(
+      'currentTime',
+      eventSeekWhenPaused.currentTime,
+    );
+
+    const eventChangePlaybackRate = {
+      location: '-1',
+      type: 'ratechange',
+      element: 0,
+      currentTime: 3,
+      playbackRate: 2,
+    };
+
+    await socketEmit('message', eventChangePlaybackRate);
+    await expect(page.locator('#video')).toHaveJSProperty(
+      'playbackRate',
+      eventChangePlaybackRate.playbackRate,
+    );
   });
 
   await test.step('Disconnect from the server', async () => {
