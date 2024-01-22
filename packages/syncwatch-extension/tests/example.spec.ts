@@ -2,7 +2,6 @@ import { Page } from '@playwright/test';
 import { test, expect } from './fixtures';
 import dotenv from 'dotenv';
 import { Socket, io } from 'socket.io-client';
-import { DefaultEventsMap } from '@socket.io/component-emitter';
 
 dotenv.config();
 
@@ -196,7 +195,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
       })
     ).type;
 
-    // For some there will be "pause" event when  user clicks video element first time
+    // For some reason there will be "pause" event when  user clicks video element first time
     expect(type).toBe('pause');
   });
 
