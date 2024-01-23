@@ -33,7 +33,7 @@ const initialState = (page: Page) => {
   });
 };
 
-const initSocket = (serverUrl) => {
+const initSocket = (serverUrl: string) => {
   return new Promise((resolve: (value: Socket) => void, reject) => {
     const socket = io(serverUrl, {
       reconnection: true,
@@ -52,15 +52,15 @@ const initSocket = (serverUrl) => {
   });
 };
 
-const socketEmit = async (socket, ev, data) => {
+const socketEmit = async (socket: Socket, event: string, data: Record<string, any>) => {
   return new Promise((resolve, reject) => {
-    socket.emit(ev, data);
+    socket.emit(event, data);
     resolve('success');
   });
 };
 
 const waitForSocketEvent = async (socket: Socket, event: string, callback: () => void) => {
-  return new Promise<Record<string, string>>((resolve, reject) => {
+  return new Promise<Record<string, any>>((resolve, reject) => {
     socket.once(event, (data) => {
       resolve(data);
     });
