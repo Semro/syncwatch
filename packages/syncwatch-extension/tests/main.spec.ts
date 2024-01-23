@@ -68,7 +68,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
     room: 'RoomName',
   };
   const serverUrl = `http://localhost:${process.env.SERVER_PORT}`;
-  const pageVideoUrl = `http://localhost:${process.env.TEST_PAGE_PORT}/`;
+  const pageVideoMediaEventsUrl = `http://localhost:${process.env.TEST_PAGE_PORT}/mediaevents`;
 
   await test.step('Change server URL', async () => {
     await page.goto(`chrome-extension://${extensionId}/options.html`);
@@ -98,18 +98,20 @@ test('user scenario', async ({ page, extensionId, context }) => {
     await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
     const pageVideo = await context.newPage();
-    await pageVideo.goto(pageVideoUrl);
+    await pageVideo.goto(pageVideoMediaEventsUrl);
 
     await page.getByRole('button', { name: 'share' }).click();
-    await expect(page.locator('#shared')).toHaveAttribute('href', pageVideoUrl);
+    await expect(page.locator('#shared')).toHaveAttribute('href', pageVideoMediaEventsUrl);
     await expect(page.locator('#shared')).toBeVisible();
   });
 
   await test.step('Open a shared video', async () => {
     await page.locator('#shared').click();
-    const pagePromise = page.context().waitForEvent('page', (p) => p.url() === pageVideoUrl);
+    const pagePromise = page
+      .context()
+      .waitForEvent('page', (p) => p.url() === pageVideoMediaEventsUrl);
     const newPage = await pagePromise;
-    await expect(newPage).toHaveURL(pageVideoUrl);
+    await expect(newPage).toHaveURL(pageVideoMediaEventsUrl);
   });
 
   const user2 = { name: 'User2', room: user1.room };
@@ -130,7 +132,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
   });
 
   await test.step('Dispatch events from server to video player', async () => {
-    await page.goto(pageVideoUrl);
+    await page.goto(pageVideoMediaEventsUrl);
 
     const eventPlay = {
       location: '-1',
@@ -184,7 +186,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
   });
 
   await test.step('Video event should reach other user in the room', async () => {
-    await page.goto(pageVideoUrl);
+    await page.goto(pageVideoMediaEventsUrl);
 
     const videoElement = page.locator('#video');
     await videoElement.focus();
