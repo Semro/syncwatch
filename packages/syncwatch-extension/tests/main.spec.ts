@@ -52,9 +52,16 @@ const initSocket = (serverUrl) => {
   });
 };
 
+const socketEmit = async (socket, ev, data) => {
+  return new Promise((resolve, reject) => {
+    socket.emit(ev, data);
+    resolve('success');
+  });
+};
+
 const waitForSocketEvent = async (socket: Socket, event: string, callback: () => void) => {
   return new Promise<Record<string, string>>((resolve, reject) => {
-    socket.on(event, (data) => {
+    socket.once(event, (data) => {
       resolve(data);
     });
 
@@ -69,6 +76,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
   };
   const serverUrl = `http://localhost:${process.env.SERVER_PORT}`;
   const pageVideoMediaEventsUrl = `http://localhost:${process.env.TEST_PAGE_PORT}/mediaevents`;
+  const pageVideoFrames = `http://localhost:${process.env.TEST_PAGE_PORT}/frames`;
 
   await test.step('Change server URL', async () => {
     await page.goto(`chrome-extension://${extensionId}/options.html`);
@@ -103,31 +111,30 @@ test('user scenario', async ({ page, extensionId, context }) => {
     await page.getByRole('button', { name: 'share' }).click();
     await expect(page.locator('#shared')).toHaveAttribute('href', pageVideoMediaEventsUrl);
     await expect(page.locator('#shared')).toBeVisible();
+
+    await pageVideo.close();
   });
 
   await test.step('Open a shared video', async () => {
+    await page.goto(`chrome-extension://${extensionId}/popup.html`);
+
     await page.locator('#shared').click();
     const pagePromise = page
       .context()
       .waitForEvent('page', (p) => p.url() === pageVideoMediaEventsUrl);
     const newPage = await pagePromise;
     await expect(newPage).toHaveURL(pageVideoMediaEventsUrl);
+
+    await newPage.close();
   });
 
   const user2 = { name: 'User2', room: user1.room };
   const socket = await initSocket(serverUrl);
 
-  const socketEmit = async (ev, data) => {
-    return new Promise((resolve, reject) => {
-      socket.emit(ev, data);
-      resolve('success');
-    });
-  };
-
   await test.step('User2 joins room', async () => {
     await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
-    await socketEmit('join', user2);
+    await socketEmit(socket, 'join', user2);
     await expect(page.locator('#usersList')).toContainText(user2.name);
   });
 
@@ -141,7 +148,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
       currentTime: 2,
       playbackRate: 1,
     };
-    await socketEmit('message', eventPlay);
+    await socketEmit(socket, 'message', eventPlay);
     await expect(page.locator('#video')).toHaveJSProperty('paused', false);
 
     const eventPause = {
@@ -151,7 +158,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
       currentTime: 2,
       playbackRate: 1,
     };
-    await socketEmit('message', eventPause);
+    await socketEmit(socket, 'message', eventPause);
     await expect(page.locator('#video')).toHaveJSProperty('paused', true);
     await expect(page.locator('#video')).toHaveJSProperty('currentTime', eventPause.currentTime);
 
@@ -163,7 +170,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
       playbackRate: 1,
     };
 
-    await socketEmit('message', eventSeekWhenPaused);
+    await socketEmit(socket, 'message', eventSeekWhenPaused);
     await expect(page.locator('#video')).toHaveJSProperty('paused', true);
     await expect(page.locator('#video')).toHaveJSProperty(
       'currentTime',
@@ -178,7 +185,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
       playbackRate: 2,
     };
 
-    await socketEmit('message', eventChangePlaybackRate);
+    await socketEmit(socket, 'message', eventChangePlaybackRate);
     await expect(page.locator('#video')).toHaveJSProperty(
       'playbackRate',
       eventChangePlaybackRate.playbackRate,
@@ -199,6 +206,31 @@ test('user scenario', async ({ page, extensionId, context }) => {
 
     // For some reason there will be "pause" event when  user clicks video element first time
     expect(type).toBe('pause');
+  });
+
+  await test.step('Capture event from iframe', async () => {
+    await page.goto(pageVideoFrames);
+
+    const frame = page.frame('frame-videos');
+    const shareEvent = {
+      title: 'Frames Test',
+      url: pageVideoFrames,
+      user: 'test',
+    };
+    await socketEmit(socket, 'share', shareEvent);
+
+    expect(frame).not.toBeNull();
+    if (!frame) return;
+
+    const videoInFrame = frame.locator('#v1');
+    await videoInFrame.focus();
+
+    const response = await waitForSocketEvent(socket, 'message', () => {
+      page.keyboard.press(' ');
+    });
+
+    expect(response.location).toBe('-10');
+    expect(response.element).toBe(0);
   });
 
   await test.step('Disconnect from the server', async () => {

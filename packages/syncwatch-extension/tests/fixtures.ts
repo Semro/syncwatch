@@ -19,7 +19,14 @@ export const test = base.extend<{
         `--load-extension=${pathToExtension}`,
       ],
     });
+
     await use(context);
+
+    // Wait until browser closed manually
+    // await new Promise((resolve) => {
+    //   context.on('close', resolve); // <-- add this
+    // });
+
     await context.close();
   },
   extensionId: async ({ context }, use) => {
