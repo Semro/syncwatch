@@ -141,6 +141,9 @@ test('user scenario', async ({ page, extensionId, context }) => {
   await test.step('Dispatch events from server to video player', async () => {
     await page.goto(pageVideoMediaEventsUrl);
 
+    const videoElement = page.locator('#video');
+    await expect(videoElement).toHaveCount(1);
+
     const eventPlay = {
       location: '-1',
       type: 'play',
@@ -149,7 +152,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
       playbackRate: 1,
     };
     await socketEmit(socket, 'message', eventPlay);
-    await expect(page.locator('#video')).toHaveJSProperty('paused', false);
+    await expect(videoElement).toHaveJSProperty('paused', false);
 
     const eventPause = {
       location: '-1',
@@ -159,8 +162,8 @@ test('user scenario', async ({ page, extensionId, context }) => {
       playbackRate: 1,
     };
     await socketEmit(socket, 'message', eventPause);
-    await expect(page.locator('#video')).toHaveJSProperty('paused', true);
-    await expect(page.locator('#video')).toHaveJSProperty('currentTime', eventPause.currentTime);
+    await expect(videoElement).toHaveJSProperty('paused', true);
+    await expect(videoElement).toHaveJSProperty('currentTime', eventPause.currentTime);
 
     const eventSeekWhenPaused = {
       location: '-1',
@@ -171,11 +174,8 @@ test('user scenario', async ({ page, extensionId, context }) => {
     };
 
     await socketEmit(socket, 'message', eventSeekWhenPaused);
-    await expect(page.locator('#video')).toHaveJSProperty('paused', true);
-    await expect(page.locator('#video')).toHaveJSProperty(
-      'currentTime',
-      eventSeekWhenPaused.currentTime,
-    );
+    await expect(videoElement).toHaveJSProperty('paused', true);
+    await expect(videoElement).toHaveJSProperty('currentTime', eventSeekWhenPaused.currentTime);
 
     const eventChangePlaybackRate = {
       location: '-1',
@@ -186,7 +186,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
     };
 
     await socketEmit(socket, 'message', eventChangePlaybackRate);
-    await expect(page.locator('#video')).toHaveJSProperty(
+    await expect(videoElement).toHaveJSProperty(
       'playbackRate',
       eventChangePlaybackRate.playbackRate,
     );
