@@ -3,16 +3,25 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "scripts": {
-    "compile": "tsc --noEmit",
-    "dev": "vite",
-    "build": "vite build"
-  },
   "devDependencies": {
     "@types/webextension-polyfill": "^0.10.7",
     "typescript": "^5.3.3",
     "vite": "^5.0.8",
     "vite-plugin-web-extension": "^4.0.1",
-    "webextension-polyfill": "^0.10.0"
+    "webextension-polyfill": "^0.10.0",
+    "@playwright/test": "^1.40.1",
+    "@types/node": "^20.10.4",
+    "dotenv": "^16.3.1"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.7.2"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve:test-page": "npx serve tests/test-page/",
+    "postinstall": "npx -y playwright install",
+    "test:e2e": "npx playwright test",
+    "test:e2e-ui": "npx playwright test --ui"
   }
 }

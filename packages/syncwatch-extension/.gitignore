@@ -22,6 +22,10 @@ dist-ssr
 *.sln
 *.sw?
 
-# Config files
+# Config files for tests
 .webextrc
 .webextrc.*
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
