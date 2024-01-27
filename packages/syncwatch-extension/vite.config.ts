@@ -27,7 +27,7 @@ export default defineConfig({
     webExtension({
       manifest: generateManifest,
       watchFilePaths: ['package.json', 'manifest.json'],
-      additionalInputs: ['js/players/netflix/netflix.js', 'js/content.js']
+      additionalInputs: ['js/content.js', ...generateManifest().web_accessible_resources],
     }),
   ],
 });
