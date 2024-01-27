@@ -1,3 +1,5 @@
+import { io } from 'socket.io-client';
+
 const debug = false;
 
 const manifest = chrome.runtime.getManifest();
