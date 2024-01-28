@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Frames Test</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			background: #222;
+			color: #fff;
+			overflow: hidden;
+		}
+
+		.video {
+			width: 300px;
+			height: 150px;
+			float: left;
+			display: inline-block;
+		}
+
+		iframe {
+			width: 900px;
+			height: 300px;
+			border: 1px solid #777;
+		}
+	</style>
+</head>
+
+<body>
+	<video id='v1' class='video' controls='' preload='none' src='assets/point.mp3'></video>
+	<video id='v2' class='video' controls='' preload='none' src='assets/point.mp3'></video>
+	<video id='v3' class='video' controls='' preload='none' src='assets/point.mp3'></video>
+	<iframe src='frame.html'></iframe>
+</body>
+
+</html>
