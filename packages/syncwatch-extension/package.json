@@ -6,12 +6,12 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
-    "@playwright/test": "^1.40.1",
-    "@types/node": "^20.10.4",
-    "dotenv": "^16.3.1"
+    "@playwright/test": "^1.41.1",
+    "@types/node": "^20.11.9",
+    "dotenv": "^16.4.1"
   },
   "dependencies": {
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.7.4"
   },
   "scripts": {
     "serve:test-page": "npx serve tests/test-page/",
