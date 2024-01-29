@@ -20,22 +20,22 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Login to Dockerhub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Setup Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Copy package-lock.json to npm workspace
         run: cp package-lock.json ./packages/syncwatch-server/package-lock.json
 
       - name: Build Backend
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./packages/syncwatch-server/
           file: ./packages/syncwatch-server/Dockerfile
@@ -46,19 +46,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Login to Dockerhub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Setup Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Build Nginx for together composing
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./nginx
           file: ./nginx/Dockerfile
@@ -70,11 +70,11 @@ jobs:
     needs: [build-backend, build-nginx]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Deploy COI VM
         id: deploy-coi
-        uses: yc-actions/yc-coi-deploy@v1.2.0
+        uses: yc-actions/yc-coi-deploy@v2.0.0
         env:
           BACKEND_IMAGE: ${{ env.BACKEND_IMAGE }}
           NGINX_IMAGE: ${{ env.NGINX_IMAGE }}
