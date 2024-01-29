@@ -1,1 +1,1 @@
-* * * * * /update-cert.sh
+0 5 * * * /update-cert.sh
