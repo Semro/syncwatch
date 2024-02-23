@@ -6,6 +6,8 @@ function root(...paths: string[]): string {
   return path.resolve(__dirname, ...paths);
 }
 
+const target = process.env.TARGET || 'chrome';
+
 function generateManifest() {
   const manifest = readJsonFile('src/manifest.json');
   const pkg = readJsonFile('package.json');
@@ -22,6 +24,9 @@ export default defineConfig({
   build: {
     outDir: root('dist'),
     emptyOutDir: true,
+  },
+  define: {
+    __BROWSER__: JSON.stringify(target),
   },
   plugins: [
     webExtension({
