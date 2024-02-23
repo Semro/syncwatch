@@ -3,6 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
   "devDependencies": {
     "@types/webextension-polyfill": "^0.10.7",
     "typescript": "^5.3.3",

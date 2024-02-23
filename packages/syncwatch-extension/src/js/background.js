@@ -4,7 +4,9 @@ const debug = false;
 
 const manifest = chrome.runtime.getManifest();
 const isFirefox = navigator.userAgent.indexOf('Firefox') > -1;
+const { window } = globalThis;
 const isMobile =
+  window &&
   window.matchMedia &&
   window.matchMedia('only screen and (hover: none) and (pointer: coarse)').matches;
 let user = {

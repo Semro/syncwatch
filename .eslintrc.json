@@ -15,6 +15,7 @@
   "globals": {
     "document": "readonly",
     "window": "readonly",
+    "globalThis": "readonly",
     "navigator": "readonly",
     "MutationObserver": "readonly",
     "gc": "readonly",
