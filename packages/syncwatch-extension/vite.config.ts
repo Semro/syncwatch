@@ -30,6 +30,7 @@ export default defineConfig({
   },
   plugins: [
     webExtension({
+      browser: target,
       manifest: generateManifest,
       watchFilePaths: ['package.json', 'manifest.json'],
       additionalInputs: ['js/content.js', ...generateManifest().web_accessible_resources],
