@@ -146,7 +146,7 @@ function errorOnEventNotification() {
   if (!isFirefox) {
     createNotification('Interact with page', {
       type: 'basic',
-      iconUrl: 'icons/icon128.png',
+      iconUrl: '/icons/icon128.png',
       title: chrome.i18n.getMessage('notification_interact_title'),
       message: chrome.i18n.getMessage('notification_interact_message'),
       buttons: [
@@ -161,7 +161,7 @@ function errorOnEventNotification() {
 function onShareNotification(msg) {
   const options = {
     type: 'basic',
-    iconUrl: 'icons/icon128.png',
+    iconUrl: '/icons/icon128.png',
     title: `${msg.user} ${chrome.i18n.getMessage('notification_shared_title')}`,
     message: msg.title,
   };
@@ -183,7 +183,7 @@ function onShareNotification(msg) {
 function onAfkNotification() {
   createNotification('afk', {
     type: 'basic',
-    iconUrl: 'icons/icon128.png',
+    iconUrl: '/icons/icon128.png',
     title: chrome.i18n.getMessage('notification_afk_title'),
     message: chrome.i18n.getMessage('notification_afk_message'),
   });
@@ -192,7 +192,7 @@ function onAfkNotification() {
 function onErrorNotification(errorMessage) {
   createNotification('error', {
     type: 'basic',
-    iconUrl: 'icons/icon128.png',
+    iconUrl: '/icons/icon128.png',
     title: 'Error',
     message: errorMessage,
   });
