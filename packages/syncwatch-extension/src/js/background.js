@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 const debug = false;
 
 const manifest = chrome.runtime.getManifest();
-const isFirefox = navigator.userAgent.indexOf('Firefox') > -1;
+const isFirefox = __BROWSER__ === 'firefox';
 const { window } = globalThis;
 const isMobile =
   window &&
@@ -103,7 +103,7 @@ function isContentScriptInjected(tab) {
   });
 }
 
-function injectScriptInTab(tab) {
+function injectScriptInTabMV2(tab) {
   isContentScriptInjected(tab).then(() => {
     chrome.tabs.executeScript(
       tab.id,
@@ -120,6 +120,25 @@ function injectScriptInTab(tab) {
       },
     );
   });
+}
+
+function injectScriptInTabMV3(tab) {
+  isContentScriptInjected(tab).then(() => {
+    chrome.scripting
+      .executeScript({
+        target: { tabId: tab.id, allFrames: true },
+        files: ['js/content.js'],
+      })
+      .catch((e) => console.warn('Injecting error: ', e));
+  });
+}
+
+function injectScriptInTab(tab) {
+  if (isFirefox) {
+    injectScriptInTabMV2(tab);
+  } else {
+    injectScriptInTabMV3(tab);
+  }
 }
 
 function setSyncTab(tab) {

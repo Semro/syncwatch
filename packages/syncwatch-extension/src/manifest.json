@@ -39,7 +39,8 @@
   },
   "{{chrome}}.incognito": "split",
   "{{firefox}}.permissions": ["<all_urls>", "tabs", "storage", "notifications"],
-  "{{chrome}}.permissions": ["tabs", "storage", "notifications"],
+  "{{chrome}}.permissions": ["tabs", "storage", "notifications", "scripting"],
+  "{{chrome}}.host_permissions": ["<all_urls>"],
   "content_scripts": [
     {
       "matches": ["https://www.netflix.com/*"],
