@@ -33,7 +33,7 @@ export default defineConfig({
       browser: target,
       manifest: generateManifest,
       watchFilePaths: ['package.json', 'manifest.json'],
-      additionalInputs: ['js/content.js', ...generateManifest().web_accessible_resources],
+      additionalInputs: ['js/content.js', 'js/players/netflix/netflix.js'],
     }),
   ],
 });
