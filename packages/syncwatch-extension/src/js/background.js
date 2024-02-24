@@ -28,7 +28,14 @@ const chromeProxy = {
     // This method is only used to communicate with extension's popup, when popup is closed it fails sending a message to it.
     // We can ignore this error, because popup gets its state from background.js when it is opened.
     sendMessage: (...args) => {
-      chrome.runtime.sendMessage(...args).catch(() => {});
+      if (isFirefox) {
+        try {
+          chrome.runtime.sendMessage(...args);
+          // eslint-disable-next-line no-empty
+        } catch {}
+      } else {
+        chrome.runtime.sendMessage(...args).catch(() => {});
+      }
     },
   },
 };
