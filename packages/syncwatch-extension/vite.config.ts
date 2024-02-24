@@ -24,6 +24,7 @@ export default defineConfig({
   build: {
     outDir: root('dist'),
     emptyOutDir: true,
+    sourcemap: process.env.SOURCEMAP?.trim() === 'true',
   },
   define: {
     __BROWSER__: JSON.stringify(target),
