@@ -23,6 +23,16 @@ let share = null;
 const defaultUrl = 'http://server.syncwatch.space/';
 let connectionUrl = defaultUrl;
 
+const chromeProxy = {
+  runtime: {
+    // This method is only used to communicate with extension's popup, when popup is closed it fails sending a message to it.
+    // We can ignore this error, because popup gets its state from background.js when it is opened.
+    sendMessage: (...args) => {
+      chrome.runtime.sendMessage(...args).catch(() => {});
+    },
+  },
+};
+
 function initConnectionUrl() {
   chrome.storage.sync.get('connectionUrl', (obj) => {
     if (obj.connectionUrl === undefined) {
@@ -37,13 +47,13 @@ function sendUserToPopup() {
   new Promise((resolve) => {
     chrome.storage.sync.get(user, (result) => resolve(result));
   }).then((result) => {
-    chrome.runtime.sendMessage({ from: 'sendUser', data: result });
+    chromeProxy.runtime.sendMessage({ from: 'sendUser', data: result });
   });
 }
 
 function sendStatusToPopup(newStatus) {
   if (newStatus !== undefined) status = newStatus;
-  chrome.runtime.sendMessage({
+  chromeProxy.runtime.sendMessage({
     from: 'status',
     status,
   });
@@ -52,19 +62,19 @@ function sendStatusToPopup(newStatus) {
 function sendShareToPopup(data) {
   if (status === 'connect') {
     if (data !== undefined) share = data;
-    chrome.runtime.sendMessage({ from: 'share', data: share });
+    chromeProxy.runtime.sendMessage({ from: 'share', data: share });
   }
 }
 
 function sendUsersListToPopup() {
-  chrome.runtime.sendMessage({
+  chromeProxy.runtime.sendMessage({
     from: 'sendUsersList',
     list,
   });
 }
 
 function sendErrorToPopup(err) {
-  chrome.runtime.sendMessage({
+  chromeProxy.runtime.sendMessage({
     from: 'sendError',
     error: err,
   });
