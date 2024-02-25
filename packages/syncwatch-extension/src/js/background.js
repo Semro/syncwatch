@@ -20,7 +20,7 @@ let status = 'disconnect';
 let list = [];
 let syncTab = null;
 let share = null;
-const defaultUrl = 'http://server.syncwatch.space/';
+const defaultUrl = 'https://server.syncwatch.space/';
 let connectionUrl = defaultUrl;
 
 const chromeProxy = {
