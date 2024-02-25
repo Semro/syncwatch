@@ -131,7 +131,7 @@ function injectScriptInTabMV2(tab) {
       },
       () => {
         const e = chrome.runtime.lastError;
-        if (e !== undefined) {
+        if (e) {
           console.warn('Injecting error: ', e.message);
         }
       },
