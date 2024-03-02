@@ -7,6 +7,7 @@ function root(...paths: string[]): string {
 }
 
 const target = process.env.TARGET || 'chrome';
+const outDir = process.env.BUILD_DIR || 'dist';
 
 function generateManifest() {
   const manifest = readJsonFile('src/manifest.json');
@@ -22,7 +23,7 @@ function generateManifest() {
 export default defineConfig({
   root: 'src',
   build: {
-    outDir: root('dist'),
+    outDir: root(outDir),
     emptyOutDir: true,
     sourcemap: process.env.SOURCEMAP?.trim() === 'true',
   },

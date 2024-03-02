@@ -23,6 +23,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:chrome-ci": "npx cross-env TARGET=chrome BUILD_DIR=build-ci/chrome-mv3 vite build",
+    "build:firefox-ci": "npx cross-env TARGET=firefox BUILD_DIR=build-ci/firefox-mv2 vite build",
+    "build:all-ci": "npm run build:chrome-ci && npm run build:firefox-ci",
     "serve:test-page": "npx serve tests/test-page/",
     "postinstall": "npx -y playwright install",
     "test:e2e": "npx playwright test",

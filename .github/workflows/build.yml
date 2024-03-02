@@ -1,0 +1,29 @@
+name: Build extension
+
+on: [workflow_dispatch, workflow_call]
+
+permissions:
+  contents: write
+
+jobs:
+  install-packages:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: "./package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build all
+        run: npm run build:all-ci -w syncwatch-extension
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-ci
+          path: ./packages/syncwatch-extension/build-ci
