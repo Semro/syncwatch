@@ -139,9 +139,15 @@ test('user scenario', async ({ page, extensionId, context }) => {
   });
 
   await test.step('Dispatch events from server to video player', async () => {
-    await page.goto(pageVideoMediaEventsUrl);
+    await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
-    const videoElement = page.locator('#video');
+    await page.locator('#shared').click();
+    const pagePromise = page
+      .context()
+      .waitForEvent('page', (p) => p.url() === pageVideoMediaEventsUrl);
+    const newPage = await pagePromise;
+
+    const videoElement = newPage.locator('#video');
     await expect(videoElement).toHaveCount(1);
 
     const eventPlay = {
@@ -190,28 +196,124 @@ test('user scenario', async ({ page, extensionId, context }) => {
       'playbackRate',
       eventChangePlaybackRate.playbackRate,
     );
+
+    await newPage.close();
+  });
+
+  await test.step('On page reload, tab should still be synced', async () => {
+    await page.goto(`chrome-extension://${extensionId}/popup.html`);
+
+    await page.locator('#shared').click();
+    const pagePromise = page
+      .context()
+      .waitForEvent('page', (p) => p.url() === pageVideoMediaEventsUrl);
+    const newPage = await pagePromise;
+
+    await newPage.reload();
+
+    const videoElement = newPage.locator('#video');
+    await expect(videoElement).toHaveCount(1);
+
+    const eventPlay = {
+      location: '-1',
+      type: 'play',
+      element: 0,
+      currentTime: 2,
+      playbackRate: 1,
+    };
+    await socketEmit(socket, 'message', eventPlay);
+    await expect(videoElement).toHaveJSProperty('paused', false);
+
+    await newPage.close();
+  });
+
+  await test.step('On tabs URL change, tab should not be in sync', async () => {
+    await page.goto(`chrome-extension://${extensionId}/popup.html`);
+
+    await page.locator('#shared').click();
+    const pagePromise = page
+      .context()
+      .waitForEvent('page', (p) => p.url() === pageVideoMediaEventsUrl);
+    const newPage = await pagePromise;
+
+    await newPage.goto(`${pageVideoMediaEventsUrl}?test=1`);
+
+    const videoElement = newPage.locator('#video');
+    await expect(videoElement).toHaveCount(1);
+
+    const eventPlay = {
+      location: '-1',
+      type: 'play',
+      element: 0,
+      currentTime: 2,
+      playbackRate: 1,
+    };
+    await socketEmit(socket, 'message', eventPlay);
+    await expect(videoElement).toHaveJSProperty('paused', true);
+
+    await newPage.close();
+  });
+
+  await test.step('On clicking "disconnect", and then "connect" in popup tab should be in sync', async () => {
+    await page.goto(`chrome-extension://${extensionId}/popup.html`);
+
+    await page.locator('#shared').click();
+    const pagePromise = page
+      .context()
+      .waitForEvent('page', (p) => p.url() === pageVideoMediaEventsUrl);
+    const newPage = await pagePromise;
+
+    const videoElement = newPage.locator('#video');
+    await expect(videoElement).toHaveCount(1);
+
+    await page.getByRole('button', { name: 'connect' }).click();
+    await page.getByRole('button', { name: 'connect' }).click();
+
+    const eventPlay = {
+      location: '-1',
+      type: 'play',
+      element: 0,
+      currentTime: 2,
+      playbackRate: 1,
+    };
+    await socketEmit(socket, 'message', eventPlay);
+    await expect(videoElement).toHaveJSProperty('paused', false);
+
+    await newPage.close();
   });
 
   await test.step('Video event should reach other user in the room', async () => {
-    await page.goto(pageVideoMediaEventsUrl);
+    await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
-    const videoElement = page.locator('#video');
+    const pagePromise = page
+      .context()
+      .waitForEvent('page', (p) => p.url() === pageVideoMediaEventsUrl);
+    await page.locator('#shared').click();
+    const newPage = await pagePromise;
+
+    const videoElement = newPage.locator('#video');
+
     await videoElement.focus();
 
     const type = (
       await waitForSocketEvent(socket, 'message', () => {
-        page.keyboard.press(' ');
+        newPage.keyboard.press(' ');
       })
     ).type;
 
     // For some reason there will be "pause" event when  user clicks video element first time
     expect(type).toBe('pause');
+
+    await newPage.close();
   });
 
   await test.step('Capture event from iframe', async () => {
-    await page.goto(pageVideoFrames);
+    await page.goto(`chrome-extension://${extensionId}/popup.html`);
+    const pageVideo = await context.newPage();
+    await pageVideo.goto(pageVideoFrames);
+    await page.getByRole('button', { name: 'share' }).click();
 
-    const frame = page.frame('frame-videos');
+    const frame = pageVideo.frame('frame-videos');
     const shareEvent = {
       title: 'Frames Test',
       url: pageVideoFrames,
@@ -226,11 +328,13 @@ test('user scenario', async ({ page, extensionId, context }) => {
     await videoInFrame.focus();
 
     const response = await waitForSocketEvent(socket, 'message', () => {
-      page.keyboard.press(' ');
+      pageVideo.keyboard.press(' ');
     });
 
     expect(response.location).toBe('-10');
     expect(response.element).toBe(0);
+
+    await pageVideo.close();
   });
 
   await test.step('Disconnect from the server', async () => {

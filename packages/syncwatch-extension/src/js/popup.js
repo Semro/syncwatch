@@ -33,7 +33,7 @@ shareElement.onclick = () => {
 };
 
 sharedElement.onclick = () => {
-  chrome.tabs.create({ url: sharedElement.href });
+  chrome.runtime.sendMessage({ from: 'popupOpenVideo', url: sharedElement.href });
   return false;
 };
 

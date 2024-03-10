@@ -4,11 +4,6 @@ const debug = false;
 
 const manifest = chrome.runtime.getManifest();
 const isFirefox = __BROWSER__ === 'firefox';
-const { window } = globalThis;
-const isMobile =
-  window &&
-  window.matchMedia &&
-  window.matchMedia('only screen and (hover: none) and (pointer: coarse)').matches;
 let user = {
   name: null,
   room: null,
@@ -39,6 +34,12 @@ const chromeProxy = {
     },
   },
 };
+
+function toInitialState() {
+  list = [];
+  syncTab = null;
+  share = null;
+}
 
 function initConnectionUrl() {
   chrome.storage.sync.get('connectionUrl', (obj) => {
@@ -89,7 +90,7 @@ function sendErrorToPopup(err) {
 
 function broadcast(event, senderTab) {
   if (status === 'connect' && syncTab !== null) {
-    if (syncTab.url === senderTab.url) {
+    if (syncTab.id === senderTab.id) {
       socket.send(event);
     }
   }
@@ -163,13 +164,9 @@ function setSyncTab(tab) {
   if (tab !== null) injectScriptInTab(tab);
 }
 
-function changeSyncTab() {
-  chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
-    if (share !== null && tabs.length !== 0) {
-      if (tabs[0].url === share.url) {
-        setSyncTab(tabs[0]);
-      }
-    }
+function openVideo(url) {
+  chrome.tabs.create({ url }, (tab) => {
+    setSyncTab(tab);
   });
 }
 
@@ -236,7 +233,7 @@ function onErrorNotification(errorMessage) {
 
 function onNotificationClicked(idNotification) {
   if (idNotification === 'Share') {
-    chrome.tabs.create({ url: share.url });
+    openVideo(share.url);
     chrome.notifications.clear('Share');
   }
   if (idNotification === 'Interact with page') {
@@ -270,11 +267,6 @@ function initSocketEvents() {
   socket.on('connect', () => {
     socket.emit('join', user);
   });
-
-  socket.on('disconnect', () => {
-    list = [];
-    syncTab = null;
-  });
 }
 
 function initSockets() {
@@ -306,8 +298,8 @@ function initSockets() {
 
   socket.on('share', (msg) => {
     if (share === null || share.url !== msg.url) onShareNotification(msg);
+    if (share && share.url !== msg.url) syncTab = null;
     sendShareToPopup(msg);
-    changeSyncTab();
   });
 
   socket.on('afk', () => {
@@ -331,7 +323,7 @@ chrome.notifications.onClicked.addListener(onNotificationClicked);
 
 chrome.tabs.onUpdated.addListener((tabid, changeInfo, tab) => {
   if (changeInfo.status === 'complete') {
-    if (share !== null) {
+    if (share) {
       if (tab.url === share.url) {
         setSyncTab(tab);
       }
@@ -339,24 +331,12 @@ chrome.tabs.onUpdated.addListener((tabid, changeInfo, tab) => {
   }
 });
 
-chrome.tabs.onActivated.addListener(() => {
-  changeSyncTab();
-});
-
-if (!(isFirefox && isMobile)) {
-  chrome.windows.onFocusChanged.addListener(() => {
-    changeSyncTab();
-  });
-}
-
 chrome.storage.onChanged.addListener((obj) => {
   if (obj.connectionUrl) {
     connectionUrl = obj.connectionUrl.newValue;
     if (status === 'connect') {
       socket.disconnect();
-      list = [];
-      syncTab = null;
-      share = null;
+      toInitialState();
       initSockets();
     }
   }
@@ -382,6 +362,10 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
         setSyncTab(tabs[0]);
         shareVideoLink(syncTab);
       });
+      break;
+    }
+    case 'popupOpenVideo': {
+      openVideo(msg.url);
       break;
     }
     case 'getUser': {
