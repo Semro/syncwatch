@@ -18,8 +18,8 @@
   "author": "Semro",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
+    "express": "^4.18.3",
     "rate-limiter-flexible": "^3.0.6",
-    "socket.io": "^4.7.4"
+    "socket.io": "^4.7.5"
   }
 }
