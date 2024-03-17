@@ -33,7 +33,7 @@ shareElement.onclick = () => {
 };
 
 sharedElement.onclick = () => {
-  chrome.runtime.sendMessage({ from: 'popupOpenVideo', url: sharedElement.href });
+  chrome.runtime.sendMessage({ from: 'popupOpenVideo', data: { url: sharedElement.href } });
   return false;
 };
 
@@ -88,7 +88,7 @@ chrome.runtime.onMessage.addListener((msg) => {
     errorElement.style.display = 'block';
     errorElement.innerText = chrome.i18n.getMessage(msg.error);
   }
-  if (msg.from === 'sendUser') {
+  if (msg.from === 'sendUser' && msg.data) {
     nameElement.value = msg.data.name;
     roomElement.value = msg.data.room;
   }

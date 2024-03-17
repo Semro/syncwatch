@@ -11,10 +11,10 @@
   },
   "{{firefox}}.background": {
     "persistent": true,
-    "scripts": ["js/background.js"]
+    "scripts": ["js/background.ts"]
   },
   "{{chrome}}.background": {
-    "service_worker": "js/background.js"
+    "service_worker": "js/background.ts"
   },
   "icons": {
     "16": "icons/icon16.png",

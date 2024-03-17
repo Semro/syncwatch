@@ -1,49 +1,130 @@
-import { io } from 'socket.io-client';
+import { type Socket, io } from 'socket.io-client';
+
+interface User {
+  name: string;
+  room: string;
+}
+
+type UserList = NonNullable<User['name']>[];
+
+interface Share {
+  title: string;
+  url: string;
+  user: string;
+}
+
+const MediaPlayerEvents = ['playing', 'pause', 'seeked', 'ratechange', 'progress'] as const;
+
+type MediaPlayerEvent = (typeof MediaPlayerEvents)[number];
+
+interface RoomEvent {
+  location: string;
+  type: MediaPlayerEvent;
+  element: number;
+  currentTime: HTMLMediaElement['currentTime'];
+  playbackRate: HTMLMediaElement['playbackRate'];
+}
+
+type ErrorEvent = string;
+
+interface ServerToClientsEvents {
+  usersList: (msg: { list: UserList }) => void;
+  message: (msg: RoomEvent) => void;
+  share: (msg: Share) => void;
+  afk: () => void;
+  error: (msg: ErrorEvent) => void;
+}
+
+interface ChromeTab extends chrome.tabs.Tab {
+  id: NonNullable<chrome.tabs.Tab['id']>;
+  // Always present, as manifest includes "tabs" persmission
+  title: NonNullable<chrome.tabs.Tab['title']>;
+  // Always present, as manifest includes "tabs" persmission
+  url: NonNullable<chrome.tabs.Tab['url']>;
+}
+
+type BaseRuntimeMessage<From extends string, Data> = {
+  from: From;
+  data: Data;
+};
+
+type MessageContent = BaseRuntimeMessage<'content', RoomEvent>;
+type MessageJoin = BaseRuntimeMessage<'join', User>;
+type MessagePopupShare = BaseRuntimeMessage<'popupShare', undefined>;
+type MessagePopupOpenVideo = BaseRuntimeMessage<'popupOpenVideo', { url: string }>;
+type MessageGetUser = BaseRuntimeMessage<'getUser', undefined>;
+type MessageGetStatus = BaseRuntimeMessage<'getStatus', undefined>;
+type MessageGetUserList = BaseRuntimeMessage<'getUsersList', undefined>;
+type MessageGetShare = BaseRuntimeMessage<'getShare', undefined>;
+type MessageDisconnect = BaseRuntimeMessage<'disconnect', undefined>;
+type MessageErrorOnEvent = BaseRuntimeMessage<'errorOnEvent', undefined>;
+
+type RuntimeMessage =
+  | MessageContent
+  | MessageJoin
+  | MessagePopupShare
+  | MessagePopupOpenVideo
+  | MessageGetUser
+  | MessageGetStatus
+  | MessageGetUserList
+  | MessageGetShare
+  | MessageDisconnect
+  | MessageErrorOnEvent;
 
 const debug = false;
 
 const manifest = chrome.runtime.getManifest();
+
 const isFirefox = __BROWSER__ === 'firefox';
-let user = {
-  name: null,
-  room: null,
-  version: null,
-  agent: null,
-};
-let socket = null;
-let status = 'disconnect';
-let list = [];
-let syncTab = null;
-let share = null;
+
+const storageUserShape = { room: null, name: null } as const;
+
 const defaultUrl = 'https://server.syncwatch.space/';
+
+let user: User | undefined;
+
+let socket: Socket<ServerToClientsEvents> | undefined;
+
+let status: string = 'disconnect';
+
+let list: UserList = [];
+
+let syncTab: ChromeTab | undefined;
+
+let share: Share | undefined;
+
 let connectionUrl = defaultUrl;
 
 const chromeProxy = {
   runtime: {
     // This method is only used to communicate with extension's popup, when popup is closed it fails sending a message to it.
     // We can ignore this error, because popup gets its state from background.js when it is opened.
-    sendMessage: (...args) => {
+    sendMessage: (message: unknown) => {
       if (isFirefox) {
         try {
-          chrome.runtime.sendMessage(...args);
+          chrome.runtime.sendMessage(message);
           // eslint-disable-next-line no-empty
         } catch {}
       } else {
-        chrome.runtime.sendMessage(...args).catch(() => {});
+        chrome.runtime.sendMessage(message).catch(() => {});
       }
     },
   },
 };
 
+function isTabPropertiesPresent(tab: chrome.tabs.Tab): tab is ChromeTab {
+  return !!tab.url && !!tab.title && !!tab.id;
+}
+
 function toInitialState() {
   list = [];
-  syncTab = null;
-  share = null;
+  syncTab = undefined;
+  share = undefined;
 }
 
 function initConnectionUrl() {
   chrome.storage.sync.get('connectionUrl', (obj) => {
-    if (obj.connectionUrl === undefined) {
+    if (!obj.connectionUrl) {
       chrome.storage.sync.set({ connectionUrl: defaultUrl });
     } else {
       connectionUrl = obj.connectionUrl;
@@ -52,24 +133,25 @@ function initConnectionUrl() {
 }
 
 function sendUserToPopup() {
-  new Promise((resolve) => {
-    chrome.storage.sync.get(user, (result) => resolve(result));
-  }).then((result) => {
+  chrome.storage.sync.get(storageUserShape, (result) => {
     chromeProxy.runtime.sendMessage({ from: 'sendUser', data: result });
   });
 }
 
-function sendStatusToPopup(newStatus) {
-  if (newStatus !== undefined) status = newStatus;
+function sendStatusToPopup() {
   chromeProxy.runtime.sendMessage({
     from: 'status',
     status,
   });
 }
 
-function sendShareToPopup(data) {
+function setShare(newShare: typeof share) {
+  if (newShare) share = newShare;
+  sendShareToPopup();
+}
+
+function sendShareToPopup() {
   if (status === 'connect') {
-    if (data !== undefined) share = data;
     chromeProxy.runtime.sendMessage({ from: 'share', data: share });
   }
 }
@@ -81,33 +163,36 @@ function sendUsersListToPopup() {
   });
 }
 
-function sendErrorToPopup(err) {
+function sendErrorToPopup(err: ErrorEvent) {
   chromeProxy.runtime.sendMessage({
     from: 'sendError',
     error: err,
   });
 }
 
-function broadcast(event, senderTab) {
-  if (status === 'connect' && syncTab !== null) {
+function broadcast(event: RoomEvent, senderTab: chrome.tabs.Tab) {
+  if (status === 'connect' && syncTab && isTabPropertiesPresent(senderTab)) {
     if (syncTab.id === senderTab.id) {
-      socket.send(event);
+      socket && socket.send(event);
     }
   }
 }
 
-function shareVideoLink(tab) {
+function shareVideoLink(tab: typeof syncTab) {
+  if (!tab) return;
+  if (!user) return;
+
   const msg = {
     title: tab.title,
     url: tab.url,
     user: user.name,
   };
-  sendShareToPopup(msg);
-  socket.emit('share', msg);
+  setShare(msg);
+  socket && socket.emit('share', msg);
 }
 
-function isContentScriptInjected(tab) {
-  return new Promise((resolve) => {
+function isContentScriptInjected(tab: ChromeTab) {
+  return new Promise<void>((resolve) => {
     chrome.tabs.sendMessage(
       tab.id,
       {
@@ -121,7 +206,7 @@ function isContentScriptInjected(tab) {
   });
 }
 
-function injectScriptInTabMV2(tab) {
+function injectScriptInTabMV2(tab: ChromeTab) {
   isContentScriptInjected(tab).then(() => {
     chrome.tabs.executeScript(
       tab.id,
@@ -140,7 +225,7 @@ function injectScriptInTabMV2(tab) {
   });
 }
 
-function injectScriptInTabMV3(tab) {
+function injectScriptInTabMV3(tab: ChromeTab) {
   isContentScriptInjected(tab).then(() => {
     chrome.scripting
       .executeScript({
@@ -151,7 +236,7 @@ function injectScriptInTabMV3(tab) {
   });
 }
 
-function injectScriptInTab(tab) {
+function injectScriptInTab(tab: ChromeTab) {
   if (isFirefox) {
     injectScriptInTabMV2(tab);
   } else {
@@ -159,18 +244,19 @@ function injectScriptInTab(tab) {
   }
 }
 
-function setSyncTab(tab) {
+function setSyncTab(tab: chrome.tabs.Tab) {
+  if (!isTabPropertiesPresent(tab)) return;
   syncTab = tab;
-  if (tab !== null) injectScriptInTab(tab);
+  if (tab) injectScriptInTab(tab);
 }
 
-function openVideo(url) {
+function openVideo(url: string) {
   chrome.tabs.create({ url }, (tab) => {
     setSyncTab(tab);
   });
 }
 
-function createNotification(id, options) {
+function createNotification(id: string, options: chrome.notifications.NotificationOptions<true>) {
   chrome.notifications.create(id, options);
   chrome.notifications.clear(id);
 }
@@ -191,25 +277,35 @@ function errorOnEventNotification() {
   }
 }
 
-function onShareNotification(msg) {
-  const options = {
+function onShareNotification(msg: Share) {
+  const baseOptions = {
     type: 'basic',
     iconUrl: '/icons/icon128.png',
     title: `${msg.user} ${chrome.i18n.getMessage('notification_shared_title')}`,
     message: msg.title,
-  };
+  } as const;
+
+  let browserSpecificOptions;
+
   if (isFirefox) {
-    options.message = `${msg.title} (${msg.url})\n${chrome.i18n.getMessage(
-      'notification_shared_firefox',
-    )}`;
+    browserSpecificOptions = {
+      message: `${msg.title} (${msg.url})\n${chrome.i18n.getMessage(
+        'notification_shared_firefox',
+      )}`,
+    };
   } else {
-    options.buttons = [
-      {
-        title: chrome.i18n.getMessage('notification_shared_button'),
-      },
-    ];
-    options.contextMessage = msg.url;
+    browserSpecificOptions = {
+      buttons: [
+        {
+          title: chrome.i18n.getMessage('notification_shared_button'),
+        },
+      ],
+      contextMessage: msg.url,
+    };
   }
+
+  const options = { ...baseOptions, ...browserSpecificOptions };
+
   createNotification('Share', options);
 }
 
@@ -222,7 +318,7 @@ function onAfkNotification() {
   });
 }
 
-function onErrorNotification(errorMessage) {
+function onErrorNotification(errorMessage: ErrorEvent) {
   createNotification('error', {
     type: 'basic',
     iconUrl: '/icons/icon128.png',
@@ -231,12 +327,12 @@ function onErrorNotification(errorMessage) {
   });
 }
 
-function onNotificationClicked(idNotification) {
-  if (idNotification === 'Share') {
-    openVideo(share.url);
+function onNotificationClicked(notificationId: string) {
+  if (notificationId === 'Share') {
+    share && openVideo(share.url);
     chrome.notifications.clear('Share');
   }
-  if (idNotification === 'Interact with page') {
+  if (notificationId === 'Interact with page') {
     chrome.tabs.create({
       url: 'https://developers.google.com/web/updates/2017/09/autoplay-policy-changes',
     });
@@ -244,7 +340,7 @@ function onNotificationClicked(idNotification) {
   }
 }
 
-function initSocketEvents() {
+function initSocketEvents(socket: Socket) {
   const socketEvents = [
     'connect',
     'connect_error',
@@ -260,7 +356,8 @@ function initSocketEvents() {
   for (let i = 0; i < socketEvents.length; i++) {
     const event = socketEvents[i];
     socket.on(event, () => {
-      sendStatusToPopup(event);
+      status = event;
+      sendStatusToPopup();
     });
   }
 
@@ -278,7 +375,7 @@ function initSockets() {
     transports: ['websocket'],
   });
 
-  initSocketEvents();
+  initSocketEvents(socket);
 
   socket.on('usersList', (msg) => {
     // eslint-disable-next-line prefer-destructuring
@@ -287,7 +384,7 @@ function initSockets() {
   });
 
   socket.on('message', (msg) => {
-    if (syncTab !== null) {
+    if (syncTab) {
       chrome.tabs.sendMessage(syncTab.id, {
         from: 'background',
         data: msg,
@@ -297,14 +394,14 @@ function initSockets() {
   });
 
   socket.on('share', (msg) => {
-    if (share === null || share.url !== msg.url) onShareNotification(msg);
-    if (share && share.url !== msg.url) syncTab = null;
-    sendShareToPopup(msg);
+    if (!share || share.url !== msg.url) onShareNotification(msg);
+    if (share && share.url !== msg.url) syncTab = undefined;
+    setShare(msg);
   });
 
   socket.on('afk', () => {
     onAfkNotification();
-    socket.disconnect();
+    socket && socket.disconnect();
   });
 
   socket.on('error', (msg) => {
@@ -313,15 +410,14 @@ function initSockets() {
   });
 }
 
-// eslint-disable-next-line no-shadow
-function storageUser(user) {
+function storageUser(user: User) {
   chrome.storage.sync.set(user);
 }
 
 chrome.notifications.onButtonClicked.addListener(onNotificationClicked);
 chrome.notifications.onClicked.addListener(onNotificationClicked);
 
-chrome.tabs.onUpdated.addListener((tabid, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener((_, changeInfo, tab) => {
   if (changeInfo.status === 'complete') {
     if (share) {
       if (tab.url === share.url) {
@@ -331,26 +427,27 @@ chrome.tabs.onUpdated.addListener((tabid, changeInfo, tab) => {
   }
 });
 
-chrome.storage.onChanged.addListener((obj) => {
-  if (obj.connectionUrl) {
-    connectionUrl = obj.connectionUrl.newValue;
+chrome.storage.onChanged.addListener((storage) => {
+  if (storage.connectionUrl) {
+    connectionUrl = storage.connectionUrl.newValue;
     if (status === 'connect') {
-      socket.disconnect();
+      socket && socket.disconnect();
       toInitialState();
       initSockets();
     }
   }
 });
 
-chrome.runtime.onMessage.addListener((msg, sender) => {
+chrome.runtime.onMessage.addListener((msg: RuntimeMessage, sender) => {
   switch (msg.from) {
     case 'content': {
-      broadcast(msg.data, sender.tab);
+      sender.tab && broadcast(msg.data, sender.tab);
       break;
     }
     case 'join': {
       user = msg.data;
-      storageUser(user);
+      storageUser(msg.data);
+
       if (status === 'disconnect') {
         status = 'connecting...';
         initSockets();
@@ -365,7 +462,7 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
       break;
     }
     case 'popupOpenVideo': {
-      openVideo(msg.url);
+      openVideo(msg.data.url);
       break;
     }
     case 'getUser': {
@@ -385,11 +482,7 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
       break;
     }
     case 'disconnect': {
-      socket.disconnect();
-      break;
-    }
-    case 'console': {
-      console.log(msg.res);
+      socket && socket.disconnect();
       break;
     }
     case 'errorOnEvent': {
@@ -398,9 +491,6 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
     }
   }
 });
-
-user.version = manifest.version;
-user.agent = navigator.userAgent;
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.get('connectionUrl', (obj) => {
@@ -415,7 +505,7 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.runtime.setUninstallURL(
-  `https://docs.google.com/forms/d/e/1FAIpQLSd8Z6m6lAFwLk88WK8arSgMfIcJxhVROR3r64RlCo-Lfs_0rA/viewform?entry.435513449=${user.agent}&entry.126853255=${user.version}`,
+  `https://docs.google.com/forms/d/e/1FAIpQLSd8Z6m6lAFwLk88WK8arSgMfIcJxhVROR3r64RlCo-Lfs_0rA/viewform?entry.435513449=${navigator.userAgent}&entry.126853255=${manifest.version}`,
 );
 
 initConnectionUrl();
