@@ -353,8 +353,7 @@ function initSocketEvents(socket: Socket) {
     'reconnect_failed',
   ];
 
-  for (let i = 0; i < socketEvents.length; i++) {
-    const event = socketEvents[i];
+  for (let event of socketEvents) {
     socket.on(event, () => {
       status = event;
       sendStatusToPopup();
@@ -456,7 +455,8 @@ chrome.runtime.onMessage.addListener((msg: RuntimeMessage, sender) => {
     }
     case 'popupShare': {
       chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
-        setSyncTab(tabs[0]);
+        const tab = tabs[0];
+        tab && setSyncTab(tab);
         shareVideoLink(syncTab);
       });
       break;
