@@ -15,10 +15,12 @@
   "globals": {
     "document": "readonly",
     "window": "readonly",
+    "globalThis": "readonly",
     "navigator": "readonly",
     "MutationObserver": "readonly",
     "gc": "readonly",
-    "io": "readonly"
+    "io": "readonly",
+    "__BROWSER__": "readonly"
   },
   "rules": {
     "prettier/prettier": ["error", { "endOfLine": "auto" }],

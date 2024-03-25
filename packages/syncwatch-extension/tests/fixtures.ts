@@ -30,11 +30,16 @@ export const test = base.extend<{
     await context.close();
   },
   extensionId: async ({ context }, use) => {
-    let [background] = context.backgroundPages();
-    if (!background) background = await context.waitForEvent('backgroundpage');
+    // for manifest v2:
+    // let [background] = context.backgroundPages();
+    // if (!background) background = await context.waitForEvent('backgroundpage');
+
+    // for manifest v3:
+    let [background] = context.serviceWorkers();
+    if (!background) background = await context.waitForEvent('serviceworker');
 
     const extensionId = background.url().split('/')[2];
-    await use(extensionId);
+    extensionId && (await use(extensionId));
   },
 });
 export const expect = test.expect;

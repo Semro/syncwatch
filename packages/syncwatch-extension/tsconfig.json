@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM"],
+    "outDir": "build",
+    "rootDir": "."
+  },
+  "references": [{ "path": "../syncwatch-types" }]
+}
