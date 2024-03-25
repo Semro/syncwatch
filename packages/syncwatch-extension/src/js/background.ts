@@ -1,39 +1,13 @@
-import { type Socket, io } from 'socket.io-client';
-
-interface User {
-  name: string;
-  room: string;
-}
-
-type UserList = NonNullable<User['name']>[];
-
-interface Share {
-  title: string;
-  url: string;
-  user: string;
-}
-
-const MediaPlayerEvents = ['playing', 'pause', 'seeked', 'ratechange', 'progress'] as const;
-
-type MediaPlayerEvent = (typeof MediaPlayerEvents)[number];
-
-interface RoomEvent {
-  location: string;
-  type: MediaPlayerEvent;
-  element: number;
-  currentTime: HTMLMediaElement['currentTime'];
-  playbackRate: HTMLMediaElement['playbackRate'];
-}
-
-type ErrorEvent = string;
-
-interface ServerToClientsEvents {
-  usersList: (msg: { list: UserList }) => void;
-  message: (msg: RoomEvent) => void;
-  share: (msg: Share) => void;
-  afk: () => void;
-  error: (msg: ErrorEvent) => void;
-}
+import { io, type Socket } from 'socket.io-client';
+import type {
+  Share,
+  User,
+  UserList,
+  ClientToServerEvents,
+  ErrorEventSocket,
+  RoomEvent,
+  ServerToClientsEvents,
+} from './../../../syncwatch-types/types';
 
 interface ChromeTab extends chrome.tabs.Tab {
   id: NonNullable<chrome.tabs.Tab['id']>;
@@ -83,9 +57,9 @@ const defaultUrl = 'https://server.syncwatch.space/';
 
 let user: User | undefined;
 
-let socket: Socket<ServerToClientsEvents> | undefined;
+let socket: Socket<ServerToClientsEvents, ClientToServerEvents> | undefined;
 
-let status: string = 'disconnect';
+let status = 'disconnect';
 
 let list: UserList = [];
 
@@ -163,7 +137,7 @@ function sendUsersListToPopup() {
   });
 }
 
-function sendErrorToPopup(err: ErrorEvent) {
+function sendErrorToPopup(err: ErrorEventSocket) {
   chromeProxy.runtime.sendMessage({
     from: 'sendError',
     error: err,
@@ -318,7 +292,7 @@ function onAfkNotification() {
   });
 }
 
-function onErrorNotification(errorMessage: ErrorEvent) {
+function onErrorNotification(errorMessage: ErrorEventSocket) {
   createNotification('error', {
     type: 'basic',
     iconUrl: '/icons/icon128.png',

@@ -53,14 +53,14 @@ const initSocket = (serverUrl: string) => {
 };
 
 const socketEmit = async (socket: Socket, event: string, data: Record<string, any>) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     socket.emit(event, data);
     resolve('success');
   });
 };
 
 const waitForSocketEvent = async (socket: Socket, event: string, callback: () => void) => {
-  return new Promise<Record<string, any>>((resolve, reject) => {
+  return new Promise<Record<string, any>>((resolve) => {
     socket.once(event, (data) => {
       resolve(data);
     });
