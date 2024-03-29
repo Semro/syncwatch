@@ -47,12 +47,12 @@ export default defineConfig({
   webServer: [
     {
       command: 'npm run start -w syncwatch-server',
-      url: `http://127.0.0.1:${process.env.SERVER_PORT}/`,
+      url: process.env.SERVER_URL,
       reuseExistingServer: !process.env.CI,
     },
     {
       command: 'npm run serve:test-page -w syncwatch-extension',
-      url: `http://127.0.0.1:${process.env.TEST_PAGE_PORT}/`,
+      url: process.env.TEST_PAGE_URL,
       reuseExistingServer: !process.env.CI,
     },
   ],
