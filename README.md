@@ -49,13 +49,13 @@ npm ci
 4. Run the server
 
 ```sh
-npm run start
+npm run start:dev
 ```
 
 - Run the server on other port
 
 ```sh
-  npx cross-env PORT=8080 node server.js
+  npx cross-env PORT=8080 npm run start:dev
 ```
 
 ## How to add a localization
