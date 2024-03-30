@@ -103,7 +103,7 @@ jobs:
           vm-service-account-id: ${{ secrets.YC_SERVICE_ACCOUNT_ID }}
           vm-cores: 2
           vm-platform-id: "standard-v2"
-          vm-memory: 512Mb
+          vm-memory: 1024Mb
           vm-disk-size: 30Gb
           vm-core-fraction: 5
           vm-subnet-id: ${{ secrets.YC_SUBNET_ID }}
