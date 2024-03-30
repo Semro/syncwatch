@@ -1,0 +1,12 @@
+{
+  "name": "syncwatch-types",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "build": "npx -y tsc --build "
+  }
+}

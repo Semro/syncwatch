@@ -2,3 +2,4 @@ node_modules
 ignore
 npm-debug.log
 .env
+build

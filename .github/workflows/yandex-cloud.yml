@@ -28,11 +28,24 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Setup Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Install NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: "./package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build server
+        run: npm run build -w syncwatch-server
 
       - name: Copy package-lock.json to npm workspace
         run: cp package-lock.json ./packages/syncwatch-server/package-lock.json
+
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build Backend
         uses: docker/build-push-action@v5

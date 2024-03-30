@@ -6,6 +6,14 @@ import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import type {
+  ClientToServerEvents,
+  RoomEvent,
+  ServerToClientsEvents,
+  Share,
+  User,
+} from '../syncwatch-types/types';
+import type { SocketId } from '../../node_modules/socket.io-adapter/dist/in-memory-adapter.d.ts';
 
 const debug = false;
 const logs = false;
@@ -15,7 +23,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
+const io = new Server<ClientToServerEvents, ServerToClientsEvents>(server, {
   allowEIO3: true,
   cors: {
     origin: false,
@@ -29,8 +37,8 @@ const errorFilePath = `${__dirname}/error.log`;
 const serverPort = 8080;
 
 let roomsLength = 0;
-let rooms = [];
-let roomid = [];
+let rooms: Record<User['room'], Room> = {};
+let roomid: Record<SocketId, Room> = {};
 let countConnections = 0;
 
 const PORT = process.env.PORT || serverPort;
@@ -39,7 +47,7 @@ server.listen(PORT, () => {
   console.log(`Listening on ${PORT}`);
 });
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   res.set('Content-Type', 'text/plain');
   res.send('server is running! (nodejs)');
 });
@@ -48,7 +56,7 @@ const rateLimiterOptions = {
   points: 10, // 6 points
   duration: 1, // Per second
   blockDuration: 15, // Block duration in seconds
-};
+} as const;
 
 const rateLimiter = new RateLimiterMemory(rateLimiterOptions);
 
@@ -61,7 +69,7 @@ function printStatus() {
   }
 }
 
-function checkUserNameAndRoom(data) {
+function checkUserNameAndRoom(data: User) {
   if (String(data.name) === '[object Object]' || String(data.room) === '[object Object]')
     return 'Dont try make subrooms :D';
 
@@ -72,23 +80,26 @@ function checkUserNameAndRoom(data) {
   return null;
 }
 
-function disconnectAfk(users) {
-  for (const user in users) {
-    io.in(user).emit('afk');
-  }
-}
 class Room {
-  constructor(name) {
+  name: User['room'];
+  event: RoomEvent | null;
+  timeUpdated: number | null;
+  users: Record<SocketId, User['name']>;
+  usersLength: number;
+  share: Share | null;
+  afkTimer: NodeJS.Timeout | null;
+
+  constructor(name: User['room']) {
     this.name = name;
     this.event = null;
     this.timeUpdated = null;
-    this.users = [];
+    this.users = {};
     this.usersLength = 0;
     this.share = null;
     this.afkTimer = null;
   }
 
-  addUser(socketID, name) {
+  addUser(socketID: SocketId, name: User['name']) {
     if (this.users[socketID] === undefined) {
       this.users[socketID] = name;
       this.usersLength++;
@@ -97,7 +108,7 @@ class Room {
     this.setAfkTimer();
   }
 
-  disconnectUser(socketID) {
+  disconnectUser(socketID: SocketId) {
     if (debug) console.log(`${this.name}: ${this.getUser(socketID)} disconnected`);
     delete this.users[socketID];
     this.usersLength--;
@@ -105,14 +116,18 @@ class Room {
     this.setAfkTimer();
   }
 
-  getUser(socketID) {
+  disconnectAfk(users: typeof this.users) {
+    for (const user in users) {
+      io.in(user).emit('afk');
+    }
+  }
+
+  getUser(socketID: SocketId) {
     return this.users[socketID];
   }
 
   getUsersNames() {
-    const list = [];
-    for (const key in this.users) list.push(this.users[key]);
-    return list.sort();
+    return Object.values(this.users).sort();
   }
 
   nullUsers() {
@@ -122,13 +137,14 @@ class Room {
 
   setAfkTimer() {
     if (this.usersLength === 1) {
-      this.afkTimer = setTimeout(disconnectAfk, afkTime * 60000, this.users);
+      this.afkTimer = setTimeout(this.disconnectAfk, afkTime * 60000, this.users);
     } else {
-      clearTimeout(this.afkTimer);
+      this.afkTimer && clearTimeout(this.afkTimer);
     }
   }
 }
 
+// @ts-ignore
 function consoleOutputError(message) {
   const date = new Date().toString();
   const errorString = `${date} | caught exception: ${message}\n`;
@@ -140,6 +156,8 @@ process.on('uncaughtException', (err) => {
   const errorLogFileStream = fs.createWriteStream(errorFilePath, { flags: 'a' });
 
   errorLogFileStream.on('error', (errFileStream) => {
+    console.log(errFileStream);
+    // @ts-ignore
     if (errFileStream.code === 'EPERM') {
       consoleOutputError('Can not create/open file error.log for logging errors');
     }
@@ -165,50 +183,53 @@ io.on('connection', (socket) => {
 
   socket.on('join', (data) => {
     const err = checkUserNameAndRoom(data);
-    if (err !== null) {
+    if (err) {
       socket.emit('error', err);
       socket.disconnect();
       if (debug) console.log(`Error join: ${err}`);
-    } else {
-      socket.join(data.room);
-      let room = rooms[data.room];
-      if (room !== undefined) {
-        room.addUser(socket.id, data.name);
-        io.in(room.name).emit('usersList', { list: room.getUsersNames() });
-        if (room.share !== null) socket.emit('share', room.share);
-        if (room.usersLength > 1 && room.timeUpdated !== null) {
-          room.event.currentTime =
-            room.event.type === 'play'
-              ? room.event.currentTime + (Date.now() - room.timeUpdated) / 1000
-              : room.event.currentTime;
-          // Time is about second earlier then needed
-          socket.send(room.event);
-        }
-      } else {
-        room = new Room(data.room);
-        roomsLength++;
-        room.addUser(socket.id, data.name);
-        rooms[data.room] = room;
-        socket.emit('usersList', { list: rooms[data.room].getUsersNames() });
-      }
-      roomid[socket.id] = room;
-
-      if (debug) console.log(`connected: ${countConnections} ${JSON.stringify(data)}`);
+      return;
     }
+
+    socket.join(data.room);
+    let room = rooms[data.room];
+    if (room) {
+      room.addUser(socket.id, data.name);
+      io.in(room.name).emit('usersList', { list: room.getUsersNames() });
+      if (room.share !== null) socket.emit('share', room.share);
+      if (room.usersLength > 1 && room.timeUpdated !== null && room.event) {
+        room.event.currentTime =
+          room.event.type === 'play'
+            ? room.event.currentTime + (Date.now() - room.timeUpdated) / 1000
+            : room.event.currentTime;
+        // Time is about second earlier then needed
+        socket.send(room.event);
+      }
+    } else {
+      room = new Room(data.room);
+      roomsLength++;
+      room.addUser(socket.id, data.name);
+      rooms[data.room] = room;
+      socket.emit('usersList', { list: room.getUsersNames() });
+    }
+    roomid[socket.id] = room;
+
+    if (debug) console.log(`connected: ${countConnections} ${JSON.stringify(data)}`);
   });
 
   socket.on('message', (msg) => {
     const room = roomid[socket.id];
-    if (room !== undefined) {
-      room.event = msg;
-      room.timeUpdated = Date.now();
-      socket.broadcast.to(room.name).emit('message', room.event);
-      if (debug) console.log(`${room.name}: ${room.getUser(socket.id)} ${JSON.stringify(msg)}`);
-    }
+    if (!room) return;
+
+    room.event = msg;
+    room.timeUpdated = Date.now();
+    socket.broadcast.to(room.name).emit('message', room.event);
+    if (debug) console.log(`${room.name}: ${room.getUser(socket.id)} ${JSON.stringify(msg)}`);
   });
 
   socket.on('share', (msg) => {
     const room = roomid[socket.id];
+    if (!room) return;
+
     room.share = msg;
     socket.broadcast.to(room.name).emit('share', room.share);
     if (debug) console.log(`${room.name} shared ${JSON.stringify(msg)}`);
@@ -225,12 +246,8 @@ io.on('connection', (socket) => {
         roomsLength--;
       }
       if (roomsLength === 0) {
-        rooms = [];
-        roomid = [];
-        if (global.gc) {
-          gc();
-          if (logs) console.log('Collected garbage!');
-        }
+        rooms = {};
+        roomid = {};
         if (logs) console.log('All authorized users disconnected!');
       }
     }
