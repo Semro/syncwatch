@@ -2,7 +2,7 @@ name: Deploy server
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main-test"]
   workflow_dispatch:
     inputs:
       reason:
@@ -11,8 +11,8 @@ on:
         default: "just for fun"
 
 env:
-  BACKEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-backend:${{ github.sha }}
-  NGINX_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-nginx:${{ github.sha }}
+  BACKEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-backend-test:${{ github.sha }}
+  NGINX_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-nginx-test:${{ github.sha }}
 
 jobs:
   build-backend:
@@ -99,7 +99,7 @@ jobs:
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           folder-id: ${{ secrets.YC_FOLDER_ID }}
-          vm-name: ${{ secrets.YC_VM_NAME }}
+          vm-name: syncwatch-sockets-test
           vm-service-account-id: ${{ secrets.YC_SERVICE_ACCOUNT_ID }}
           vm-cores: 2
           vm-platform-id: "standard-v2"
