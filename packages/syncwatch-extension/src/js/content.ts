@@ -1,21 +1,47 @@
-/* eslint-disable no-inner-declarations */
+import { RoomEvent } from '../../../syncwatch-types/types';
+
+type BaseRuntimeMessage<From extends string, Data> = {
+  from: From;
+  data: Data;
+};
+
+type MessageContentInjected = BaseRuntimeMessage<'background', 'isContentScriptInjected'>;
+type MessageBackgroundEvent = BaseRuntimeMessage<'background', RoomEvent>;
+
+type MessageRuntime = MessageContentInjected | MessageBackgroundEvent;
+
+type BaseContentMessage<From extends string> = {
+  from: From;
+};
+
+type ContentEventMessage = BaseContentMessage<'content'> & { data: RoomEvent };
+type ContentErrorOnEventMessage = BaseContentMessage<'errorOnEvent'>;
+
+type MessageContent = ContentEventMessage | ContentErrorOnEventMessage;
+
 {
   const debug = false;
+  const eventTypes = ['playing', 'pause', 'seeked', 'ratechange', 'progress'] as const;
 
-  let nodes = [];
+  interface EventHTMLVideoElement extends Event {
+    target: HTMLVideoElement;
+    type: (typeof eventTypes)[number];
+  }
+
+  let nodes: HTMLVideoElement[] = [];
   let recieved = false;
-  let recievedEvent;
+  let recievedEvent: RoomEvent['type'];
   let loading = false;
 
-  function sendMessageInRuntime(msg) {
+  function sendMessageInRuntime(msg: MessageContent) {
     try {
       chrome.runtime.sendMessage(msg);
     } catch (err) {
-      if (debug) throw new Error(err);
+      if (debug) console.error(err);
     }
   }
 
-  function iframeIndex(win) {
+  function iframeIndex(win: Window) {
     // eslint-disable-next-line no-param-reassign
     win = win || window;
     if (win.parent !== win) {
@@ -30,7 +56,7 @@
     }
   }
 
-  function iframeFullIndex(win) {
+  function iframeFullIndex(win: Window): string {
     // eslint-disable-next-line no-param-reassign
     win = win || window;
     if (iframeIndex(win) < 0) {
@@ -39,16 +65,21 @@
     return `${iframeFullIndex(win.parent)}${iframeIndex(win)}`;
   }
 
-  function broadcast(event) {
+  function broadcast(event: EventHTMLVideoElement) {
+    let eventTypeRoom;
+
+    if (event.type === 'progress') eventTypeRoom = 'pause';
+    else if (event.type === 'playing') eventTypeRoom = 'play';
+    else eventTypeRoom = event.type;
+
     const eventSend = {
       location: iframeFullIndex(window),
-      type: event.type,
+      type: eventTypeRoom as RoomEvent['type'],
       element: nodes.indexOf(event.target),
       currentTime: event.target.currentTime,
       playbackRate: event.target.playbackRate,
     };
-    if (eventSend.type === 'progress') eventSend.type = 'pause';
-    else if (eventSend.type === 'playing') eventSend.type = 'play';
+
     sendMessageInRuntime({
       from: 'content',
       data: eventSend,
@@ -56,7 +87,7 @@
     if (debug) console.log(`%cbroadcast: ${eventSend.type}`, 'background: #fefe22;');
   }
 
-  function onProgress(event) {
+  function onProgress(event: EventHTMLVideoElement) {
     const prevLoading = loading;
     if (event.target.readyState < 3) loading = true;
     else loading = false;
@@ -65,7 +96,7 @@
     }
   }
 
-  function onEvent(event) {
+  function onEvent(event: EventHTMLVideoElement) {
     //	if (event.type === 'progress') console.log('event:'+event.type+' '+event.target.readyState+' recieved: '+recieved+' loading: '+loading);
     //	else console.log('event:'+event.type+' '+' recieved: '+recieved+' loading: '+loading);
     if (recieved) {
@@ -84,11 +115,12 @@
     } else broadcast(event);
   }
 
-  function addListeners(nodesCollection) {
-    const eventTypes = ['playing', 'pause', 'seeked', 'ratechange', 'progress'];
-    for (let i = 0; i < nodesCollection.length; i++) {
-      for (let j = 0; j < eventTypes.length; j++) {
-        nodesCollection[i].addEventListener(eventTypes[j], onEvent, true);
+  function addListeners(nodesCollection: HTMLCollectionOf<HTMLVideoElement>) {
+    for (let node of nodesCollection) {
+      if (!node) break;
+      for (let eventType of eventTypes) {
+        // @ts-expect-error
+        node.addEventListener(eventType, onEvent, true);
       }
     }
   }
@@ -99,7 +131,7 @@
     nodes = Array.from(nodesCollection);
   }
 
-  function errorOnEvent(err) {
+  function errorOnEvent(err: DOMException) {
     if (err.name === 'NotAllowedError') {
       sendMessageInRuntime({
         from: 'errorOnEvent',
@@ -112,7 +144,7 @@
     return window.location.host === 'www.netflix.com';
   }
 
-  function fireEventNetflix(event) {
+  function fireEventNetflix(event: RoomEvent) {
     switch (event.type) {
       case 'play': {
         window.postMessage({
@@ -151,7 +183,7 @@
     }
   }
 
-  function fireEvent(event) {
+  function fireEvent(event: RoomEvent) {
     recieved = true;
     recievedEvent = event.type;
 
@@ -161,23 +193,26 @@
       return;
     }
 
+    const element = nodes[event.element];
+    if (!element) return;
+
     switch (event.type) {
       case 'play': {
-        nodes[event.element].currentTime = event.currentTime;
-        nodes[event.element].play().catch(errorOnEvent);
+        element.currentTime = event.currentTime;
+        element.play().catch(errorOnEvent);
         break;
       }
       case 'pause': {
-        nodes[event.element].pause();
-        nodes[event.element].currentTime = event.currentTime;
+        element.pause();
+        element.currentTime = event.currentTime;
         break;
       }
       case 'seeked': {
-        nodes[event.element].currentTime = event.currentTime;
+        element.currentTime = event.currentTime;
         break;
       }
       case 'ratechange': {
-        nodes[event.element].playbackRate = event.playbackRate;
+        element.playbackRate = event.playbackRate;
         break;
       }
     }
@@ -194,16 +229,15 @@
     subtree: true,
   });
 
-  chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  chrome.runtime.onMessage.addListener((msg: MessageRuntime, _, sendResponse) => {
     if (msg.from === 'background') {
-      if (msg.data.location === iframeFullIndex(window)) {
-        fireEvent(msg.data);
-        if (debug) console.log(`%crecieved: ${msg.data.type}`, 'background: #9966cc;');
-      }
       if (msg.data === 'isContentScriptInjected') {
         if (nodes.length !== 0) {
           sendResponse(true);
         }
+      } else if (msg.data.location === iframeFullIndex(window)) {
+        fireEvent(msg.data);
+        if (debug) console.log(`%crecieved: ${msg.data.type}`, 'background: #9966cc;');
       }
     }
   });
