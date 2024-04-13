@@ -147,7 +147,9 @@ function sendErrorToPopup(err: ErrorEventSocket) {
 function broadcast(event: RoomEvent, senderTab: chrome.tabs.Tab) {
   if (status === 'connect' && syncTab && isTabPropertiesPresent(senderTab)) {
     if (syncTab.id === senderTab.id) {
-      socket && socket.send(event);
+      if (socket) {
+        socket.send(event);
+      }
     }
   }
 }
@@ -162,7 +164,9 @@ function shareVideoLink(tab: typeof syncTab) {
     user: user.name,
   };
   setShare(msg);
-  socket && socket.emit('share', msg);
+  if (socket) {
+    socket.emit('share', msg);
+  }
 }
 
 function isContentScriptInjected(tab: ChromeTab) {
@@ -303,7 +307,9 @@ function onErrorNotification(errorMessage: ErrorEventSocket) {
 
 function onNotificationClicked(notificationId: string) {
   if (notificationId === 'Share') {
-    share && openVideo(share.url);
+    if (share) {
+      openVideo(share.url);
+    }
     chrome.notifications.clear('Share');
   }
   if (notificationId === 'Interact with page') {
@@ -367,14 +373,20 @@ function initSockets() {
   });
 
   socket.on('share', (msg) => {
-    if (!share || share.url !== msg.url) onShareNotification(msg);
-    if (share && share.url !== msg.url) syncTab = undefined;
+    if (!share || share.url !== msg.url) {
+      onShareNotification(msg);
+    }
+    if (share && share.url !== msg.url) {
+      syncTab = undefined;
+    }
     setShare(msg);
   });
 
   socket.on('afk', () => {
     onAfkNotification();
-    socket && socket.disconnect();
+    if (socket) {
+      socket.disconnect();
+    }
   });
 
   socket.on('error', (msg) => {
@@ -404,7 +416,9 @@ chrome.storage.onChanged.addListener((storage) => {
   if (storage.connectionUrl) {
     connectionUrl = storage.connectionUrl.newValue;
     if (status === 'connect') {
-      socket && socket.disconnect();
+      if (socket) {
+        socket.disconnect();
+      }
       toInitialState();
       initSockets();
     }
@@ -414,7 +428,9 @@ chrome.storage.onChanged.addListener((storage) => {
 chrome.runtime.onMessage.addListener((msg: RuntimeMessage, sender) => {
   switch (msg.from) {
     case 'content': {
-      sender.tab && broadcast(msg.data, sender.tab);
+      if (sender.tab) {
+        broadcast(msg.data, sender.tab);
+      }
       break;
     }
     case 'join': {
@@ -430,7 +446,9 @@ chrome.runtime.onMessage.addListener((msg: RuntimeMessage, sender) => {
     case 'popupShare': {
       chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
         const tab = tabs[0];
-        tab && setSyncTab(tab);
+        if (tab) {
+          setSyncTab(tab);
+        }
         shareVideoLink(syncTab);
       });
       break;
@@ -456,7 +474,9 @@ chrome.runtime.onMessage.addListener((msg: RuntimeMessage, sender) => {
       break;
     }
     case 'disconnect': {
-      socket && socket.disconnect();
+      if (socket) {
+        socket.disconnect();
+      }
       break;
     }
     case 'errorOnEvent': {
