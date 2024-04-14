@@ -71,16 +71,18 @@ let connectionUrl = defaultUrl;
 
 const chromeProxy = {
   runtime: {
-    // This method is only used to communicate with extension's popup, when popup is closed it fails sending a message to it.
-    // We can ignore this error, because popup gets its state from background.js when it is opened.
-    sendMessage: (message: unknown) => {
-      if (isFirefox) {
-        try {
-          chrome.runtime.sendMessage(message);
-          // eslint-disable-next-line no-empty
-        } catch {}
-      } else {
-        chrome.runtime.sendMessage(message).catch(() => {});
+    sendMessage: async (message: unknown) => {
+      try {
+        await chrome.runtime.sendMessage(message);
+      } catch (e: unknown) {
+        if (
+          e instanceof Error &&
+          e.message === 'Could not establish connection. Receiving end does not exist.'
+        ) {
+          return;
+        } else {
+          throw e;
+        }
       }
     },
   },
