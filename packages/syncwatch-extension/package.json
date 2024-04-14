@@ -21,6 +21,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:firefox": "npm run build:firefox-ci && TMPDIR=~/tmp-dir/ web-ext run -s build-ci/firefox-mv2",
     "build": "npm run build:tsc && vite build",
     "build:tsc": "npx tsc --build",
     "build:chrome-ci": "npx cross-env TARGET=chrome BUILD_DIR=build-ci/chrome-mv3 vite build",
