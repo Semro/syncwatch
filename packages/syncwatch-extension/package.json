@@ -29,7 +29,7 @@
     "build:all-ci": "npm run build:chrome-ci && npm run build:firefox-ci",
     "serve:test-page": "npx serve tests/test-page/",
     "postinstall": "npx -y playwright install",
-    "test:e2e": "npm run build && npx playwright test",
+    "test:e2e": "npm run build -w syncwatch-extension && npm run build -w syncwatch-server && npx playwright test",
     "test:e2e-ui": "npm run build && npx playwright test --ui"
   }
 }
