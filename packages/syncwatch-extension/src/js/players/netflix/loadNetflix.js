@@ -1,8 +1,8 @@
 // used for loading netflix.js script into page header
 
-const s = document.createElement('script');
-s.src = chrome.runtime.getURL('js/players/netflix/netflix.js');
-s.onload = () => {
+const scriptElement = document.createElement('script');
+scriptElement.src = chrome.runtime.getURL('js/players/netflix/netflix.js');
+scriptElement.onload = () => {
   this.remove();
 };
-(document.head || document.documentElement).appendChild(s);
+(document.head || document.documentElement).appendChild(scriptElement);
