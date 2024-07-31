@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import './options.css';
 import '@/css/ui.css';
+import './options.css';
 
 function Options() {
   const title = chrome.i18n.getMessage('options_server');
