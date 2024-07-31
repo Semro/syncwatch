@@ -8,27 +8,27 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.45.3",
-    "@types/chrome": "^0.0.263",
-    "@types/node": "^20.14.11",
-    "@types/webextension-polyfill": "^0.10.7",
-    "dotenv": "^16.4.5",
-    "vite": "^5.3.4",
-    "vite-plugin-web-extension": "^4.1.6",
-    "webextension-polyfill": "^0.10.0"
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@wxt-dev/module-react": "^1.1.0",
+    "wxt": "^0.19.1"
   },
   "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "socket.io-client": "^4.7.5"
   },
   "scripts": {
-    "dev": "vite",
-    "dev:firefox": "npm run build:firefox-ci && TMPDIR=~/tmp-dir/ web-ext run -s build-ci/firefox-mv2",
-    "build": "npm run build:tsc && vite build",
-    "build:tsc": "npx tsc --build",
-    "build:chrome-ci": "npx cross-env TARGET=chrome BUILD_DIR=build-ci/chrome-mv3 vite build",
-    "build:firefox-ci": "npx cross-env TARGET=firefox BUILD_DIR=build-ci/firefox-mv2 vite build",
-    "build:all-ci": "npm run build:chrome-ci && npm run build:firefox-ci",
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "build:all-ci": "npm run build && npm run build:firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "compile": "tsc --noEmit",
     "serve:test-page": "npx serve tests/test-page/",
-    "postinstall": "npx -y playwright install",
+    "postinstall": "wxt prepare && npx -y playwright install",
     "test:e2e": "npm run build -w syncwatch-extension && npm run build -w syncwatch-server && npx playwright test",
     "test:e2e-ui": "npm run build && npx playwright test --ui"
   }

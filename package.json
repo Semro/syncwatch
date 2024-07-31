@@ -8,8 +8,7 @@
     "packages/syncwatch-server",
     "packages/syncwatch-locales",
     "packages/syncwatch-extension",
-    "packages/syncwatch-types",
-    "packages/syncwatch-extension-wxt"
+    "packages/syncwatch-types"
   ],
   "scripts": {
     "lint": "npx -y eslint --fix .",

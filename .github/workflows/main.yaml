@@ -16,14 +16,14 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: build-ci
-          path: ./build-ci
+          path: ./output
 
       - name: Build Extension for Firefox
         id: web-ext-build
         uses: kewisch/action-web-ext@v1
         with:
           cmd: build
-          source: ./build-ci/firefox-mv2
+          source: ./output/firefox-mv2
 
       - name: "Sign & publish"
         id: web-ext-sign
@@ -50,13 +50,13 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: build-ci
-          path: ./build-ci
+          path: ./output
 
       - name: Pack extension
         uses: TheDoctor0/zip-release@0.4.1
         with:
           filename: ./SyncWatchExtension.zip
-          path: ./build-ci/chrome-mv3
+          path: ./output/chrome-mv3
 
       - name: Publish to Chrome Webstore
         uses: trmcnvn/chrome-addon@v2
