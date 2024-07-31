@@ -2,7 +2,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
 [![Telegram](https://img.shields.io/badge/telegram-syncwatch-blue.svg?logo=telegram&label=Telegram)](https://t.me/syncwatch)
 [![Discord](https://discordapp.com/api/guilds/483775330524332032/widget.png?style=shield)](https://discord.gg/7AYpju4)
-<img src="packages/syncwatch-extension/src/public/icons/icon128.png" alt="SyncWatch logo" align="right" />
+<img src="packages/syncwatch-extension/public/icons/icon128.png" alt="SyncWatch logo" align="right" />
 
 # SyncWatch
 
