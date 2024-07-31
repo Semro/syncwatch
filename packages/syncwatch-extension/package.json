@@ -8,14 +8,18 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.45.3",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc",
     "@wxt-dev/module-react": "^1.1.0",
     "wxt": "^0.19.1"
   },
+  "overrides": {
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc"
+  },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "19.0.0-rc-3208e73e-20240730",
+    "react-dom": "19.0.0-rc-3208e73e-20240730",
     "socket.io-client": "^4.7.5"
   },
   "scripts": {

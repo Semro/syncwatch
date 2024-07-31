@@ -59,6 +59,12 @@ input {
 }
 
 .button {
+  border: 0;
+  padding: 0;
+  line-height: normal;
+  font: inherit;
+  overflow: visible;
+
   border-radius: 3px;
   background: coral;
   color: white;
