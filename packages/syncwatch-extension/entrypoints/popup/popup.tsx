@@ -55,7 +55,7 @@ function Popup() {
     chrome.runtime.sendMessage({ from: 'popupShare' });
   }
 
-  function onClickVideoLink(event) {
+  function onClickVideoLink(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     if (share) {
       chrome.runtime.sendMessage({ from: 'popupOpenVideo', data: { url: share.url } });
     }
