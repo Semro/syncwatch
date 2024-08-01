@@ -27,7 +27,6 @@ li {
 }
 
 #usersListTitle {
-  display: none;
   height: 20px;
 }
 
@@ -81,13 +80,11 @@ input {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  display: none;
 }
 
 #error {
   height: fit-content;
   color: red;
-  display: none;
 }
 
 /* adjustments for mobile devices (firefox only) */
