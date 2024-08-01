@@ -55,11 +55,11 @@ function Popup() {
     chrome.runtime.sendMessage({ from: 'popupShare' });
   }
 
-  function onClickVideoLink() {
+  function onClickVideoLink(event) {
     if (share) {
       chrome.runtime.sendMessage({ from: 'popupOpenVideo', data: { url: share.url } });
     }
-    return false;
+    event.preventDefault();
   }
 
   function onClickConnect() {
