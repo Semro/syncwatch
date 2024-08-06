@@ -7,11 +7,11 @@
     "node": "20.x"
   },
   "devDependencies": {
-    "@playwright/test": "^1.45.3",
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc",
-    "@wxt-dev/module-react": "^1.1.0",
-    "wxt": "^0.19.1"
+    "@playwright/test": "^1.46.0",
+    "@types/react": "npm:types-react@^19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@^19.0.0-rc.1",
+    "@wxt-dev/module-react": "^1.1.1",
+    "wxt": "^0.19.4"
   },
   "overrides": {
     "@types/react": "npm:types-react@rc",
