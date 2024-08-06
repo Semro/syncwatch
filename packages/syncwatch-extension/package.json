@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.46.0",
+    "@types/chrome": "^0.0.269",
     "@types/react": "npm:types-react@^19.0.0-rc.1",
     "@types/react-dom": "npm:types-react-dom@^19.0.0-rc.1",
     "@wxt-dev/module-react": "^1.1.1",
