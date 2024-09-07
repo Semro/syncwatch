@@ -6,7 +6,7 @@ SyncWatch unterstützt: YouTube, Vimeo, Dailymotion, Facebook und andere Seiten 
 Anleitung:
 1. Klicke auf das Symbol der Erweiterung
 2. Erstelle einen Anzeigenamen und gib einen Namen für den Raum ein. (Wenn der Raum nicht existiert, wird er dadurch erstellt)
-3. Klicke auf 'verbinden' (Bei der ersten Person kann das bis zu 10 Sekunden dauern)
+3. Klicke auf 'verbinden'
 4. Teile den Raumnamen mit deinen Freunden. Sie müssen die ersten drei Schritte befolgen
 5. Öffne die Webseite mit dem Video
 6. Klicke im Menu der Erweiterung auf "Video teilen"
