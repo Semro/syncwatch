@@ -1,0 +1,20 @@
+SyncWatch ermöglicht es, mit Freunden zeitgleich Videos zu sehen! Ihr könnt z.B. Filme, Serien oder Anime schauen.
+Nie wieder "3...2...1...Los!" zählen. Geht einfach alle in einen Raum und schon werden eure Videos synchronisiert.
+
+SyncWatch unterstützt: YouTube, Vimeo, Dailymotion, Facebook und andere Seiten mit HTML5 Video.
+
+Anleitung:
+1. Klicke auf das Symbol der Erweiterung
+2. Erstelle einen Anzeigenamen und gib einen Namen für den Raum ein. (Wenn der Raum nicht existiert, wird er dadurch erstellt)
+3. Klicke auf 'verbinden' (Bei der ersten Person kann das bis zu 10 Sekunden dauern)
+4. Teile den Raumnamen mit deinen Freunden. Sie müssen die ersten drei Schritte befolgen
+5. Öffne die Webseite mit dem Video
+6. Klicke im Menu der Erweiterung auf "Video teilen"
+7. Die Anderen sehen dann in der Erweiterung den Link zur Webseite
+
+Gib uns gerne Feedback! Erzähle uns von Fehlern, deinen Erfahrungen und wie man die Erweiterung verbessern könnte!
+
+Werde ein Teil der Community (Englisch)!
+Discord: https://discord.gg/7AYpju4
+Telegram: https://t.me/syncwatch
+GitHub: https://github.com/Semro/syncwatch
