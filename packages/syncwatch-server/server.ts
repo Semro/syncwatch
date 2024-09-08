@@ -18,7 +18,6 @@ import type { SocketId } from '../../node_modules/socket.io-adapter/dist/in-memo
 const debug = false;
 const logs = false;
 
-// eslint-disable-next-line no-underscore-dangle
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
@@ -144,8 +143,7 @@ class Room {
   }
 }
 
-// @ts-ignore
-function consoleOutputError(message) {
+function consoleOutputError(message: Error) {
   const date = new Date().toString();
   const errorString = `${date} | caught exception: ${message}\n`;
   console.log(errorString);
@@ -156,16 +154,10 @@ process.on('uncaughtException', (err) => {
   const errorLogFileStream = fs.createWriteStream(errorFilePath, { flags: 'a' });
 
   errorLogFileStream.on('error', (errFileStream) => {
-    console.log(errFileStream);
-    // @ts-ignore
-    if (errFileStream.code === 'EPERM') {
-      consoleOutputError('Can not create/open file error.log for logging errors');
-    }
-    consoleOutputError(err);
+    consoleOutputError(errFileStream);
   });
 
   errorLogFileStream.write(consoleOutputError(err), () => {
-    // eslint-disable-next-line no-process-exit
     process.exit(1);
   });
 });

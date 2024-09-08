@@ -2,7 +2,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
 [![Telegram](https://img.shields.io/badge/telegram-syncwatch-blue.svg?logo=telegram&label=Telegram)](https://t.me/syncwatch)
 [![Discord](https://discordapp.com/api/guilds/483775330524332032/widget.png?style=shield)](https://discord.gg/7AYpju4)
-<img src="packages/syncwatch-extension/src/public/icons/icon128.png" alt="SyncWatch logo" align="right" />
+<img src="packages/syncwatch-extension/public/icons/icon128.png" alt="SyncWatch logo" align="right" />
 
 # SyncWatch
 
@@ -10,8 +10,8 @@ SyncWatch is extension for browsers which lets you watch videos together with fr
 
 ## Browsers support
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />Firefox ](https://addons.mozilla.org/firefox/addon/syncwatch/) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />Chrome](https://chrome.google.com/webstore/detail/syncwatch/ggiafipgeeaaahnjamgpjcgkdpanhddg) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />Opera](https://addons.opera.com/extensions/details/syncwatch/) |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" /><br/>Firefox](https://addons.mozilla.org/firefox/addon/syncwatch/) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" /><br/>Chrome](https://chrome.google.com/webstore/detail/syncwatch/ggiafipgeeaaahnjamgpjcgkdpanhddg) | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" /><br/>Opera](https://addons.opera.com/extensions/details/syncwatch/) |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 ## How to use
 
@@ -49,13 +49,13 @@ npm ci
 4. Run the server
 
 ```sh
-npm run start
+npm run start:dev
 ```
 
 - Run the server on other port
 
 ```sh
-  npx cross-env PORT=8080 node server.js
+  npx cross-env PORT=8080 npm run start:dev
 ```
 
 ## How to add a localization

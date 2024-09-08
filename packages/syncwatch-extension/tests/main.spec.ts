@@ -2,6 +2,13 @@ import { Page } from '@playwright/test';
 import { test, expect } from './fixtures';
 import dotenv from 'dotenv';
 import { Socket, io } from 'socket.io-client';
+import {
+  ClientToServerEvents,
+  RoomEvent,
+  ServerToClientsEvents,
+  Share,
+  User,
+} from '../../syncwatch-types/types';
 
 dotenv.config();
 
@@ -52,15 +59,25 @@ const initSocket = (serverUrl: string) => {
   });
 };
 
-const socketEmit = async (socket: Socket, event: string, data: Record<string, any>) => {
+const socketEmit = async <Event extends keyof ClientToServerEvents>(
+  socket: Socket<ServerToClientsEvents, ClientToServerEvents>,
+  event: Event,
+  data: Parameters<ClientToServerEvents[Event]>[0],
+) => {
   return new Promise((resolve) => {
+    // @ts-ignore
     socket.emit(event, data);
     resolve('success');
   });
 };
 
-const waitForSocketEvent = async (socket: Socket, event: string, callback: () => void) => {
-  return new Promise<Record<string, any>>((resolve) => {
+const waitForSocketEvent = async <Event extends keyof ServerToClientsEvents>(
+  socket: Socket<ServerToClientsEvents, ClientToServerEvents>,
+  event: Event,
+  callback: () => void,
+) => {
+  return new Promise<Parameters<ServerToClientsEvents[Event]>[0]>((resolve) => {
+    // @ts-ignore
     socket.once(event, (data) => {
       resolve(data);
     });
@@ -73,7 +90,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
   const user1 = {
     name: 'User1',
     room: 'RoomName',
-  };
+  } as const satisfies User;
 
   const serverUrl = process.env.SERVER_URL || '';
   const pageVideoMediaEventsUrl = String(new URL('mediaevents', process.env.TEST_PAGE_URL));
@@ -129,7 +146,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
     await newPage.close();
   });
 
-  const user2 = { name: 'User2', room: user1.room };
+  const user2 = { name: 'User2', room: user1.room } as const satisfies User;
   const socket = await initSocket(serverUrl);
 
   await test.step('User2 joins room', async () => {
@@ -157,7 +174,8 @@ test('user scenario', async ({ page, extensionId, context }) => {
       element: 0,
       currentTime: 2,
       playbackRate: 1,
-    };
+    } as const satisfies RoomEvent;
+
     await socketEmit(socket, 'message', eventPlay);
     await expect(videoElement).toHaveJSProperty('paused', false);
 
@@ -167,7 +185,8 @@ test('user scenario', async ({ page, extensionId, context }) => {
       element: 0,
       currentTime: 2,
       playbackRate: 1,
-    };
+    } as const satisfies RoomEvent;
+
     await socketEmit(socket, 'message', eventPause);
     await expect(videoElement).toHaveJSProperty('paused', true);
     await expect(videoElement).toHaveJSProperty('currentTime', eventPause.currentTime);
@@ -178,7 +197,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
       element: 0,
       currentTime: 3,
       playbackRate: 1,
-    };
+    } as const satisfies RoomEvent;
 
     await socketEmit(socket, 'message', eventSeekWhenPaused);
     await expect(videoElement).toHaveJSProperty('paused', true);
@@ -190,7 +209,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
       element: 0,
       currentTime: 3,
       playbackRate: 2,
-    };
+    } as const satisfies RoomEvent;
 
     await socketEmit(socket, 'message', eventChangePlaybackRate);
     await expect(videoElement).toHaveJSProperty(
@@ -221,7 +240,8 @@ test('user scenario', async ({ page, extensionId, context }) => {
       element: 0,
       currentTime: 2,
       playbackRate: 1,
-    };
+    } as const satisfies RoomEvent;
+
     await socketEmit(socket, 'message', eventPlay);
     await expect(videoElement).toHaveJSProperty('paused', false);
 
@@ -248,7 +268,8 @@ test('user scenario', async ({ page, extensionId, context }) => {
       element: 0,
       currentTime: 2,
       playbackRate: 1,
-    };
+    } as const satisfies RoomEvent;
+
     await socketEmit(socket, 'message', eventPlay);
     await expect(videoElement).toHaveJSProperty('paused', true);
 
@@ -276,7 +297,8 @@ test('user scenario', async ({ page, extensionId, context }) => {
       element: 0,
       currentTime: 2,
       playbackRate: 1,
-    };
+    } as const satisfies RoomEvent;
+
     await socketEmit(socket, 'message', eventPlay);
     await expect(videoElement).toHaveJSProperty('paused', false);
 
@@ -319,7 +341,8 @@ test('user scenario', async ({ page, extensionId, context }) => {
       title: 'Frames Test',
       url: pageVideoFrames,
       user: 'test',
-    };
+    } as const satisfies Share;
+
     await socketEmit(socket, 'share', shareEvent);
 
     expect(frame).not.toBeNull();

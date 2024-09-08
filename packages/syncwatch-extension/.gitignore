@@ -1,7 +1,3 @@
-# Build
-dist
-build-ci
-
 # Logs
 logs
 *.log
@@ -12,8 +8,11 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist-ssr
-*.local
+.output
+stats.html
+stats-*.json
+.wxt
+web-ext.config.ts
 
 # Editor directories and files
 .vscode/*

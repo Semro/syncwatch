@@ -46,7 +46,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: 'npm run start -w syncwatch-server',
+      command: 'npm run start:dev -w syncwatch-server',
       url: process.env.SERVER_URL,
       reuseExistingServer: !process.env.CI,
     },

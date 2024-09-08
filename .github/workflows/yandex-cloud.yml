@@ -4,11 +4,6 @@ on:
   push:
     branches: ["main-test"]
   workflow_dispatch:
-    inputs:
-      reason:
-        description: "why"
-        required: false
-        default: "just for fun"
 
 env:
   BACKEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-backend-test:${{ github.sha }}

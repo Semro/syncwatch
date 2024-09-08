@@ -6,7 +6,7 @@ Eklentinin destekledikleri: YouTube, Vimeo, Dailymotion, Facebook ve diğer HTML
 Nasıl kullanılır:
 1. Eklenti simgesine tıklayın.
 2. İsminizi ve oda ismini yazın. (Eğer aynı isimde oda ismi yoksa oluşturulacak)
-3. Tıkla 'bağlan'. (İlk bağlantı kurması 10 saniye sürebilir)
+3. Tıkla 'bağlan'.
 4. Odanın ismini arkadaşlarınızla paylaşın. Bu talimatı takip etmeleri gerekir (1-3 arasındaki adımları).
 5. Videonun bulunduğu sayfaya gidin.
 6. Odaya bağlantı göndermek için 'paylaş'ı tıklayın.

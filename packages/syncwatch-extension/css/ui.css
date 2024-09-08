@@ -27,7 +27,6 @@ li {
 }
 
 #usersListTitle {
-  display: none;
   height: 20px;
 }
 
@@ -59,6 +58,12 @@ input {
 }
 
 .button {
+  border: 0;
+  padding: 0;
+  line-height: normal;
+  font: inherit;
+  overflow: visible;
+
   border-radius: 3px;
   background: coral;
   color: white;
@@ -75,13 +80,11 @@ input {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  display: none;
 }
 
 #error {
   height: fit-content;
   color: red;
-  display: none;
 }
 
 /* adjustments for mobile devices (firefox only) */

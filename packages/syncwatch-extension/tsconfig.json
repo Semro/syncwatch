@@ -1,9 +1,9 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": ["../../tsconfig.json", "./.wxt/tsconfig.json"],
   "compilerOptions": {
-    "lib": ["ESNext", "DOM"],
-    "outDir": "build",
-    "rootDir": "."
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "allowImportingTsExtensions": true
   },
   "references": [{ "path": "../syncwatch-types" }]
 }
