@@ -26,4 +26,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: build-ci
-          path: ./output
+          path: ./packages/syncwatch-extension/.output
+          if-no-files-found: error
+          include-hidden-files: true
