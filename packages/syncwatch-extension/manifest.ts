@@ -3,7 +3,7 @@ const manifest = {
   '{{chrome}}.manifest_version': 3,
   name: '__MSG_appName__',
   description: '__MSG_appDesc__',
-  version: '0.510',
+  version: '0.520',
   default_locale: 'en',
   options_ui: {
     page: 'options.html',
@@ -41,7 +41,7 @@ const manifest = {
   },
   '{{chrome}}.incognito': 'split',
   '{{firefox}}.permissions': ['<all_urls>', 'tabs', 'storage', 'notifications'],
-  '{{chrome}}.permissions': ['tabs', 'storage', 'notifications', 'scripting'],
+  '{{chrome}}.permissions': ['tabs', 'storage', 'notifications'],
   '{{chrome}}.host_permissions': ['<all_urls>'],
   content_scripts: [
     {
