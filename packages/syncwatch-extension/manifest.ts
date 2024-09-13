@@ -41,7 +41,7 @@ const manifest = {
   },
   '{{chrome}}.incognito': 'split',
   '{{firefox}}.permissions': ['<all_urls>', 'tabs', 'storage', 'notifications'],
-  '{{chrome}}.permissions': ['tabs', 'storage', 'notifications', 'scripting'],
+  '{{chrome}}.permissions': ['tabs', 'storage', 'notifications'],
   '{{chrome}}.host_permissions': ['<all_urls>'],
   content_scripts: [
     {
