@@ -11,7 +11,7 @@ export interface Share {
   user: string;
 }
 
-const MediaPlayerEvents = ['play', 'pause', 'seeked', 'ratechange'] as const;
+const MediaPlayerEvents = ['play', 'pause', 'seeked'] as const;
 
 type MediaPlayerEvent = (typeof MediaPlayerEvents)[number];
 

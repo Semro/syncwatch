@@ -15,6 +15,8 @@ function getPlayer() {
 window.addEventListener('message', (event) => {
   const player = getPlayer();
 
+  player.setPlaybackRate(event.data.playbackRate);
+
   switch (event.data.action) {
     case 'play': {
       player.play();
@@ -26,10 +28,6 @@ window.addEventListener('message', (event) => {
     }
     case 'seek': {
       player.seek(event.data.time * 1000);
-      break;
-    }
-    case 'setPlaybackRate': {
-      player.setPlaybackRate(event.data.playbackRate);
       break;
     }
   }
