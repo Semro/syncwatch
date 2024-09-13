@@ -205,7 +205,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
 
     const eventChangePlaybackRate = {
       location: '-1',
-      type: 'ratechange',
+      type: 'seeked',
       element: 0,
       currentTime: 3,
       playbackRate: 2,
