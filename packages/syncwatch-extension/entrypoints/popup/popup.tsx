@@ -141,7 +141,7 @@ function Popup() {
           onClick={onClickShare}
         />
       )}
-      {share && (
+      {isConnected && share && (
         <a
           className="block"
           id="shared"
@@ -153,7 +153,7 @@ function Popup() {
           <span>{share.title}</span>
         </a>
       )}
-      {users.length > 0 && (
+      {isConnected && users.length > 0 && (
         <>
           <div className="block" id="usersListTitle">
             {`${chrome.i18n.getMessage('popup_usersInRoom')}:`}
