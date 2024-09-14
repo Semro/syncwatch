@@ -34,8 +34,5 @@
   "socket_error_room_length": { "message": "Room length must be between 2 and 24" },
   "options_button_save": { "message": "Save" },
   "options_saved": { "message": "Options saved" },
-  "options_server": { "message": "Server" },
-  "options_server_warning": {
-    "message": "If extension reconnects infinitely then put correct URL and reload extension"
-  }
+  "options_server": { "message": "Server" }
 }

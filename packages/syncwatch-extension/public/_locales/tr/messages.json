@@ -36,8 +36,5 @@
   },
   "options_button_save": { "message": "Kaydet" },
   "options_saved": { "message": "Seçenekler kaydedildi" },
-  "options_server": { "message": "Sunucu" },
-  "options_server_warning": {
-    "message": "Uzantı sürekli yeniden bağlanmaya çalışırsa, doğru URL'yi girin, uzantıyı kapatın ve yeniden açın"
-  }
+  "options_server": { "message": "Sunucu" }
 }

@@ -36,8 +36,5 @@
   },
   "options_button_save": { "message": "Speichern" },
   "options_saved": { "message": "Einstellungen gespeichert" },
-  "options_server": { "message": "Server" },
-  "options_server_warning": {
-    "message": "Wenn die Erweiterung dauerhaft neustartet, gib eine korrekte URL ein und lade die Erweiterung neu."
-  }
+  "options_server": { "message": "Server" }
 }

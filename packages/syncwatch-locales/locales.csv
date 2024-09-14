@@ -33,4 +33,3 @@ socket_error_room_length,message,"Room length must be between 2 and 24","Дли�
 options_button_save,message,"Save","Сохранить","Kaydet","Speichern"
 options_saved,message,"Options saved","Настройки сохранены","Seçenekler kaydedildi","Einstellungen gespeichert"
 options_server,message,"Server","Сервер","Sunucu","Server"
-options_server_warning,message,"If extension reconnects infinitely then put correct URL and reload extension","Если расширение бесконечно переподключается, то введите корректный URL и перезагрузите расширение","Uzantı sürekli yeniden bağlanmaya çalışırsa, doğru URL'yi girin, uzantıyı kapatın ve yeniden açın","Wenn die Erweiterung dauerhaft neustartet, gib eine korrekte URL ein und lade die Erweiterung neu."

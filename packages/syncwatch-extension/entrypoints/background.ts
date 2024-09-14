@@ -361,10 +361,10 @@ export default defineBackground(() => {
     }
   });
 
-  chrome.storage.onChanged.addListener((storage) => {
-    if (storage.connectionUrl) {
-      connectionUrl = storage.connectionUrl.newValue;
-      if (status === 'connect') {
+  chrome.storage.onChanged.addListener((changes) => {
+    if (changes.connectionUrl?.newValue) {
+      connectionUrl = changes.connectionUrl.newValue;
+      if (status !== 'disconnect') {
         if (socket) {
           socket.disconnect();
         }
