@@ -1,7 +1,7 @@
-import { test as base, chromium, type BrowserContext } from '@playwright/test';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { type BrowserContext, test as base, chromium } from '@playwright/test';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

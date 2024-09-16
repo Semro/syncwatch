@@ -1,12 +1,12 @@
-import { io, type Socket } from 'socket.io-client';
+import { type Socket, io } from 'socket.io-client';
 import type {
-  Share,
-  User,
-  UserList,
   ClientToServerEvents,
   ErrorEventSocket,
   RoomEvent,
   ServerToClientsEvents,
+  Share,
+  User,
+  UserList,
 } from './../../syncwatch-types/types';
 
 export default defineBackground(() => {
@@ -282,7 +282,7 @@ export default defineBackground(() => {
       'reconnect_failed',
     ];
 
-    for (let event of socketEvents) {
+    for (const event of socketEvents) {
       socket.on(event, () => {
         status = event;
         sendStatusToPopup();

@@ -1,11 +1,12 @@
 import fs from 'fs';
-import express from 'express';
-import { Server } from 'socket.io';
 import http from 'http';
+import express from 'express';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
+import { Server } from 'socket.io';
 
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import type { SocketId } from '../../node_modules/socket.io-adapter/dist/in-memory-adapter.d.ts';
 import type {
   ClientToServerEvents,
   RoomEvent,
@@ -13,7 +14,6 @@ import type {
   Share,
   User,
 } from '../syncwatch-types/types';
-import type { SocketId } from '../../node_modules/socket.io-adapter/dist/in-memory-adapter.d.ts';
 
 const debug = false;
 const logs = false;

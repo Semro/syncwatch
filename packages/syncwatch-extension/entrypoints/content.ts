@@ -122,9 +122,9 @@ export default defineContentScript({
       }
 
       function addListeners(nodesCollection: HTMLCollectionOf<HTMLVideoElement>) {
-        for (let node of nodesCollection) {
+        for (const node of nodesCollection) {
           if (!node) break;
-          for (let eventType of eventTypes) {
+          for (const eventType of eventTypes) {
             // @ts-expect-error
             node.addEventListener(eventType, onEvent, true);
           }
