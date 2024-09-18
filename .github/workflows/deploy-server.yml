@@ -2,7 +2,7 @@ name: Deploy server
 
 on:
   push:
-    branches: ["main-test"]
+    branches: ["server-prod"]
   workflow_dispatch:
 
 env:
