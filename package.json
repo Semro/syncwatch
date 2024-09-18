@@ -11,20 +11,12 @@
     "packages/syncwatch-types"
   ],
   "scripts": {
-    "lint": "npx -y eslint --fix .",
-    "style": "npx -y prettier --write \"./**/*.{js,jsx,ts,tsx,json}\""
+    "lint": "npx @biomejs/biome check format --write ."
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-node": "^4.1.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.30.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "prettier": "^3.3.3"
+    "@biomejs/biome": "1.9.1"
   },
   "dependencies": {
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   }
 }

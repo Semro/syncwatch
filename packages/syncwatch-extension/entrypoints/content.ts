@@ -122,9 +122,9 @@ export default defineContentScript({
       }
 
       function addListeners(nodesCollection: HTMLCollectionOf<HTMLVideoElement>) {
-        for (let node of nodesCollection) {
+        for (const node of nodesCollection) {
           if (!node) break;
-          for (let eventType of eventTypes) {
+          for (const eventType of eventTypes) {
             // @ts-expect-error
             node.addEventListener(eventType, onEvent, true);
           }
@@ -179,13 +179,6 @@ export default defineContentScript({
             });
             break;
           }
-          case 'ratechange': {
-            window.postMessage({
-              action: 'setPlaybackRate',
-              playbackRate: event.playbackRate,
-            });
-            break;
-          }
         }
       }
 
@@ -202,23 +195,16 @@ export default defineContentScript({
         const element = nodes[event.element];
         if (!element) return;
 
+        element.playbackRate = event.playbackRate;
+        element.currentTime = event.currentTime;
+
         switch (event.type) {
           case 'play': {
-            element.currentTime = event.currentTime;
             element.play().catch(errorOnEvent);
             break;
           }
           case 'pause': {
             element.pause();
-            element.currentTime = event.currentTime;
-            break;
-          }
-          case 'seeked': {
-            element.currentTime = event.currentTime;
-            break;
-          }
-          case 'ratechange': {
-            element.playbackRate = event.playbackRate;
             break;
           }
         }

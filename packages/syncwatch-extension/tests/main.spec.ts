@@ -1,5 +1,4 @@
 import { Page } from '@playwright/test';
-import { test, expect } from './fixtures';
 import dotenv from 'dotenv';
 import { Socket, io } from 'socket.io-client';
 import {
@@ -9,6 +8,7 @@ import {
   Share,
   User,
 } from '../../syncwatch-types/types';
+import { expect, test } from './fixtures';
 
 dotenv.config();
 
@@ -205,7 +205,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
 
     const eventChangePlaybackRate = {
       location: '-1',
-      type: 'ratechange',
+      type: 'seeked',
       element: 0,
       currentTime: 3,
       playbackRate: 2,

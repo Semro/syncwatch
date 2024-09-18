@@ -6,7 +6,6 @@ import './options.css';
 
 function Options() {
   const title = chrome.i18n.getMessage('options_server');
-  const warning = chrome.i18n.getMessage('options_server_warning');
   const saveButton = chrome.i18n.getMessage('options_button_save');
 
   const [connectionUrl, setConnectonUrl] = useState('');
@@ -54,7 +53,6 @@ function Options() {
           {saveButton}
         </button>
       </form>
-      <div id="options_server_warning">{warning}</div>
     </div>
   );
 }

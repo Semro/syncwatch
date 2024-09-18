@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   build-all:
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/build-extension.yml
 
   firefox:
     needs: build-all
@@ -16,18 +16,18 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: build-ci
-          path: ./output
+          path: ./packages/syncwatch-extension/.output
 
       - name: Build Extension for Firefox
         id: web-ext-build
         uses: kewisch/action-web-ext@v1
         with:
           cmd: build
-          source: ./output/firefox-mv2
+          source: ./packages/syncwatch-extension/.output/firefox-mv2
 
       - name: "Sign & publish"
         id: web-ext-sign
-        uses: kewisch/action-web-ext@v1
+        uses: kewisch/action-web-ext@main
         with:
           cmd: sign
           channel: listed
@@ -50,13 +50,13 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: build-ci
-          path: ./output
+          path: ./packages/syncwatch-extension/.output/chrome-mv3
 
       - name: Pack extension
         uses: TheDoctor0/zip-release@0.4.1
         with:
           filename: ./SyncWatchExtension.zip
-          path: ./output/chrome-mv3
+          path: ./packages/syncwatch-extension/.output/chrome-mv3
 
       - name: Publish to Chrome Webstore
         uses: trmcnvn/chrome-addon@v2

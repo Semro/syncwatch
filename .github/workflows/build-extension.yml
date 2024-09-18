@@ -27,3 +27,5 @@ jobs:
         with:
           name: build-ci
           path: ./packages/syncwatch-extension/.output
+          if-no-files-found: error
+          include-hidden-files: true

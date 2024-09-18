@@ -34,8 +34,5 @@
   "socket_error_room_length": { "message": "Длина названия комнаты должна быть от 2 до 24" },
   "options_button_save": { "message": "Сохранить" },
   "options_saved": { "message": "Настройки сохранены" },
-  "options_server": { "message": "Сервер" },
-  "options_server_warning": {
-    "message": "Если расширение бесконечно переподключается, то введите корректный URL и перезагрузите расширение"
-  }
+  "options_server": { "message": "Сервер" }
 }
