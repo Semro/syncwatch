@@ -40,16 +40,6 @@
       "quoteStyle": "single",
       "attributePosition": "auto",
       "bracketSpacing": true
-    },
-    "globals": [
-      "globalThis",
-      "navigator",
-      "gc",
-      "window",
-      "__BROWSER__",
-      "io",
-      "document",
-      "MutationObserver"
-    ]
+    }
   }
 }
