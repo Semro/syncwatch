@@ -1,5 +1,4 @@
 import { Page } from '@playwright/test';
-import { test, expect } from './fixtures';
 import dotenv from 'dotenv';
 import { Socket, io } from 'socket.io-client';
 import {
@@ -9,6 +8,7 @@ import {
   Share,
   User,
 } from '../../syncwatch-types/types';
+import { expect, test } from './fixtures';
 
 dotenv.config();
 

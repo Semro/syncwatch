@@ -132,37 +132,41 @@ function Popup() {
         </div>
       )}
       {isConnected && (
-        <input
-          className="block button"
-          id="share"
-          type="button"
-          name="share"
-          value={chrome.i18n.getMessage('popup_button_share')}
-          onClick={onClickShare}
-        />
-      )}
-      {share && (
-        <a
-          className="block"
-          id="shared"
-          href={share.url}
-          target="_blank"
-          onClick={onClickVideoLink}
-        >
-          <img src={getFaviconFromUrl(share.url)} width="16px" height="16px" />
-          <span>{share.title}</span>
-        </a>
-      )}
-      {users.length > 0 && (
         <>
-          <div className="block" id="usersListTitle">
-            {`${chrome.i18n.getMessage('popup_usersInRoom')}:`}
-          </div>
-          <ul id="usersList">
-            {users.map((user) => (
-              <li key={user}>{user}</li>
-            ))}
-          </ul>
+          {
+            <input
+              className="block button"
+              id="share"
+              type="button"
+              name="share"
+              value={chrome.i18n.getMessage('popup_button_share')}
+              onClick={onClickShare}
+            />
+          }
+          {share && (
+            <a
+              className="block"
+              id="shared"
+              href={share.url}
+              target="_blank"
+              onClick={onClickVideoLink}
+            >
+              <img src={getFaviconFromUrl(share.url)} width="16px" height="16px" />
+              <span>{share.title}</span>
+            </a>
+          )}
+          {users.length > 0 && (
+            <>
+              <div className="block" id="usersListTitle">
+                {`${chrome.i18n.getMessage('popup_usersInRoom')}:`}
+              </div>
+              <ul id="usersList">
+                {users.map((user) => (
+                  <li key={user}>{user}</li>
+                ))}
+              </ul>
+            </>
+          )}
         </>
       )}
       <div className="block" id="status">
