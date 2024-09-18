@@ -1,6 +1,9 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.1/schema.json",
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "files": {
+    "ignore": ["packages/syncwatch-extension/tests/test-page/**"]
+  },
   "formatter": {
     "enabled": true,
     "useEditorconfig": true,
