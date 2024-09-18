@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   build-all:
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/build-extension.yml
 
   firefox:
     needs: build-all
