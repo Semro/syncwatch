@@ -1,4 +1,4 @@
-name: tests
+name: Tests
 
 on:
   pull_request:
@@ -38,7 +38,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run e2e tests
-        run: npm run test-e2e-ci -w syncwatch-extension
+        run: npm run test:e2e-ci -w syncwatch-extension
 
       - name: Upload HTML report to the GitHub UI
         uses: actions/upload-artifact@v4
