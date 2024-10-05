@@ -7,6 +7,6 @@
     "node": "20.x"
   },
   "scripts": {
-    "build": "npx -y tsc --build "
+    "build": "npx -y tsc --build"
   }
 }
