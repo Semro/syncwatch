@@ -11,7 +11,7 @@
     "packages/syncwatch-types"
   ],
   "scripts": {
-    "lint": "npx @biomejs/biome check format --write ."
+    "lint": "npx @biomejs/biome format --write ."
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3"
