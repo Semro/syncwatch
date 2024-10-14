@@ -11,12 +11,13 @@
     "packages/syncwatch-types"
   ],
   "scripts": {
-    "lint": "npx @biomejs/biome check format --write ."
+    "lint": "npx @biomejs/biome format --write .",
+    "compile": "tsc --build tsconfig.build.json"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.1"
+    "@biomejs/biome": "1.9.3"
   },
   "dependencies": {
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.3"
   }
 }
