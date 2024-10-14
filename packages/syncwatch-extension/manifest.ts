@@ -3,7 +3,6 @@ const manifest = {
   '{{chrome}}.manifest_version': 3,
   name: '__MSG_appName__',
   description: '__MSG_appDesc__',
-  version: '0.530',
   default_locale: 'en',
   options_ui: {
     page: 'options.html',
