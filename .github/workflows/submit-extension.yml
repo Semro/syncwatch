@@ -14,10 +14,15 @@ jobs:
     uses: ./.github/workflows/validate.yml
     secrets: inherit
 
+  tests:
+    name: Tests
+    uses: ./.github/workflows/tests.yml
+    secrets: inherit
+
   submit:
     name: Submit
     runs-on: ubuntu-22.04
-    needs: [validate]
+    needs: [validate, tests]
     steps:
       - uses: actions/checkout@v4
         with:
