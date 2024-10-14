@@ -13,6 +13,10 @@ import { expect, test } from './fixtures';
 
 dotenv.config();
 
+const screenshotOptions = {
+  stylePath: './tests/screenshot.css',
+};
+
 test('popup page', async ({ page, extensionId }) => {
   await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
@@ -22,13 +26,13 @@ test('popup page', async ({ page, extensionId }) => {
 test('screenshot_popup', async ({ page, extensionId }) => {
   await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
-  await expect(page.locator('#main')).toHaveScreenshot();
+  await expect(page.locator('#main')).toHaveScreenshot(screenshotOptions);
 });
 
 test('screenshot_option', async ({ page, extensionId }) => {
   await page.goto(`chrome-extension://${extensionId}/options.html`);
 
-  await expect(page.locator('#main')).toHaveScreenshot();
+  await expect(page.locator('#main')).toHaveScreenshot(screenshotOptions);
 });
 
 const initialState = (page: Page) => {
