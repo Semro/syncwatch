@@ -1,4 +1,4 @@
-name: validate
+name: Validate
 
 on: [pull_request]
 
@@ -20,5 +20,5 @@ jobs:
       - name: Run linter
         run: npm run lint
 
-      - name: Run type check
+      - name: Run type checker
         run: npm run compile
