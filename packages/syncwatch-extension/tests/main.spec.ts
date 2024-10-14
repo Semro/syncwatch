@@ -8,6 +8,7 @@ import {
   Share,
   User,
 } from '../../syncwatch-types/types';
+import { ENV } from '../env';
 import { expect, test } from './fixtures';
 
 dotenv.config();
@@ -92,9 +93,9 @@ test('user scenario', async ({ page, extensionId, context }) => {
     room: 'RoomName',
   } as const satisfies User;
 
-  const serverUrl = process.env.SERVER_URL || '';
-  const pageVideoMediaEventsUrl = String(new URL('mediaevents', process.env.TEST_PAGE_URL));
-  const pageVideoFrames = String(new URL('frames', process.env.TEST_PAGE_URL));
+  const serverUrl = ENV.SERVER_URL || '';
+  const pageVideoMediaEventsUrl = String(new URL('mediaevents', ENV.TEST_PAGE_URL));
+  const pageVideoFrames = String(new URL('frames', ENV.TEST_PAGE_URL));
 
   await test.step('Change server URL', async () => {
     await page.goto(`chrome-extension://${extensionId}/options.html`);
