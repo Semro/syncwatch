@@ -52,6 +52,7 @@ jobs:
         with:
           path: .output/*.zip
           if-no-files-found: error
+          include-hidden-files: true
 
       - name: Submit
         run: |
