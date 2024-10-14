@@ -50,7 +50,7 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          path: ./packages/syncwatch-extension/.output/*.zip
+          path: .output/*.zip
           if-no-files-found: error
 
       - name: Submit
