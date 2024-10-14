@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/syncwatch-extension" },
+    { "path": "packages/syncwatch-server" },
+    { "path": "packages/syncwatch-types" }
+  ]
+}
