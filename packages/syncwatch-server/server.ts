@@ -22,13 +22,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server<ClientToServerEvents, ServerToClientsEvents>(server, {
-  allowEIO3: true,
-  cors: {
-    origin: false,
-    methods: ['GET', 'POST'],
-  },
-});
+const io = new Server<ClientToServerEvents, ServerToClientsEvents>(server);
 
 const afkTime = 60; // in minutes
 const printStatusTime = 30; // in minutes
