@@ -97,7 +97,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
     room: 'RoomName',
   } as const satisfies User;
 
-  const serverUrl = ENV.SERVER_URL || '';
+  const serverUrl = ENV.SERVER_URL;
   const pageVideoMediaEventsUrl = String(new URL('mediaevents', ENV.TEST_PAGE_URL));
   const pageVideoFrames = String(new URL('frames', ENV.TEST_PAGE_URL));
 
