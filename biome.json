@@ -1,6 +1,21 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.1/schema.json",
-  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "$schema": "https://biomejs.dev/schemas/1.9.3/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignore": [
+      "packages/syncwatch-extension/tests/test-page/**",
+      "packages/syncwatch-extension/.output/**",
+      "packages/syncwatch-extension/.wxt/**",
+      "packages/syncwatch-extension/playwright-report/**",
+      "packages/syncwatch-extension/test-results/**",
+      "packages/syncwatch-server/build/**",
+      "packages/syncwatch-types/build/**"
+    ]
+  },
   "formatter": {
     "enabled": true,
     "useEditorconfig": true,
@@ -12,18 +27,25 @@
     "attributePosition": "auto",
     "bracketSpacing": true
   },
-  "organizeImports": { "enabled": true },
+  "organizeImports": {
+    "enabled": true
+  },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": false,
-      "correctness": { "noUnusedVariables": "error" },
+      "correctness": {
+        "noUnusedVariables": "error"
+      },
       "style": {
         "noNonNullAssertion": "off",
         "useConst": "error",
         "useDefaultSwitchClause": "off"
       },
-      "suspicious": { "noConsole": "off", "noConsoleLog": "off" }
+      "suspicious": {
+        "noConsole": "off",
+        "noConsoleLog": "off"
+      }
     }
   },
   "javascript": {
@@ -37,16 +59,6 @@
       "quoteStyle": "single",
       "attributePosition": "auto",
       "bracketSpacing": true
-    },
-    "globals": [
-      "globalThis",
-      "navigator",
-      "gc",
-      "window",
-      "__BROWSER__",
-      "io",
-      "document",
-      "MutationObserver"
-    ]
+    }
   }
 }

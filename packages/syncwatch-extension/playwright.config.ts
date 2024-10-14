@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
+import { ENV } from './env';
 
 /**
  * Read environment variables from file.
@@ -47,12 +48,12 @@ export default defineConfig({
   webServer: [
     {
       command: 'npm run start:dev -w syncwatch-server',
-      url: process.env.SERVER_URL,
+      url: ENV.SERVER_URL,
       reuseExistingServer: !process.env.CI,
     },
     {
       command: 'npm run serve:test-page -w syncwatch-extension',
-      url: process.env.TEST_PAGE_URL,
+      url: ENV.TEST_PAGE_URL,
       reuseExistingServer: !process.env.CI,
     },
   ],
