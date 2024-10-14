@@ -368,8 +368,12 @@ test('user scenario', async ({ page, extensionId, context }) => {
 
   await test.step('Disconnect from the server', async () => {
     await page.goto(`chrome-extension://${extensionId}/popup.html`);
-
     await page.getByRole('button', { name: 'connect' }).click();
+    await initialState(page);
+  });
+
+  await test.step('Check popup when retrivieng state from background.js', async () => {
+    await page.goto(`chrome-extension://${extensionId}/popup.html`);
     await initialState(page);
   });
 });
