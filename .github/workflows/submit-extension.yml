@@ -1,0 +1,84 @@
+name: Submit for Review
+on:
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        default: false
+        type: boolean
+        description: Skip submission and perform a dry run
+
+jobs:
+  validate:
+    name: Validate
+    uses: ./.github/workflows/validate.yml
+    secrets: inherit
+
+  submit:
+    name: Submit
+    runs-on: ubuntu-22.04
+    needs: [validate]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Configure Git
+        run: |
+          git config user.email "github-actions@users.noreply.github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Bump Version
+        id: version
+        run: |
+          npx changelogen@latest --bump
+          NEW_VERSION=$(node -pe 'require("./packages/syncwatch-extension/package.json").version')
+          echo "newVersion=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build and Zip
+        run: |
+          npm zip -w syncwatch-extension
+          npm zip:firefox -w syncwatch-extension
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./packages/syncwatch-extension/.output/*.zip
+          if-no-files-found: error
+
+      - name: Submit
+        run: |
+          npx wxt submit \
+            --chrome-zip ./packages/syncwatch-extension/.output/*-chrome.zip \
+            --firefox-zip ./packages/syncwatch-extension/.output/*-firefox.zip \
+            --firefox-sources-zip ./packages/syncwatch-extension/.output/*-sources.zip
+        env:
+          DRY_RUN: ${{ inputs.dryRun }}
+          CHROME_EXTENSION_ID: ${{ secrets.GOOGLE_EXTENSION_ID }}
+          CHROME_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          CHROME_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          CHROME_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          FIREFOX_EXTENSION_ID: ${{ secrets.FIREFOX_EXTENSION_ID }}
+          FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_API_KEY }}
+          FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_CLIENT_SECRET}}
+
+      - name: Commit and Push
+        if: ${{ !inputs.dryRun }}
+        run: |
+          git add package.json CHANGELOG.md
+          git commit -am "chore(release): v$NEW_VERSION"
+          git tag v$NEW_VERSION
+          git push
+          git push --tags
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.newVersion }}
+
+      - name: Release
+        if: ${{ !inputs.dryRun }}
+        run: npx changelogen@latest gh release ${{ steps.version.outputs.newVersion }} --token ${{ github.token }}
