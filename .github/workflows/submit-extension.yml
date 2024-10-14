@@ -56,9 +56,9 @@ jobs:
       - name: Submit
         run: |
           npx wxt submit \
-            --chrome-zip ./packages/syncwatch-extension/.output/*-chrome.zip \
-            --firefox-zip ./packages/syncwatch-extension/.output/*-firefox.zip \
-            --firefox-sources-zip ./packages/syncwatch-extension/.output/*-sources.zip
+            --chrome-zip .output/*-chrome.zip \
+            --firefox-zip .output/*-firefox.zip \
+            --firefox-sources-zip .output/*-sources.zip
         env:
           DRY_RUN: ${{ inputs.dryRun }}
           CHROME_EXTENSION_ID: ${{ secrets.GOOGLE_EXTENSION_ID }}
