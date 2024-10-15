@@ -92,4 +92,4 @@ jobs:
 
       - name: Release
         if: ${{ !inputs.dryRun }}
-        run: npx changelogen@latest gh release ${{ steps.version.outputs.newVersion }} --token ${{ github.token }}
+        run: npx changelogen@latest --dir ./packages/syncwatch-extension gh release ${{ steps.version.outputs.newVersion }} --token ${{ github.token }}
