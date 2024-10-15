@@ -46,7 +46,7 @@ jobs:
       - name: Bump Version
         id: version
         run: |
-          npx changelogen@latest --bump
+          npx changelogen@latest --dir ./packages/syncwatch-extension --bump
           NEW_VERSION=$(node -pe 'require("./packages/syncwatch-extension/package.json").version')
           echo "newVersion=$NEW_VERSION" >> "$GITHUB_OUTPUT"
 
@@ -74,6 +74,7 @@ jobs:
           CHROME_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           CHROME_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           CHROME_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          CHROME_SKIP_SUBMIT_REVIEW: true
           FIREFOX_EXTENSION_ID: ${{ secrets.FIREFOX_EXTENSION_ID }}
           FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_API_KEY }}
           FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_CLIENT_SECRET}}
@@ -81,7 +82,7 @@ jobs:
       - name: Commit and Push
         if: ${{ !inputs.dryRun }}
         run: |
-          git add package.json CHANGELOG.md
+          git add package.json
           git commit -am "chore(release): v$NEW_VERSION"
           git tag v$NEW_VERSION
           git push
