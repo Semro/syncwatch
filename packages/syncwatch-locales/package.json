@@ -7,7 +7,7 @@
   "type": "module",
   "main": "locales.js",
   "scripts": {
-    "locales": "node locales.js && cd ../../ && npm run style"
+    "locales": "node locales.js && cd ../../ && npm run lint"
   },
   "devDependencies": {
     "csv-locales": "^1.2.2"
