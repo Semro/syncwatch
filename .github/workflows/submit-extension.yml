@@ -92,4 +92,6 @@ jobs:
 
       - name: Release
         if: ${{ !inputs.dryRun }}
-        run: npx changelogen@latest --dir ./packages/syncwatch-extension gh release ${{ steps.version.outputs.newVersion }} --token ${{ github.token }}
+        run: gh release create v${{ steps.version.outputs.newVersion }} ./packages/syncwatch-extension/.output/*.zip -F ./packages/syncwatch-extension/CHANGELOG.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
