@@ -113,7 +113,7 @@ function Popup() {
         id="name"
         type="text"
         name="name"
-        defaultValue={user?.room}
+        defaultValue={user?.name}
         placeholder={chrome.i18n.getMessage('popup_input_name')}
         onChange={(ev) => user && setUser({ ...user, name: ev.target.value })}
       />
