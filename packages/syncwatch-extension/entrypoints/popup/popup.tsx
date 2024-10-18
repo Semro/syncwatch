@@ -72,35 +72,41 @@ function Popup() {
     }
   }
 
+  function onRuntimeMessage(msg: RuntimeMessage) {
+    if (msg.from === 'status') {
+      if (msg.status === 'connect') {
+        setConnectButtonValue(chrome.i18n.getMessage('popup_button_disconnect'));
+      } else {
+        setConnectButtonValue(chrome.i18n.getMessage('popup_button_connect'));
+        setUsers([]);
+        setShare(undefined);
+      }
+      setConnectionStatus(chrome.i18n.getMessage(`socket_event_${msg.status}`));
+    }
+    if (msg.from === 'share') {
+      if (msg.data) {
+        setShare(msg.data);
+      }
+    }
+    if (msg.from === 'sendUsersList') {
+      setUsers(msg.list);
+    }
+    if (msg.from === 'sendError') {
+      setConnectionError(chrome.i18n.getMessage(msg.error));
+    }
+    if (msg.from === 'sendUser' && msg.data) {
+      setUser(msg.data);
+    }
+  }
+
   useEffect(() => {
+    chrome.runtime.onMessage.addListener(onRuntimeMessage);
+
     for (const val of typesOfData) getData(val);
 
-    chrome.runtime.onMessage.addListener((msg: RuntimeMessage) => {
-      if (msg.from === 'status') {
-        if (msg.status === 'connect') {
-          setConnectButtonValue(chrome.i18n.getMessage('popup_button_disconnect'));
-        } else {
-          setConnectButtonValue(chrome.i18n.getMessage('popup_button_connect'));
-          setUsers([]);
-          setShare(undefined);
-        }
-        setConnectionStatus(chrome.i18n.getMessage(`socket_event_${msg.status}`));
-      }
-      if (msg.from === 'share') {
-        if (msg.data) {
-          setShare(msg.data);
-        }
-      }
-      if (msg.from === 'sendUsersList') {
-        setUsers(msg.list);
-      }
-      if (msg.from === 'sendError') {
-        setConnectionError(chrome.i18n.getMessage(msg.error));
-      }
-      if (msg.from === 'sendUser' && msg.data) {
-        setUser(msg.data);
-      }
-    });
+    return () => {
+      chrome.runtime.onMessage.removeListener(onRuntimeMessage);
+    };
   }, []);
 
   return (
