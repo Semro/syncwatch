@@ -65,6 +65,7 @@ npm run start:dev
 1. Add a column to [locales.csv](packages/syncwatch-locales/locales.csv) with language code at the top cell.
 1. Add translated messages in following cells.
 1. Generate localized files with `npm run locales` (optional step, you can just pull request `.csv` file).
+1. To localize store description, make a folder in [web-store-assets](web-store-assets) with a corresponding ISO code.
 
 ## License
 
