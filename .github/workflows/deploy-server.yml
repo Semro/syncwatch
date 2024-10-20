@@ -1,13 +1,16 @@
 name: Deploy server
 
 on:
-  push:
-    branches: ["server-prod"]
   workflow_dispatch:
+    inputs:
+      vm-name:
+        default: "-test"
+        type: string
+        description: "VM name, empty string - production"
 
 env:
-  BACKEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-backend:${{ github.sha }}
-  NGINX_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-nginx:${{ github.sha }}
+  BACKEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-backend${{ inputs.vm-name }}:${{ github.sha }}
+  NGINX_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-nginx{{ inputs.vm-name }}:${{ github.sha }}
 
 jobs:
   build-backend:
@@ -94,7 +97,7 @@ jobs:
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           folder-id: ${{ secrets.YC_FOLDER_ID }}
-          vm-name: syncwatch-sockets
+          vm-name: syncwatch-sockets${{ inputs.vm-name }}
           vm-service-account-id: ${{ secrets.YC_SERVICE_ACCOUNT_ID }}
           vm-cores: 2
           vm-platform-id: "standard-v2"
