@@ -7,12 +7,12 @@
     "node": "20.x"
   },
   "devDependencies": {
-    "@playwright/test": "^1.48.0",
-    "@types/chrome": "^0.0.277",
+    "@playwright/test": "^1.48.1",
+    "@types/chrome": "^0.0.278",
     "@types/react": "npm:types-react@^19.0.0-rc.1",
     "@types/react-dom": "npm:types-react-dom@^19.0.0",
     "@wxt-dev/module-react": "^1.1.1",
-    "wxt": "^0.19.11"
+    "wxt": "^0.19.12"
   },
   "overrides": {
     "@types/react": "npm:types-react@rc",

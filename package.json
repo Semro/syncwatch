@@ -15,7 +15,7 @@
     "compile": "tsc --build tsconfig.build.json"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.3"
+    "@biomejs/biome": "^1.9.4"
   },
   "dependencies": {
     "typescript": "^5.6.3"
