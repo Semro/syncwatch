@@ -10,7 +10,7 @@ on:
 
 env:
   BACKEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-backend${{ inputs.vm-name }}:${{ github.sha }}
-  NGINX_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-nginx{{ inputs.vm-name }}:${{ github.sha }}
+  NGINX_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-nginx${{ inputs.vm-name }}:${{ github.sha }}
 
 jobs:
   build-backend:
