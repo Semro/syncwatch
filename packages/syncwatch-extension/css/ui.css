@@ -1,107 +1,154 @@
 * {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  background: white;
-  color: black;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 12pt;
-  font-weight: 400;
-  user-select: none;
-  overflow-x: hidden;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    user-select: none;
+    overflow-x: hidden;
 }
 
 #main {
-  border: 1px solid lightgrey;
-  width: 240px;
-  padding: 2px 0 2px 0;
+    width: 300px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.block,
-li {
-  width: 230px;
-  height: 25px;
-  margin: 0 auto 3px auto;
-  display: block;
+.block {
+    margin: 10px 0;
 }
 
-#usersListTitle {
-  height: 20px;
+.logo {
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    color: coral;
 }
 
-li {
-  height: 20px;
-  margin: 0 auto 1px auto;
-  margin-left: 20px;
+.input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s;
 }
 
-#logo {
-  height: 30px;
-  text-align: center;
-  font-size: 16pt;
-  font-weight: 500;
+.input:focus {
+    border-color: coral;
+    outline: none;
 }
 
-h1 {
-  display: inline;
-  font-size: 16pt;
-  font-weight: 500;
-}
-
-input {
-  font-size: 12pt;
-  border-style: solid;
-  border-color: #ccc;
-  border-width: 0 0 1px 0;
-  outline: none;
+.input:hover {
+    border-color: coral;
 }
 
 .button {
-  border: 0;
-  padding: 0;
-  line-height: normal;
-  font: inherit;
-  overflow: visible;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background: coral;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+}
 
-  border-radius: 3px;
-  background: coral;
-  color: white;
-  box-shadow: 1px 1px 1px 0 #ccc;
+.button:hover {
+    background: #ff7f50;
+    border-color: coral;
 }
 
 .button:active {
-  box-shadow: 1px 1px 1px 0 #fff;
-}
-
-#shared {
-  min-height: 25px;
-  max-height: 50px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+    transform: scale(0.98);
 }
 
 #error {
-  height: fit-content;
-  color: red;
+    color: #dc3545;
+    font-weight: 900;
+    text-align: center;
 }
 
-/* adjustments for mobile devices (firefox only) */
+.shared {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #f9f9f9;
+    transition: background 0.3s;
+}
+
+.shared:hover {
+    background: #f0f0f0;
+    border-color: coral;
+}
+
+#usersList {
+    list-style: none;
+    padding-left: 0;
+}
+
+.users-list-title {
+    font-weight: 600;
+    text-align: center;
+}
+
+li {
+    padding: 5px 10px;
+    border-bottom: 1px solid #eee;
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+.status {
+    text-align: center;
+}
+
+/* Adjustments for mobile devices (firefox only) */
 @supports (-moz-appearance: none) {
-  @media only screen and (hover: none) and (pointer: coarse) {
-    #main {
-      width: 96%;
-      margin: 0 auto 0 auto;
+    @media only screen and (hover: none) and (pointer: coarse) {
+        #main {
+            width: 96%;
+            margin: 0 auto;
+        }
+        .block,
+        li {
+            width: 100%;
+        }
+        input.block,
+        .button {
+            height: 2.5em;
+        }
     }
-    .block,
-    li {
-      width: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        color: white;
+        background: #1E1E1E;
     }
-    input.block,
-    .button {
-      height: 2.5em;
+
+    .input{
+        background-color: #1E1E1E;
+        color: white;
     }
-  }
+}
+
+@media (prefers-color-scheme: light) {
+    body {
+        color: black;
+        background: #FFFEFD;
+    }
+
+    .input{
+        background-color: #FFFEFD;
+    }
 }
