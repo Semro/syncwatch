@@ -43,7 +43,7 @@ function Popup() {
   const [connectButtonValue, setConnectButtonValue] = useState(
     chrome.i18n.getMessage('popup_button_disconnect'),
   );
-  const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected'>('disconnected');
+  const [connectionStatus, setConnectionStatus] = useState('');
   const [connectionError, setConnectionError] = useState('');
   const [share, setShare] = useState<Share | undefined>(undefined);
   const [user, setUser] = useState<User | undefined>(undefined);
@@ -72,14 +72,6 @@ function Popup() {
     }
   }
 
-  function updateConnectionStatus(newStatus: string) {
-    if (newStatus === 'connected' || newStatus === 'disconnected') {
-      setConnectionStatus(newStatus);
-    } else {
-      console.error(`Invalid status received: ${newStatus}`);
-    }
-  };
-
   function onRuntimeMessage(msg: RuntimeMessage) {
     if (msg.from === 'status') {
       if (msg.status === 'connect') {
@@ -89,7 +81,7 @@ function Popup() {
         setUsers([]);
         setShare(undefined);
       }
-      updateConnectionStatus(chrome.i18n.getMessage(`socket_event_${msg.status}`));
+      setConnectionStatus(chrome.i18n.getMessage(`socket_event_${msg.status}`));
     }
     if (msg.from === 'share') {
       if (msg.data) {
@@ -123,7 +115,7 @@ function Popup() {
         SyncWatch
       </div>
       <input
-        className="block input"
+        className="block"
         id="name"
         type="text"
         name="name"
@@ -132,7 +124,7 @@ function Popup() {
         onChange={(ev) => user && setUser({ ...user, name: ev.target.value })}
       />
       <input
-        className="block input"
+        className="block"
         id="room"
         type="text"
         name="room"

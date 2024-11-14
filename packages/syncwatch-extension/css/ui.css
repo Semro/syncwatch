@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 14px;
     font-weight: 400;
     user-select: none;
@@ -30,7 +30,7 @@ body {
     color: coral;
 }
 
-.input {
+input {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -38,12 +38,12 @@ body {
     transition: border-color 0.3s;
 }
 
-.input:focus {
+input:focus {
     border-color: coral;
     outline: none;
 }
 
-.input:hover {
+input:hover {
     border-color: coral;
 }
 
@@ -133,11 +133,11 @@ li:last-child {
 @media (prefers-color-scheme: dark) {
     body {
         color: white;
-        background: #1E1E1E;
+        background: #1e1e1e;
     }
 
-    .input{
-        background-color: #1E1E1E;
+    .input {
+        background-color: #1e1e1e;
         color: white;
     }
 }
@@ -145,10 +145,10 @@ li:last-child {
 @media (prefers-color-scheme: light) {
     body {
         color: black;
-        background: #FFFEFD;
+        background: #fffefd;
     }
 
-    .input{
-        background-color: #FFFEFD;
+    .input {
+        background-color: #fffefd;
     }
 }
