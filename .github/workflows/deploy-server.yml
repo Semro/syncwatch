@@ -4,13 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       vm-name:
-        default: "-test"
-        type: string
-        description: "VM name, empty string - production"
+        type: choice
+        default: "test"
+        description: "Stand"
+        options:
+          - "production"
+          - "test"
 
 env:
-  BACKEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-backend${{ inputs.vm-name }}:${{ github.sha }}
-  NGINX_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-nginx${{ inputs.vm-name }}:${{ github.sha }}
+  BACKEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-backend-${{ inputs.vm-name }}:${{ github.sha }}
+  NGINX_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/syncwatch-nginx-${{ inputs.vm-name }}:${{ github.sha }}
 
 jobs:
   build-backend:
@@ -54,7 +57,7 @@ jobs:
           tags: ${{ env.BACKEND_IMAGE }}
 
   build-nginx:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -77,7 +80,7 @@ jobs:
           tags: ${{ env.NGINX_IMAGE }}
 
   update-yc:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build-backend, build-nginx]
     steps:
       - name: Checkout
@@ -97,7 +100,7 @@ jobs:
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           folder-id: ${{ secrets.YC_FOLDER_ID }}
-          vm-name: syncwatch-sockets${{ inputs.vm-name }}
+          vm-name: syncwatch-sockets-${{ inputs.vm-name }}
           vm-service-account-id: ${{ secrets.YC_SERVICE_ACCOUNT_ID }}
           vm-cores: 2
           vm-platform-id: "standard-v2"
