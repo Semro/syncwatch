@@ -111,7 +111,7 @@ function Popup() {
 
   return (
     <div id="main">
-      <div className="block" id="logo">
+      <div className="block logo" id="logo">
         SyncWatch
       </div>
       <input
@@ -133,25 +133,23 @@ function Popup() {
         onChange={(ev) => user && setUser({ ...user, room: ev.target.value })}
       />
       {connectionError && (
-        <div className="block" id="error">
+        <div className="block error" id="error">
           {connectionError}
         </div>
       )}
       {isConnected && (
         <>
-          {
-            <input
-              className="block button"
-              id="share"
-              type="button"
-              name="share"
-              value={chrome.i18n.getMessage('popup_button_share')}
-              onClick={onClickShare}
-            />
-          }
+          <input
+            className="block button"
+            id="share"
+            type="button"
+            name="share"
+            value={chrome.i18n.getMessage('popup_button_share')}
+            onClick={onClickShare}
+          />
           {share && (
             <a
-              className="block"
+              className="block shared"
               id="shared"
               href={share.url}
               target="_blank"
@@ -162,21 +160,21 @@ function Popup() {
             </a>
           )}
           {users.length > 0 && (
-            <>
-              <div className="block" id="usersListTitle">
-                {`${chrome.i18n.getMessage('popup_usersInRoom')}:`}
+            <div>
+              <div className="block users-list-title" id="usersListTitle">
+                {`${chrome.i18n.getMessage('popup_usersInRoom')}`}
               </div>
               <ul id="usersList">
                 {users.map((user) => (
                   <li key={user}>{user}</li>
                 ))}
               </ul>
-            </>
+            </div>
           )}
         </>
       )}
-      <div className="block" id="status">
-        {`${chrome.i18n.getMessage('popup_status')}: ${connectionStatus}`}
+      <div className="block status" id="status">
+        {`${chrome.i18n.getMessage('popup_status')}:`} <span style={connectionStatus === 'connected' ? { color: '#28a745', fontWeight: "900" } : { color: '#dc3545', fontWeight: "900" }}>{`${connectionStatus}`}</span>
       </div>
       <input
         className="block button"
