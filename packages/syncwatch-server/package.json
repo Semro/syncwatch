@@ -2,7 +2,7 @@
   "name": "syncwatch-server",
   "version": "0.0.1",
   "engines": {
-    "node": "20.x"
+    "node": "22.x"
   },
   "description": "Extension to watch videos together",
   "type": "module",
@@ -22,7 +22,7 @@
   "dependencies": {
     "express": "^5.0.1",
     "rate-limiter-flexible": "^5.0.4",
-    "socket.io": "^4.8.0"
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.0"
