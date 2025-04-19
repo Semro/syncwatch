@@ -20,11 +20,11 @@
   "author": "Semro",
   "license": "MIT",
   "dependencies": {
-    "express": "^5.0.1",
-    "rate-limiter-flexible": "^5.0.4",
+    "express": "^5.1.0",
+    "rate-limiter-flexible": "^7.0.0",
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0"
+    "@types/express": "^5.0.1"
   }
 }
