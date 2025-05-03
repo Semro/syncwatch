@@ -36,24 +36,22 @@ function Options() {
   }, []);
 
   return (
-    <Flex direction="column" gap={2}>
-      <Text id="options_server" variant="header-1">
-        {title}
-      </Text>
+    <Flex direction="column" gap={2} data-testId="screenshot">
+      <Text variant="header-1">{title}</Text>
       <form action={saveOptions}>
         <Flex direction="column" gap="2">
           <TextInput
-            id="serverUrl"
             label="URL: "
             type="url"
             name="serverUrl"
             defaultValue={connectionUrl}
+            id="input-server-url"
           />
           <Flex justifyContent={'right'} alignItems={'center'} gap="2">
             <Label theme="success" size="s">
               {status}
             </Label>
-            <Button id="save" type="submit" name="save" view="action">
+            <Button type="submit" name="save" view="action">
               {saveButton}
             </Button>
           </Flex>

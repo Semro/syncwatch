@@ -107,34 +107,34 @@ function Popup() {
   }, []);
 
   return (
-    <Flex direction={'column'} width={'240px'} gap={'2'}>
+    <Flex direction={'column'} width={'240px'} gap={'2'} data-testId="screenshot">
       <Flex justifyContent={'center'}>
         <Text variant="header-2">syncwatch</Text>
       </Flex>
       <TextInput
-        id="name"
         name="name"
         defaultValue={user?.name}
         placeholder={chrome.i18n.getMessage('popup_input_name')}
         onChange={(ev) => user && setUser({ ...user, name: ev.target.value })}
+        id="input-name"
       />
       <TextInput
-        id="room"
         name="room"
         defaultValue={user?.room}
         placeholder={chrome.i18n.getMessage('popup_input_room')}
         onChange={(ev) => user && setUser({ ...user, room: ev.target.value })}
+        id="input-room"
       />
-      {connectionError && <Text color="danger-heavy">Error: {connectionError}</Text>}
+      {connectionError && <Text color="danger-heavy">{connectionError}</Text>}
       {isConnected && (
         <>
           {
-            <Button id="share" name="share" onClick={onClickShare}>
+            <Button name="share" onClick={onClickShare}>
               {chrome.i18n.getMessage('popup_button_share').toLocaleLowerCase()}
             </Button>
           }
           {share && (
-            <Link id="shared" href={share.url} target="_blank" onClick={onClickVideoLink}>
+            <Link href={share.url} target="_blank" onClick={onClickVideoLink} data-testId="shared">
               <Flex alignItems={'center'} gap={2}>
                 <img src={getFaviconFromUrl(share.url)} width="16px" height="16px" />
                 <Text variant="body-2" ellipsisLines={2}>
@@ -148,7 +148,7 @@ function Popup() {
               <Text variant="body-2">
                 {`${chrome.i18n.getMessage('popup_usersInRoom')}:`.toLocaleLowerCase()}
               </Text>
-              <Flex className={spacing({ ml: 4 })} id="userList" direction="column">
+              <Flex className={spacing({ ml: 4 })} direction="column" data-testId="users-list">
                 {users.map((user) => (
                   <Flex key={user}>
                     <Text>{user}</Text>
@@ -159,10 +159,10 @@ function Popup() {
           )}
         </>
       )}
-      <Text id="status" variant="body-2">
+      <Text variant="body-2" data-testId="status">
         {`${chrome.i18n.getMessage('popup_status')}: ${connectionStatus}`.toLocaleLowerCase()}
       </Text>
-      <Button width={'max'} view="action" id="connect" name="connect" onClick={onClickConnect}>
+      <Button width={'max'} view="action" name="connect" onClick={onClickConnect}>
         {connectButtonValue.toLocaleLowerCase()}
       </Button>
     </Flex>
