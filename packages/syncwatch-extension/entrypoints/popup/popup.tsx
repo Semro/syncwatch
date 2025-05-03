@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
-import '@/css/ui.css';
+import '@gravity-ui/uikit/styles/styles.css';
+import '@/css/theme.css';
 
+import { Button, Flex, Link, Text, TextInput, ThemeProvider, spacing } from '@gravity-ui/uikit';
 import { Share, User, UserList } from '../../../syncwatch-types/types';
 
 type BaseRuntimeMessage<From extends string> = {
@@ -29,12 +31,7 @@ function getData(type: string) {
 }
 
 function getFaviconFromUrl(url: string) {
-  let position = 0;
-  for (let i = 0; i < 3; i++) {
-    position = url.indexOf('/', position);
-    position++;
-  }
-  return `${url.substring(0, position)}favicon.ico`;
+  return `${new URL('favicon.ico', new URL(url).origin)}`;
 }
 
 const typesOfData = ['User', 'Status', 'UsersList', 'Share'];
@@ -110,88 +107,72 @@ function Popup() {
   }, []);
 
   return (
-    <div id="main">
-      <div className="block" id="logo">
-        SyncWatch
-      </div>
-      <input
-        className="block"
+    <Flex direction={'column'} width={'240px'} gap={'2'}>
+      <Flex justifyContent={'center'}>
+        <Text variant="header-2">syncwatch</Text>
+      </Flex>
+      <TextInput
         id="name"
-        type="text"
         name="name"
         defaultValue={user?.name}
         placeholder={chrome.i18n.getMessage('popup_input_name')}
         onChange={(ev) => user && setUser({ ...user, name: ev.target.value })}
       />
-      <input
-        className="block"
+      <TextInput
         id="room"
-        type="text"
         name="room"
         defaultValue={user?.room}
         placeholder={chrome.i18n.getMessage('popup_input_room')}
         onChange={(ev) => user && setUser({ ...user, room: ev.target.value })}
       />
-      {connectionError && (
-        <div className="block" id="error">
-          {connectionError}
-        </div>
-      )}
+      {connectionError && <Text color="danger-heavy">Error: {connectionError}</Text>}
       {isConnected && (
         <>
           {
-            <input
-              className="block button"
-              id="share"
-              type="button"
-              name="share"
-              value={chrome.i18n.getMessage('popup_button_share')}
-              onClick={onClickShare}
-            />
+            <Button id="share" name="share" onClick={onClickShare}>
+              {chrome.i18n.getMessage('popup_button_share').toLocaleLowerCase()}
+            </Button>
           }
           {share && (
-            <a
-              className="block"
-              id="shared"
-              href={share.url}
-              target="_blank"
-              onClick={onClickVideoLink}
-            >
-              <img src={getFaviconFromUrl(share.url)} width="16px" height="16px" />
-              <span>{share.title}</span>
-            </a>
+            <Link id="shared" href={share.url} target="_blank" onClick={onClickVideoLink}>
+              <Flex alignItems={'center'} gap={2}>
+                <img src={getFaviconFromUrl(share.url)} width="16px" height="16px" />
+                <Text variant="body-2" ellipsisLines={2}>
+                  {share.title}
+                </Text>
+              </Flex>
+            </Link>
           )}
           {users.length > 0 && (
-            <>
-              <div className="block" id="usersListTitle">
-                {`${chrome.i18n.getMessage('popup_usersInRoom')}:`}
-              </div>
-              <ul id="usersList">
+            <Flex direction="column" gap="1">
+              <Text variant="body-2">
+                {`${chrome.i18n.getMessage('popup_usersInRoom')}:`.toLocaleLowerCase()}
+              </Text>
+              <Flex className={spacing({ ml: 4 })} id="userList" direction="column">
                 {users.map((user) => (
-                  <li key={user}>{user}</li>
+                  <Flex key={user}>
+                    <Text>{user}</Text>
+                  </Flex>
                 ))}
-              </ul>
-            </>
+              </Flex>
+            </Flex>
           )}
         </>
       )}
-      <div className="block" id="status">
-        {`${chrome.i18n.getMessage('popup_status')}: ${connectionStatus}`}
-      </div>
-      <input
-        className="block button"
-        id="connect"
-        type="button"
-        name="connect"
-        value={connectButtonValue}
-        onClick={onClickConnect}
-      />
-    </div>
+      <Text id="status" variant="body-2">
+        {`${chrome.i18n.getMessage('popup_status')}: ${connectionStatus}`.toLocaleLowerCase()}
+      </Text>
+      <Button width={'max'} view="action" id="connect" name="connect" onClick={onClickConnect}>
+        {connectButtonValue.toLocaleLowerCase()}
+      </Button>
+    </Flex>
   );
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Popup />
+    <ThemeProvider>
+      <Popup />
+    </ThemeProvider>
   </React.StrictMode>,
 );

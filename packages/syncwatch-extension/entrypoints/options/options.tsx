@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import '@/css/ui.css';
-import './options.css';
+import '@gravity-ui/uikit/styles/styles.css';
+import '@/css/theme.css';
+import { Button, Flex, Label, Text, TextInput, ThemeProvider } from '@gravity-ui/uikit';
 
 function Options() {
   const title = chrome.i18n.getMessage('options_server');
@@ -35,30 +36,37 @@ function Options() {
   }, []);
 
   return (
-    <div id="main">
-      <div>
-        <h1 id="options_server">{title}</h1>
-        <div id="status">{status}</div>
-      </div>
+    <Flex direction="column" gap={2}>
+      <Text id="options_server" variant="header-1">
+        {title}
+      </Text>
       <form action={saveOptions}>
-        <span>URL: </span>
-        <input
-          className="block"
-          id="serverUrl"
-          type="url"
-          name="serverUrl"
-          defaultValue={connectionUrl}
-        />
-        <button className="block button" id="save" type="submit" name="save">
-          {saveButton}
-        </button>
+        <Flex direction="column" gap="2">
+          <TextInput
+            id="serverUrl"
+            label="URL: "
+            type="url"
+            name="serverUrl"
+            defaultValue={connectionUrl}
+          />
+          <Flex justifyContent={'right'} alignItems={'center'} gap="2">
+            <Label theme="success" size="s">
+              {status}
+            </Label>
+            <Button id="save" type="submit" name="save" view="action">
+              {saveButton}
+            </Button>
+          </Flex>
+        </Flex>
       </form>
-    </div>
+    </Flex>
   );
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Options />
+    <ThemeProvider>
+      <Options />
+    </ThemeProvider>
   </React.StrictMode>,
 );

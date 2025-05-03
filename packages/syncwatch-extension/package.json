@@ -15,6 +15,7 @@
     "wxt": "^0.20.6"
   },
   "dependencies": {
+    "@gravity-ui/uikit": "^7.10.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "socket.io-client": "^4.8.1"

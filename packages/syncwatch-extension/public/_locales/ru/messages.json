@@ -8,7 +8,7 @@
   "popup_button_connecting": { "message": "подключение" },
   "popup_button_share": { "message": "поделиться видео" },
   "popup_status": { "message": "статус" },
-  "popup_usersInRoom": { "message": "Пользователи в комнате" },
+  "popup_usersInRoom": { "message": "пользователи в комнате" },
   "notification_interact_title": { "message": "Кликните куда-нибудь на страничке" },
   "notification_interact_message": { "message": "Например, нажмите на видео" },
   "notification_interact_button": { "message": "Подробнее" },
