@@ -34,6 +34,7 @@
   "socket_error_room_length": {
     "message": "oda ismi uzunluğu 2 ile 24  karakter arasında olmalıdır"
   },
+  "socket_error_too_many_requests": { "message": "Çok fazla istek" },
   "options_button_save": { "message": "Kaydet" },
   "options_saved": { "message": "Seçenekler kaydedildi" },
   "options_server": { "message": "Sunucu" }

@@ -41,7 +41,7 @@ export default defineContentScript({
 
       function sendMessageInRuntime(msg: MessageContent) {
         try {
-          chrome.runtime.sendMessage(msg);
+          browser.runtime.sendMessage(msg);
         } catch (err) {
           if (debug) console.error(err);
         }
@@ -221,7 +221,7 @@ export default defineContentScript({
         subtree: true,
       });
 
-      chrome.runtime.onMessage.addListener((msg: MessageRuntime, _, sendResponse) => {
+      browser.runtime.onMessage.addListener((msg: MessageRuntime, _, sendResponse) => {
         if (msg.from === 'background') {
           if (msg.data === 'isContentScriptInjected') {
             if (nodes.length !== 0) {

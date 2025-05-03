@@ -15,6 +15,30 @@ const MediaPlayerEvents = ['play', 'pause', 'seeked'] as const;
 
 type MediaPlayerEvent = (typeof MediaPlayerEvents)[number];
 
+export const socketEvents = [
+  'connect',
+  'connect_error',
+  'connect_timeout',
+  'error',
+  'disconnect',
+  'reconnect',
+  'reconnecting',
+  'reconnect_error',
+  'reconnect_failed',
+] as const;
+
+export type SocketEvent = (typeof socketEvents)[number];
+
+export const serverError = {
+  socket_error_write_name: 'socket_error_write_name',
+  socket_error_name_length: 'socket_error_name_length',
+  socket_error_write_room: 'socket_error_write_room',
+  socket_error_room_length: 'socket_error_room_length',
+  socket_error_too_many_requests: 'socket_error_too_many_requests',
+} as const;
+
+export type ErrorEventSocket = (typeof serverError)[keyof typeof serverError];
+
 export interface RoomEvent {
   location: string;
   type: MediaPlayerEvent;
@@ -22,8 +46,6 @@ export interface RoomEvent {
   currentTime: number;
   playbackRate: number;
 }
-
-export type ErrorEventSocket = string;
 
 export interface ServerToClientsEvents {
   usersList: (msg: { list: UserList }) => void;

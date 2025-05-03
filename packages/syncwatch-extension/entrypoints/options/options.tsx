@@ -6,8 +6,8 @@ import '@/css/theme.css';
 import { Button, Flex, Label, Text, TextInput, ThemeProvider } from '@gravity-ui/uikit';
 
 function Options() {
-  const title = chrome.i18n.getMessage('options_server');
-  const saveButton = chrome.i18n.getMessage('options_button_save');
+  const title = browser.i18n.getMessage('options_server');
+  const saveButton = browser.i18n.getMessage('options_button_save');
 
   const [connectionUrl, setConnectonUrl] = useState('');
   const [status, setStatus] = useState('');
@@ -15,13 +15,13 @@ function Options() {
   function saveOptions(formData: FormData) {
     const serverUrl = formData.get('serverUrl') as string | null;
 
-    chrome.storage.sync.set(
+    browser.storage.sync.set(
       {
         connectionUrl: serverUrl,
       },
       () => {
         serverUrl && setConnectonUrl(serverUrl);
-        setStatus(chrome.i18n.getMessage('options_saved'));
+        setStatus(browser.i18n.getMessage('options_saved'));
         setTimeout(() => {
           setStatus('');
         }, 1000);
@@ -30,7 +30,7 @@ function Options() {
   }
 
   useEffect(() => {
-    chrome.storage.sync.get('connectionUrl').then((cu) => {
+    browser.storage.sync.get('connectionUrl').then((cu) => {
       setConnectonUrl(cu['connectionUrl']);
     });
   }, []);

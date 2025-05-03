@@ -2,11 +2,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap");
 
 .g-root_theme_light {
-  --g-font-family-sans: "Inter", "Helvetica Neue", "Helvetica", "Arial",
-    sans-serif;
-  --g-font-family-monospace: "Roboto Mono", "Menlo", "Monaco", "Consolas",
-    "Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New",
-    "Courier", monospace;
+  --g-font-family-sans: "Inter", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  --g-font-family-monospace: "Roboto Mono", "Menlo", "Monaco", "Consolas", "Ubuntu Mono",
+    "Liberation Mono", "DejaVu Sans Mono", "Courier New", "Courier", monospace;
 
   --g-color-private-brand-50: rgba(255, 190, 92, 0.1);
   --g-color-private-brand-100: rgba(255, 190, 92, 0.15);
@@ -55,11 +53,9 @@
 }
 
 .g-root_theme_dark {
-  --g-font-family-sans: "Inter", "Helvetica Neue", "Helvetica", "Arial",
-    sans-serif;
-  --g-font-family-monospace: "Roboto Mono", "Menlo", "Monaco", "Consolas",
-    "Ubuntu Mono", "Liberation Mono", "DejaVu Sans Mono", "Courier New",
-    "Courier", monospace;
+  --g-font-family-sans: "Inter", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  --g-font-family-monospace: "Roboto Mono", "Menlo", "Monaco", "Consolas", "Ubuntu Mono",
+    "Liberation Mono", "DejaVu Sans Mono", "Courier New", "Courier", monospace;
 
   --g-color-private-brand-50: rgba(255, 190, 92, 0.1);
   --g-color-private-brand-100: rgba(255, 190, 92, 0.15);

@@ -34,6 +34,7 @@
   "socket_error_room_length": {
     "message": "Der Raumname muss zwischen 2 und 24 Zeichen lang sein"
   },
+  "socket_error_too_many_requests": { "message": "Zu viele Anfragen" },
   "options_button_save": { "message": "Speichern" },
   "options_saved": { "message": "Einstellungen gespeichert" },
   "options_server": { "message": "Server" }
