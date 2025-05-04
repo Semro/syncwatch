@@ -22,12 +22,12 @@
     "syncwatch-types": "*"
   },
   "scripts": {
-    "dev": "wxt",
-    "dev:firefox": "wxt -b firefox",
-    "build": "wxt build",
-    "build:firefox": "wxt build -b firefox",
-    "zip": "wxt zip",
-    "zip:firefox": "wxt zip -b firefox",
+    "dev": "npm run compile && wxt",
+    "dev:firefox": "npm run compile && wxt -b firefox",
+    "build": "npm run compile && wxt build",
+    "build:firefox": "npm run compile && wxt build -b firefox",
+    "zip": "npm run compile && wxt zip",
+    "zip:firefox": "npm run compile && wxt zip -b firefox",
     "compile": "npm run build -w syncwatch-types && tsc --noEmit",
     "serve:test-page": "npx serve tests/test-page/",
     "postinstall": "wxt prepare && npx -y playwright install",
