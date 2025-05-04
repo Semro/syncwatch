@@ -1,8 +1,8 @@
 {
   "appName": { "message": "Sync Watch" },
   "appDesc": { "message": "Watch videos together at the same time!" },
-  "popup_input_name": { "message": "Type your name" },
-  "popup_input_room": { "message": "Type room name" },
+  "popup_input_name": { "message": "Enter your name" },
+  "popup_input_room": { "message": "Enter room name" },
   "popup_button_connect": { "message": "connect" },
   "popup_button_disconnect": { "message": "disconnect" },
   "popup_button_connecting": { "message": "connecting" },
