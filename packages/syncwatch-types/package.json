@@ -9,5 +9,16 @@
   "scripts": {
     "build": "npx -y tsc --build",
     "compile": "tsc --noEmit"
-  }
+  },
+  "files": [
+    "build"
+  ],
+  "exports": {
+    ".": {
+      "import": "./build/types.js",
+      "require": "./build/types.js"
+    }
+  },
+  "main": "./build/types.js",
+  "types": "./build/types.d.ts"
 }

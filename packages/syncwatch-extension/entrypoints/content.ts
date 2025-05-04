@@ -1,4 +1,4 @@
-import { RoomEvent } from '../../syncwatch-types/types';
+import { RoomEvent } from 'syncwatch-types';
 
 export default defineContentScript({
   matches: ['<all_urls>'],

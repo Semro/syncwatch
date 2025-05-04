@@ -8,7 +8,7 @@ import {
   type User,
   type UserList,
   socketEvents,
-} from './../../syncwatch-types/types';
+} from 'syncwatch-types';
 
 export default defineBackground(() => {
   interface ChromeTab extends Browser.tabs.Tab {

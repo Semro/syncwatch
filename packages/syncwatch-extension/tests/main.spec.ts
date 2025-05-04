@@ -7,7 +7,7 @@ import {
   ServerToClientsEvents,
   Share,
   User,
-} from '../../syncwatch-types/types';
+} from 'syncwatch-types';
 import { ENV } from '../env';
 import { expect, test } from './fixtures';
 

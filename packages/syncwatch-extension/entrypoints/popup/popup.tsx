@@ -5,8 +5,8 @@ import '@gravity-ui/uikit/styles/styles.css';
 import '@/css/theme.css';
 
 import { Button, Flex, Link, Text, TextInput, ThemeProvider, spacing } from '@gravity-ui/uikit';
-import { ErrorEventSocket, Share, User, UserList } from '../../../syncwatch-types/types';
-import { SocketEvent } from '../../../syncwatch-types/types';
+import type { ErrorEventSocket, Share, User, UserList } from 'syncwatch-types';
+import { SocketEvent } from 'syncwatch-types';
 
 type BaseRuntimeMessage<From extends string> = {
   from: From;
