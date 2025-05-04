@@ -7,7 +7,8 @@
   "description": "Extension to watch videos together",
   "type": "module",
   "scripts": {
-    "build": "npx -y tsc --build",
+    "compile": "npm run build -w syncwatch-types && tsc --noEmit",
+    "build": "npm run compile && npx -y tsc --build",
     "start": "node build/server.js",
     "start:dev": "npm run build && npm run start",
     "start:production": "npm run start"
@@ -21,8 +22,9 @@
   "license": "MIT",
   "dependencies": {
     "express": "^5.1.0",
-    "rate-limiter-flexible": "^7.0.0",
-    "socket.io": "^4.8.1"
+    "rate-limiter-flexible": "^7.1.0",
+    "socket.io": "^4.8.1",
+    "syncwatch-types": "*"
   },
   "devDependencies": {
     "@types/express": "^5.0.1"

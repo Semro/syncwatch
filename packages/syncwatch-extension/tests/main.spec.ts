@@ -7,7 +7,7 @@ import {
   ServerToClientsEvents,
   Share,
   User,
-} from '../../syncwatch-types/types';
+} from 'syncwatch-types';
 import { ENV } from '../env';
 import { expect, test } from './fixtures';
 
@@ -26,21 +26,21 @@ test('popup page', async ({ page, extensionId }) => {
 test('screenshot_popup', async ({ page, extensionId }) => {
   await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
-  await expect(page.locator('#main')).toHaveScreenshot(screenshotOptions);
+  await expect(page.getByTestId('screenshot')).toHaveScreenshot(screenshotOptions);
 });
 
 test('screenshot_option', async ({ page, extensionId }) => {
   await page.goto(`chrome-extension://${extensionId}/options.html`);
 
-  await expect(page.locator('#main')).toHaveScreenshot(screenshotOptions);
+  await expect(page.getByTestId('screenshot')).toHaveScreenshot(screenshotOptions);
 });
 
 const initialState = (page: Page) => {
   return test.step('Initial state', () => {
     return Promise.all([
-      expect(page.locator('#shared')).toBeVisible({ visible: false }),
-      expect(page.locator('#usersList')).toBeVisible({ visible: false }),
-      expect(page.locator('#status')).toHaveText('status: disconnected'),
+      expect(page.getByTestId('shared')).toBeVisible({ visible: false }),
+      expect(page.getByTestId('users-list')).toBeVisible({ visible: false }),
+      expect(page.getByTestId('status')).toHaveText('status: disconnected'),
     ]);
   });
 };
@@ -104,7 +104,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
   await test.step('Change server URL', async () => {
     await page.goto(`chrome-extension://${extensionId}/options.html`);
 
-    await page.locator('#serverUrl').fill(serverUrl);
+    await page.locator('#input-server-url').fill(serverUrl);
     await page.getByRole('button', { name: 'save' }).click();
   });
 
@@ -116,13 +116,13 @@ test('user scenario', async ({ page, extensionId, context }) => {
   await test.step('Connect to the server', async () => {
     await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
-    await page.getByPlaceholder('Type your name').fill(user1.name);
-    await page.getByPlaceholder('Type room name').fill(user1.room);
+    await page.locator('#input-name').fill(user1.name);
+    await page.locator('#input-room').fill(user1.room);
 
     await page.getByRole('button', { name: 'connect' }).click();
-    await expect(page.locator('#status')).toHaveText('status: connected');
-    await expect(page.locator('#usersList')).toBeVisible();
-    await expect(page.locator('#usersList')).toContainText(user1.name);
+    await expect(page.getByTestId('status')).toHaveText('status: connected');
+    await expect(page.getByTestId('users-list')).toBeVisible();
+    await expect(page.getByTestId('users-list')).toContainText(user1.name);
   });
 
   await test.step('Share a video', async () => {
@@ -132,8 +132,8 @@ test('user scenario', async ({ page, extensionId, context }) => {
     await pageVideo.goto(pageVideoMediaEventsUrl);
 
     await page.getByRole('button', { name: 'share' }).click();
-    await expect(page.locator('#shared')).toHaveAttribute('href', pageVideoMediaEventsUrl);
-    await expect(page.locator('#shared')).toBeVisible();
+    await expect(page.getByTestId('shared')).toHaveAttribute('href', pageVideoMediaEventsUrl);
+    await expect(page.getByTestId('shared')).toBeVisible();
 
     await pageVideo.close();
   });
@@ -141,7 +141,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
   await test.step('Open a shared video', async () => {
     await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
-    await page.locator('#shared').click();
+    await page.getByTestId('shared').click();
     const pagePromise = page
       .context()
       .waitForEvent('page', (p) => p.url() === pageVideoMediaEventsUrl);
@@ -158,13 +158,13 @@ test('user scenario', async ({ page, extensionId, context }) => {
     await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
     await socketEmit(socket, 'join', user2);
-    await expect(page.locator('#usersList')).toContainText(user2.name);
+    await expect(page.getByTestId('users-list')).toContainText(user2.name);
   });
 
   await test.step('Dispatch events from server to video player', async () => {
     await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
-    await page.locator('#shared').click();
+    await page.getByTestId('shared').click();
     const pagePromise = page
       .context()
       .waitForEvent('page', (p) => p.url() === pageVideoMediaEventsUrl);
@@ -228,7 +228,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
   await test.step('On page reload, tab should still be synced', async () => {
     await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
-    await page.locator('#shared').click();
+    await page.getByTestId('shared').click();
     const pagePromise = page
       .context()
       .waitForEvent('page', (p) => p.url() === pageVideoMediaEventsUrl);
@@ -256,7 +256,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
   await test.step('On tabs URL change, tab should not be in sync', async () => {
     await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
-    await page.locator('#shared').click();
+    await page.getByTestId('shared').click();
     const pagePromise = page
       .context()
       .waitForEvent('page', (p) => p.url() === pageVideoMediaEventsUrl);
@@ -284,7 +284,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
   await test.step('On clicking "disconnect", and then "connect" in popup tab should be in sync', async () => {
     await page.goto(`chrome-extension://${extensionId}/popup.html`);
 
-    await page.locator('#shared').click();
+    await page.getByTestId('shared').click();
     const pagePromise = page
       .context()
       .waitForEvent('page', (p) => p.url() === pageVideoMediaEventsUrl);
@@ -316,7 +316,7 @@ test('user scenario', async ({ page, extensionId, context }) => {
     const pagePromise = page
       .context()
       .waitForEvent('page', (p) => p.url() === pageVideoMediaEventsUrl);
-    await page.locator('#shared').click();
+    await page.getByTestId('shared').click();
     const newPage = await pagePromise;
 
     const videoElement = newPage.locator('#video');

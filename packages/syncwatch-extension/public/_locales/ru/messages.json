@@ -32,6 +32,7 @@
   "socket_error_write_room": { "message": "Напишите название комнаты" },
   "socket_error_name_length": { "message": "Длина имени должна быть от 2 до 24" },
   "socket_error_room_length": { "message": "Длина названия комнаты должна быть от 2 до 24" },
+  "socket_error_too_many_requests": { "message": "Слишком много запросов" },
   "options_button_save": { "message": "Сохранить" },
   "options_saved": { "message": "Настройки сохранены" },
   "options_server": { "message": "Сервер" }

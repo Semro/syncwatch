@@ -6,14 +6,15 @@ import { Server } from 'socket.io';
 
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import type { SocketId } from '../../node_modules/socket.io-adapter/dist/in-memory-adapter.d.ts';
+import { serverError } from 'syncwatch-types';
 import type {
   ClientToServerEvents,
   RoomEvent,
   ServerToClientsEvents,
   Share,
   User,
-} from '../syncwatch-types/types';
+} from 'syncwatch-types';
+import type { SocketId } from '../../node_modules/socket.io-adapter/dist/in-memory-adapter.d.ts';
 
 const debug = false;
 const logs = false;
@@ -63,13 +64,10 @@ function printStatus() {
 }
 
 function checkUserNameAndRoom(data: User) {
-  if (String(data.name) === '[object Object]' || String(data.room) === '[object Object]')
-    return 'Dont try make subrooms :D';
-
-  if (!data.name || data.name.trim() === '') return 'socket_error_write_name';
-  if (data.name.length < 2 || data.name.length > 24) return 'socket_error_name_length';
-  if (!data.room || data.room.trim() === '') return 'socket_error_write_room';
-  if (data.room.length < 2 || data.room.length > 24) return 'socket_error_room_length';
+  if (!data.name || data.name.trim() === '') return serverError['socket_error_write_name'];
+  if (data.name.length < 2 || data.name.length > 24) return serverError['socket_error_name_length'];
+  if (!data.room || data.room.trim() === '') return serverError['socket_error_write_room'];
+  if (data.room.length < 2 || data.room.length > 24) return serverError['socket_error_room_length'];
   return null;
 }
 
@@ -162,7 +160,7 @@ io.on('connection', (socket) => {
   countConnections++;
   socket.onAny(() => {
     rateLimiter.consume(socket.id).catch(() => {
-      socket.emit('error', `Too many requests. Disconnected`);
+      socket.emit('error', serverError['socket_error_too_many_requests']);
       socket.disconnect();
     });
   });

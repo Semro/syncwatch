@@ -1,8 +1,8 @@
 {
   "appName": { "message": "Sync Watch" },
   "appDesc": { "message": "Watch videos together at the same time!" },
-  "popup_input_name": { "message": "Type your name" },
-  "popup_input_room": { "message": "Type room name" },
+  "popup_input_name": { "message": "Enter your name" },
+  "popup_input_room": { "message": "Enter room name" },
   "popup_button_connect": { "message": "connect" },
   "popup_button_disconnect": { "message": "disconnect" },
   "popup_button_connecting": { "message": "connecting" },
@@ -32,6 +32,7 @@
   "socket_error_write_room": { "message": "Write room name" },
   "socket_error_name_length": { "message": "Name length must be between 2 and 24" },
   "socket_error_room_length": { "message": "Room length must be between 2 and 24" },
+  "socket_error_too_many_requests": { "message": "Too many requests" },
   "options_button_save": { "message": "Save" },
   "options_saved": { "message": "Options saved" },
   "options_server": { "message": "Server" }
