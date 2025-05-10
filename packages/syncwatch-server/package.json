@@ -8,8 +8,8 @@
   "type": "module",
   "scripts": {
     "compile": "npm run build -w syncwatch-types && tsc --noEmit",
-    "build": "npm run compile && npx -y tsc --build",
-    "start": "node build/server.js",
+    "build": "npm run compile && ncc build server.ts -o build -s --target es2024",
+    "start": "node --enable-source-maps build/index.js",
     "start:dev": "npm run build && npm run start",
     "start:production": "npm run start"
   },
@@ -27,6 +27,7 @@
     "syncwatch-types": "*"
   },
   "devDependencies": {
-    "@types/express": "^5.0.1"
+    "@types/express": "^5.0.1",
+    "@vercel/ncc": "^0.38.3"
   }
 }
