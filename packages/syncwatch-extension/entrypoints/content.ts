@@ -1,3 +1,4 @@
+import { RuntimeMessage, RuntimeMessageName } from '@/types/types';
 import { RoomEvent } from 'syncwatch-types';
 
 export default defineContentScript({
@@ -6,25 +7,6 @@ export default defineContentScript({
   runAt: 'document_end',
 
   main() {
-    type BaseRuntimeMessage<From extends string, Data> = {
-      from: From;
-      data: Data;
-    };
-
-    type MessageContentInjected = BaseRuntimeMessage<'background', 'isContentScriptInjected'>;
-    type MessageBackgroundEvent = BaseRuntimeMessage<'background', RoomEvent>;
-
-    type MessageRuntime = MessageContentInjected | MessageBackgroundEvent;
-
-    type BaseContentMessage<From extends string> = {
-      from: From;
-    };
-
-    type ContentEventMessage = BaseContentMessage<'content'> & { data: RoomEvent };
-    type ContentErrorOnEventMessage = BaseContentMessage<'errorOnEvent'>;
-
-    type MessageContent = ContentEventMessage | ContentErrorOnEventMessage;
-
     {
       const debug = false;
       const eventTypes = ['playing', 'pause', 'seeked', 'ratechange', 'progress'] as const;
@@ -39,7 +21,7 @@ export default defineContentScript({
       let recievedEvent: RoomEvent['type'];
       let loading = false;
 
-      function sendMessageInRuntime(msg: MessageContent) {
+      function sendMessageInRuntime(msg: RuntimeMessage) {
         try {
           browser.runtime.sendMessage(msg);
         } catch (err) {
@@ -87,7 +69,7 @@ export default defineContentScript({
         };
 
         sendMessageInRuntime({
-          from: 'content',
+          from: RuntimeMessageName.contentRoomEvent,
           data: eventSend,
         });
         if (debug) console.log(`%cbroadcast: ${eventSend.type}`, 'background: #fefe22;');
@@ -140,7 +122,7 @@ export default defineContentScript({
       function errorOnEvent(err: DOMException) {
         if (err.name === 'NotAllowedError') {
           sendMessageInRuntime({
-            from: 'errorOnEvent',
+            from: RuntimeMessageName.popupErrorOnEvent,
           });
         }
       }
@@ -221,13 +203,9 @@ export default defineContentScript({
         subtree: true,
       });
 
-      browser.runtime.onMessage.addListener((msg: MessageRuntime, _, sendResponse) => {
-        if (msg.from === 'background') {
-          if (msg.data === 'isContentScriptInjected') {
-            if (nodes.length !== 0) {
-              sendResponse(true);
-            }
-          } else if (msg.data.location === iframeFullIndex(window)) {
+      browser.runtime.onMessage.addListener((msg: RuntimeMessage) => {
+        if (msg.from === RuntimeMessageName.backgroundRoomEvent) {
+          if (msg.data.location === iframeFullIndex(window)) {
             fireEvent(msg.data);
             if (debug) console.log(`%crecieved: ${msg.data.type}`, 'background: #9966cc;');
           }
