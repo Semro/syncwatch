@@ -25,15 +25,13 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server<ClientToServerEvents, ServerToClientsEvents>(server);
 
-const afkTime = 60; // in minutes
-const printStatusTime = 30; // in minutes
+const afkTime = 60 * 60000; // first number in minutes
+const printStatusTime = 30 * 60000; // first number in minutes
 const errorFilePath = `${__dirname}/error.log`;
 const serverPort = 8080;
 
-let roomsLength = 0;
-let rooms: Record<User['room'], Room> = {};
-let roomid: Record<SocketId, Room> = {};
-let countConnections = 0;
+const rooms: Map<User['room'], Room> = new Map();
+const roomid: Map<SocketId, Room> = new Map();
 
 const PORT = process.env.PORT || serverPort;
 
@@ -55,11 +53,10 @@ const rateLimiterOptions = {
 const rateLimiter = new RateLimiterMemory(rateLimiterOptions);
 
 function printStatus() {
-  if (countConnections !== 0) {
-    if (logs)
-      setInterval(() => {
-        console.log(`${countConnections} user(s), ${roomsLength} room(s)`);
-      }, printStatusTime * 60000);
+  if (roomid.size !== 0 && logs) {
+    setInterval(() => {
+      console.log(`${roomid.size} user(s), ${rooms.size} room(s)`);
+    }, printStatusTime);
   }
 }
 
@@ -75,8 +72,7 @@ class Room {
   name: User['room'];
   event: RoomEvent | null;
   timeUpdated: number | null;
-  users: Record<SocketId, User['name']>;
-  usersLength: number;
+  users: Map<SocketId, User['name']>;
   share: Share | null;
   afkTimer: NodeJS.Timeout | null;
 
@@ -84,51 +80,43 @@ class Room {
     this.name = name;
     this.event = null;
     this.timeUpdated = null;
-    this.users = {};
-    this.usersLength = 0;
+    this.users = new Map();
     this.share = null;
     this.afkTimer = null;
   }
 
   addUser(socketID: SocketId, name: User['name']) {
-    if (this.users[socketID] === undefined) {
-      this.users[socketID] = name;
-      this.usersLength++;
-    }
+    this.users.set(socketID, name);
 
     this.setAfkTimer();
   }
 
   disconnectUser(socketID: SocketId) {
-    if (debug) console.log(`${this.name}: ${this.getUser(socketID)} disconnected`);
-    delete this.users[socketID];
-    this.usersLength--;
+    if (debug) console.log(`${this.name}: ${this.getUserName(socketID)} disconnected`);
+    this.users.delete(socketID);
 
     this.setAfkTimer();
   }
 
   disconnectAfk(users: typeof this.users) {
-    for (const user in users) {
-      io.in(user).emit('afk');
-    }
+    users.forEach((_, user) => io.in(user).emit('afk'));
   }
 
-  getUser(socketID: SocketId) {
-    return this.users[socketID];
+  getUserName(socketID: SocketId) {
+    return this.users.get(socketID);
   }
 
   getUsersNames() {
-    return Object.values(this.users).sort();
+    return this.users.values().toArray().sort();
   }
 
   nullUsers() {
-    if (!this.usersLength) return true;
-    return false;
+    return this.users.size === 0;
   }
 
   setAfkTimer() {
-    if (this.usersLength === 1) {
-      this.afkTimer = setTimeout(this.disconnectAfk, afkTime * 60000, this.users);
+    if (this.users.size === 1) {
+      this.afkTimer = setTimeout(this.disconnectAfk, afkTime, this.users);
     } else {
       this.afkTimer && clearTimeout(this.afkTimer);
     }
@@ -157,7 +145,6 @@ process.on('uncaughtException', (err) => {
 printStatus();
 
 io.on('connection', (socket) => {
-  countConnections++;
   socket.onAny(() => {
     rateLimiter.consume(socket.id).catch(() => {
       socket.emit('error', serverError['socket_error_too_many_requests']);
@@ -175,12 +162,12 @@ io.on('connection', (socket) => {
     }
 
     socket.join(data.room);
-    let room = rooms[data.room];
+    let room = rooms.get(data.room);
     if (room) {
       room.addUser(socket.id, data.name);
       io.in(room.name).emit('usersList', { list: room.getUsersNames() });
       if (room.share !== null) socket.emit('share', room.share);
-      if (room.usersLength > 1 && room.timeUpdated !== null && room.event) {
+      if (room.users.size > 1 && room.timeUpdated !== null && room.event) {
         room.event.currentTime =
           room.event.type === 'play'
             ? room.event.currentTime + (Date.now() - room.timeUpdated) / 1000
@@ -190,28 +177,27 @@ io.on('connection', (socket) => {
       }
     } else {
       room = new Room(data.room);
-      roomsLength++;
       room.addUser(socket.id, data.name);
-      rooms[data.room] = room;
+      rooms.set(data.room, room);
       socket.emit('usersList', { list: room.getUsersNames() });
     }
-    roomid[socket.id] = room;
+    roomid.set(socket.id, room);
 
-    if (debug) console.log(`connected: ${countConnections} ${JSON.stringify(data)}`);
+    if (debug) console.log(`connected: ${roomid.size} ${JSON.stringify(data)}`);
   });
 
   socket.on('message', (msg) => {
-    const room = roomid[socket.id];
+    const room = roomid.get(socket.id);
     if (!room) return;
 
     room.event = msg;
     room.timeUpdated = Date.now();
     socket.broadcast.to(room.name).emit('message', room.event);
-    if (debug) console.log(`${room.name}: ${room.getUser(socket.id)} ${JSON.stringify(msg)}`);
+    if (debug) console.log(`${room.name}: ${room.getUserName(socket.id)} ${JSON.stringify(msg)}`);
   });
 
   socket.on('share', (msg) => {
-    const room = roomid[socket.id];
+    const room = roomid.get(socket.id);
     if (!room) return;
 
     room.share = msg;
@@ -220,23 +206,17 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    const room = roomid[socket.id];
+    const room = roomid.get(socket.id);
     if (room !== undefined) {
       room.disconnectUser(socket.id);
       io.sockets.in(room.name).emit('usersList', { list: room.getUsersNames() });
       if (room.nullUsers()) {
-        delete rooms[room.name];
-        delete roomid[socket.id];
-        roomsLength--;
+        rooms.delete(room.name);
+        roomid.delete(socket.id);
       }
-      if (roomsLength === 0) {
-        rooms = {};
-        roomid = {};
+      if (rooms.size === 0) {
         if (logs) console.log('All authorized users disconnected!');
       }
     }
-    // else console.log('try disconnect undefined user');
-
-    countConnections--;
   });
 });
