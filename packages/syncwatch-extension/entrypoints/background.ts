@@ -1,3 +1,4 @@
+import { ChromeTab, RuntimeMessage, RuntimeMessageName } from '@/types/types';
 import { type Socket, io } from 'socket.io-client';
 import {
   type ClientToServerEvents,
@@ -11,42 +12,6 @@ import {
 } from 'syncwatch-types';
 
 export default defineBackground(() => {
-  interface ChromeTab extends Browser.tabs.Tab {
-    id: NonNullable<Browser.tabs.Tab['id']>;
-    // Always present, as manifest includes "tabs" persmission
-    title: NonNullable<Browser.tabs.Tab['title']>;
-    // Always present, as manifest includes "tabs" persmission
-    url: NonNullable<Browser.tabs.Tab['url']>;
-  }
-
-  type BaseRuntimeMessage<From extends string, Data> = {
-    from: From;
-    data: Data;
-  };
-
-  type MessageContent = BaseRuntimeMessage<'content', RoomEvent>;
-  type MessageJoin = BaseRuntimeMessage<'join', User>;
-  type MessagePopupShare = BaseRuntimeMessage<'popupShare', undefined>;
-  type MessagePopupOpenVideo = BaseRuntimeMessage<'popupOpenVideo', { url: string }>;
-  type MessageGetUser = BaseRuntimeMessage<'getUser', undefined>;
-  type MessageGetStatus = BaseRuntimeMessage<'getStatus', undefined>;
-  type MessageGetUserList = BaseRuntimeMessage<'getUsersList', undefined>;
-  type MessageGetShare = BaseRuntimeMessage<'getShare', undefined>;
-  type MessageDisconnect = BaseRuntimeMessage<'disconnect', undefined>;
-  type MessageErrorOnEvent = BaseRuntimeMessage<'errorOnEvent', undefined>;
-
-  type RuntimeMessage =
-    | MessageContent
-    | MessageJoin
-    | MessagePopupShare
-    | MessagePopupOpenVideo
-    | MessageGetUser
-    | MessageGetStatus
-    | MessageGetUserList
-    | MessageGetShare
-    | MessageDisconnect
-    | MessageErrorOnEvent;
-
   const debug = false;
 
   const manifest = browser.runtime.getManifest();
@@ -112,13 +77,16 @@ export default defineBackground(() => {
 
   function sendUserToPopup() {
     browser.storage.sync.get(storageUserShape, (result) => {
-      chromeProxy.runtime.sendMessage({ from: 'sendUser', data: result });
+      chromeProxy.runtime.sendMessage({
+        from: RuntimeMessageName.backgroundSendUser,
+        data: result,
+      });
     });
   }
 
   function sendStatusToPopup() {
     chromeProxy.runtime.sendMessage({
-      from: 'status',
+      from: RuntimeMessageName.backgroundStatus,
       status,
     });
   }
@@ -130,20 +98,20 @@ export default defineBackground(() => {
 
   function sendShareToPopup() {
     if (status === 'connect') {
-      chromeProxy.runtime.sendMessage({ from: 'share', data: share });
+      chromeProxy.runtime.sendMessage({ from: RuntimeMessageName.backgroundShare, data: share });
     }
   }
 
   function sendUsersListToPopup() {
     chromeProxy.runtime.sendMessage({
-      from: 'sendUsersList',
+      from: RuntimeMessageName.backgroundSendUsersList,
       list,
     });
   }
 
   function sendErrorToPopup(err: ErrorEventSocket) {
     chromeProxy.runtime.sendMessage({
-      from: 'sendError',
+      from: RuntimeMessageName.backgroundSendError,
       error: err,
     });
   }
@@ -306,7 +274,7 @@ export default defineBackground(() => {
     socket.on('message', (msg) => {
       if (syncTab) {
         browser.tabs.sendMessage(syncTab.id, {
-          from: 'background',
+          from: RuntimeMessageName.backgroundRoomEvent,
           data: msg,
         });
         if (debug) console.log(`socket.on: ${msg.type}`);
@@ -368,13 +336,13 @@ export default defineBackground(() => {
 
   browser.runtime.onMessage.addListener((msg: RuntimeMessage, sender) => {
     switch (msg.from) {
-      case 'content': {
+      case RuntimeMessageName.contentRoomEvent: {
         if (sender.tab) {
           broadcast(msg.data, sender.tab);
         }
         break;
       }
-      case 'join': {
+      case RuntimeMessageName.popupJoin: {
         user = msg.data;
         storageUser(msg.data);
 
@@ -384,7 +352,7 @@ export default defineBackground(() => {
         }
         break;
       }
-      case 'popupShare': {
+      case RuntimeMessageName.popupShare: {
         browser.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
           const tab = tabs[0];
           if (tab) {
@@ -394,33 +362,33 @@ export default defineBackground(() => {
         });
         break;
       }
-      case 'popupOpenVideo': {
+      case RuntimeMessageName.popupOpenVideo: {
         openVideo(msg.data.url);
         break;
       }
-      case 'getUser': {
+      case RuntimeMessageName.popupGetUser: {
         sendUserToPopup();
         break;
       }
-      case 'getStatus': {
+      case RuntimeMessageName.popupGetStatus: {
         sendStatusToPopup();
         break;
       }
-      case 'getUsersList': {
+      case RuntimeMessageName.popupGetUsersList: {
         sendUsersListToPopup();
         break;
       }
-      case 'getShare': {
+      case RuntimeMessageName.popupGetShare: {
         sendShareToPopup();
         break;
       }
-      case 'disconnect': {
+      case RuntimeMessageName.popupDisconnect: {
         if (socket) {
           socket.disconnect();
         }
         break;
       }
-      case 'errorOnEvent': {
+      case RuntimeMessageName.popupErrorOnEvent: {
         errorOnEventNotification();
         break;
       }

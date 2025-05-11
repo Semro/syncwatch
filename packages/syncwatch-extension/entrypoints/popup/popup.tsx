@@ -1,41 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
-import '@gravity-ui/uikit/styles/styles.css';
 import '@/css/theme.css';
+import '@gravity-ui/uikit/styles/styles.css';
 
+import { RuntimeMessage, RuntimeMessageName } from '@/types/types';
 import { Button, Flex, Link, Text, TextInput, ThemeProvider, spacing } from '@gravity-ui/uikit';
-import type { ErrorEventSocket, Share, User, UserList } from 'syncwatch-types';
-import { SocketEvent } from 'syncwatch-types';
+import type { Share, User, UserList } from 'syncwatch-types';
 
-type BaseRuntimeMessage<From extends string> = {
-  from: From;
-};
+const typesOfData = [
+  RuntimeMessageName.popupGetUser,
+  RuntimeMessageName.popupGetStatus,
+  RuntimeMessageName.popupGetUsersList,
+  RuntimeMessageName.popupGetShare,
+] as const;
 
-type MessageStatus = BaseRuntimeMessage<'status'> & { status: SocketEvent };
-type MessageShare = BaseRuntimeMessage<'share'> & { data: Share | undefined };
-type MessageSendUsersList = BaseRuntimeMessage<'sendUsersList'> & { list: UserList };
-type MessageSendError = BaseRuntimeMessage<'sendError'> & { error: ErrorEventSocket };
-type MessageSendUser = BaseRuntimeMessage<'sendUser'> & { data: User };
-
-type RuntimeMessage =
-  | MessageStatus
-  | MessageShare
-  | MessageSendUsersList
-  | MessageSendError
-  | MessageSendUser;
-
-function getData(type: string) {
+function getData(type: (typeof typesOfData)[number]) {
   browser.runtime.sendMessage({
-    from: `get${type}`,
+    from: type,
   });
 }
 
 function getFaviconFromUrl(url: string) {
   return `${new URL('favicon.ico', new URL(url).origin)}`;
 }
-
-const typesOfData = ['User', 'Status', 'UsersList', 'Share'];
 
 function Popup() {
   const [connectButtonValue, setConnectButtonValue] = useState(
@@ -50,28 +38,31 @@ function Popup() {
   const isConnected = connectButtonValue === browser.i18n.getMessage('popup_button_disconnect');
 
   function onClickShare() {
-    browser.runtime.sendMessage({ from: 'popupShare' });
+    browser.runtime.sendMessage({ from: RuntimeMessageName.popupShare });
   }
 
   function onClickVideoLink(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     if (share) {
-      browser.runtime.sendMessage({ from: 'popupOpenVideo', data: { url: share.url } });
+      browser.runtime.sendMessage({
+        from: RuntimeMessageName.popupOpenVideo,
+        data: { url: share.url },
+      });
     }
     event.preventDefault();
   }
 
   function onClickConnect() {
     if (isConnected) {
-      browser.runtime.sendMessage({ from: 'disconnect' });
+      browser.runtime.sendMessage({ from: RuntimeMessageName.popupDisconnect });
     } else {
-      browser.runtime.sendMessage({ from: 'join', data: user });
+      browser.runtime.sendMessage({ from: RuntimeMessageName.popupJoin, data: user });
       setConnectButtonValue(`${browser.i18n.getMessage('popup_button_connecting')}...`);
       setConnectionError('');
     }
   }
 
   function onRuntimeMessage(msg: RuntimeMessage) {
-    if (msg.from === 'status') {
+    if (msg.from === RuntimeMessageName.backgroundStatus) {
       if (msg.status === 'connect') {
         setConnectButtonValue(browser.i18n.getMessage('popup_button_disconnect'));
       } else {
@@ -81,18 +72,18 @@ function Popup() {
       }
       setConnectionStatus(browser.i18n.getMessage(`socket_event_${msg.status}`));
     }
-    if (msg.from === 'share') {
+    if (msg.from === RuntimeMessageName.backgroundShare) {
       if (msg.data) {
         setShare(msg.data);
       }
     }
-    if (msg.from === 'sendUsersList') {
+    if (msg.from === RuntimeMessageName.backgroundSendUsersList) {
       setUsers(msg.list);
     }
-    if (msg.from === 'sendError') {
+    if (msg.from === RuntimeMessageName.backgroundSendError) {
       setConnectionError(browser.i18n.getMessage(msg.error));
     }
-    if (msg.from === 'sendUser' && msg.data) {
+    if (msg.from === RuntimeMessageName.backgroundSendUser && msg.data) {
       setUser(msg.data);
     }
   }
